@@ -35,8 +35,10 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(mainTabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
         <Stack.Screen name="profile" />
+        <Stack.Screen name="[game]" />
+        <Stack.Screen name="[explore]" />
+        <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

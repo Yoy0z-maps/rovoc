@@ -24,11 +24,13 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
+          default: {
             position: "absolute",
+            borderTopWidth: 1,
+            // borderTopColor: Colors[colorScheme ?? "light"].border,
+            borderTopColor: "#111111",
+            backgroundColor: "#ffffff",
           },
-          default: {},
         }),
       }}
     >
@@ -42,7 +44,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore/page"
+        name="explore"
         options={{
           title: "Explore",
           tabBarIcon: ({ color }) => (
@@ -51,26 +53,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore/[id]/page"
-        options={{
-          title: "Explore",
-          tabBarIcon: ({ color }) => null,
-        }}
-      />
-      <Tabs.Screen
-        name="game/page"
+        name="game"
         options={{
           title: "Game",
           tabBarIcon: ({ color }) => (
             <Ionicons name="game-controller" size={24} color={color} />
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="game/[id]/page"
-        options={{
-          title: "Game",
-          tabBarIcon: ({ color }) => null,
         }}
       />
       <Tabs.Screen

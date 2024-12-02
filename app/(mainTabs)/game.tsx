@@ -1,9 +1,9 @@
-import { Text, View } from "react-native";
+import { View, Text } from "react-native";
 
 export default function GameScreen() {
   return (
     <View>
-      <Text>Game Screen</Text>
+      <Text>Game Detail: ID</Text>
     </View>
   );
 }
