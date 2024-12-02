@@ -7,7 +7,9 @@ Hello, World! This is a mobile application - "ROVOC" that helps you memorize wor
 ## Step 1: Supported Device (Only iOS and Android)
 
 > **Note**: You can download the app from the following links.
-> [iOS](https://apps.apple.com/app/rovoc/id6471888888) > [Android](https://play.google.com/store/apps/details?id=com.rovoc)
+
+[iOS](https://apps.apple.com/app/rovoc/id6471888888)
+[Android](https://play.google.com/store/apps/details?id=com.rovoc)
 
 First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
 
