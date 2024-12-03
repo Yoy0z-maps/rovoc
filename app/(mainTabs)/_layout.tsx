@@ -12,6 +12,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import ExploreHeader from "@/components/explore/ExploreHeader";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -29,7 +30,7 @@ export default function TabLayout() {
             borderTopWidth: 1,
             // borderTopColor: Colors[colorScheme ?? "light"].border,
             borderTopColor: "#111111",
-            backgroundColor: "#ffffff",
+            backgroundColor: "#fff",
           },
         }),
       }}
@@ -46,6 +47,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
+          header: ExploreHeader,
+          headerShown: true,
           title: "Explore",
           tabBarIcon: ({ color }) => (
             <AntDesign name="search1" size={24} color={color} />
