@@ -1,20 +1,10 @@
-import { Link, Stack } from "expo-router";
-import { StyleSheet } from "react-native";
-
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function ProfileScreen() {
   return (
-    <>
-      <Stack.Screen options={{ title: "Profile" }} />
-      <ThemedView style={styles.container}>
-        <ThemedText type="title">Show Users Profile Here.</ThemedText>
-        <Link href="/(mainTabs)" style={styles.link}>
-          <ThemedText type="link">Go to home screen!</ThemedText>
-        </Link>
-      </ThemedView>
-    </>
+    <View style={styles.container}>
+      <Text>Profile</Text>
+    </View>
   );
 }
 
@@ -24,9 +14,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-  },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
+    backgroundColor: "#fff",
   },
 });

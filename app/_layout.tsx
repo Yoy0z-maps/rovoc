@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import ProfileHeader from "@/components/profile/ProfileHeader";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -42,7 +43,10 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(mainTabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="profile" />
+        <Stack.Screen
+          name="profile"
+          options={{ headerShown: true, header: ProfileHeader }}
+        />
         <Stack.Screen name="auth" options={{ headerShown: false }} />
         <Stack.Screen name="[game]" />
         <Stack.Screen name="[explore]" />
