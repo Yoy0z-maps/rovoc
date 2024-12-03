@@ -1,31 +1,37 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 export default function VocaCard() {
+  // 클릭 시 /[explore]로 이동
+  const router = useRouter();
+
   return (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        <Text style={styles.title}>TOEFL</Text>
-        <View style={styles.iconContainer}>
-          <FontAwesome name="star" size={24} color="gold" />
-          <MaterialIcons name="more-vert" size={24} color="black" />
+    <Pressable onPress={() => console.log("clicked")}>
+      <View style={styles.card}>
+        <View style={styles.header}>
+          <Text style={styles.title}>TOEFL</Text>
+          <View style={styles.iconContainer}>
+            <FontAwesome name="star" size={24} color="gold" />
+            <MaterialIcons name="more-vert" size={24} color="black" />
+          </View>
+        </View>
+        <Text style={styles.description}>
+          TOEFL시험 출제 빈도수 최대 단어 모음집
+        </Text>
+        <View style={styles.footer}>
+          <View style={styles.footerItem}>
+            <FontAwesome name="font" size={18} color="black" />
+            <Text style={styles.footerText}>Total 172 words</Text>
+          </View>
+          <View style={styles.footerItem}>
+            <FontAwesome name="eye" size={18} color="black" />
+            <Text style={styles.footerText}>Total 14 repetitions</Text>
+          </View>
         </View>
       </View>
-      <Text style={styles.description}>
-        TOEFL시험 출제 빈도수 최대 단어 모음집
-      </Text>
-      <View style={styles.footer}>
-        <View style={styles.footerItem}>
-          <FontAwesome name="font" size={18} color="black" />
-          <Text style={styles.footerText}>Total 172 words</Text>
-        </View>
-        <View style={styles.footerItem}>
-          <FontAwesome name="eye" size={18} color="black" />
-          <Text style={styles.footerText}>Total 14 repetitions</Text>
-        </View>
-      </View>
-    </View>
+    </Pressable>
   );
 }
 

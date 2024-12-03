@@ -10,7 +10,7 @@ export default function ProfileScreen() {
       <Stack.Screen options={{ title: "Profile" }} />
       <ThemedView style={styles.container}>
         <ThemedText type="title">Show Users Profile Here.</ThemedText>
-        <Link href="/" style={styles.link}>
+        <Link href="/(mainTabs)" style={styles.link}>
           <ThemedText type="link">Go to home screen!</ThemedText>
         </Link>
       </ThemedView>
