@@ -19,7 +19,7 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    SourceHanSans: require("../assets/fonts/SourceHanSans.ttc"), // 中文
+    //SourceHanSans: require("../assets/fonts/SourceHanSans.ttc"), // 中文
     "Pretendard-Black": require("../assets/fonts/Pretendard-Black.otf"),
     "Pretendard-Bold": require("../assets/fonts/Pretendard-Bold.otf"),
     "Pretendard-Light": require("../assets/fonts/Pretendard-Light.otf"),
@@ -43,6 +43,7 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(mainTabs)" options={{ headerShown: false }} />
         <Stack.Screen name="profile" />
+        <Stack.Screen name="auth" options={{ headerShown: false }} />
         <Stack.Screen name="[game]" />
         <Stack.Screen name="[explore]" />
         <Stack.Screen name="+not-found" />
