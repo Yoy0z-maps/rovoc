@@ -9,12 +9,12 @@ export default function ProfileHeader() {
     <SafeAreaView style={styles.container}>
       <View style={styles.spacing}>
         <Pressable onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="#111" />
+          <Ionicons name="chevron-back" size={24} color="#fff" />
         </Pressable>
         <Text style={styles.title}>My</Text>
         <View style={styles.notificationContainer}>
           <View style={styles.notificationDot}></View>
-          <Ionicons name="notifications" size={22} color="#111" />
+          <Ionicons name="notifications" size={22} color="#fff" />
         </View>
       </View>
     </SafeAreaView>
@@ -23,11 +23,8 @@ export default function ProfileHeader() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
     flexDirection: "row",
     alignItems: "center",
-    borderBottomWidth: 2,
-    borderColor: "#111",
   },
   spacing: {
     flex: 1,
@@ -40,6 +37,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontFamily: "Pretendard-Bold",
+    color: "#fff",
   },
   notificationContainer: {
     position: "relative",
