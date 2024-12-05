@@ -3,7 +3,7 @@ import { Text, View, StyleSheet } from "react-native";
 // Expo Vector Icons
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import SocialLoginButton from "@/components/SocialLoginButton";
+import SocialLoginButton from "@/components/auth/SocialLoginButton";
 
 export default function AuthPage() {
   return (
