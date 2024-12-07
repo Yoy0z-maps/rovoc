@@ -1,0 +1,10 @@
+name: ROVOC Build
+
+on:
+  push:
+    branches: ["*"]
+
+jobs:
+  ROVOC Build:
+    steps:
+      - run: echo "ROVOC Build"
