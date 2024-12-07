@@ -1,12 +1,12 @@
-import NotificationsHeader from "@/components/notifications/NotificationsHeader";
+import NoticeHeader from "@/components/notice/NoticeHeader";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 export default function NoticeScreen() {
   return (
     <SafeAreaView style={styles.container}>
-      <NotificationsHeader />
+      <NoticeHeader />
       <View>
-        <Text>Notifications</Text>
+        <Text>Notice</Text>
       </View>
     </SafeAreaView>
   );
