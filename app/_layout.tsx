@@ -44,9 +44,10 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(mainTabs)" options={{ headerShown: false }} />
         <Stack.Screen name="profile" options={{ headerShown: false }} />
+        <Stack.Screen name="notice" options={{ headerShown: false }} />
         <Stack.Screen name="auth" options={{ headerShown: false }} />
         <Stack.Screen name="[game]" />
-        <Stack.Screen name="[explore]" />
+        <Stack.Screen name="[bookcase]" />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

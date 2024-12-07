@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 
 export default function ProfileHeader() {
   const router = useRouter();
+  // const isNotification = false;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -12,10 +13,13 @@ export default function ProfileHeader() {
           <Ionicons name="chevron-back" size={24} color="#fff" />
         </Pressable>
         <Text style={styles.title}>My</Text>
-        <View style={styles.notificationContainer}>
+        <Pressable
+          style={styles.notificationContainer}
+          onPress={() => router.push("/notice")}
+        >
           <View style={styles.notificationDot}></View>
           <Ionicons name="notifications" size={22} color="#fff" />
-        </View>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
