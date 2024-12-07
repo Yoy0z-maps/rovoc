@@ -1,0 +1,7 @@
+# Ignore node_modules and build artifacts
+node_modules/
+build/
+dist/
+*.log
+*.tmp
+*.lock
