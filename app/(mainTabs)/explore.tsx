@@ -1,30 +1,136 @@
-import { StyleSheet, Image, Platform, ScrollView } from "react-native";
-
-import { Collapsible } from "@/components/Collapsible";
-import { ExternalLink } from "@/components/ExternalLink";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import { IconSymbol } from "@/components/ui/IconSymbol";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
 import VocaCard from "@/components/explore/VocaCard";
+import { useState } from "react";
+import ExploreHeader from "@/components/explore/ExploreHeader";
+import ExploreFilterModal from "@/components/explore/ExploreFilterModal";
+import ExploreAddBookcaseModal from "@/components/explore/ExploreAddBookcaseModal";
 
 export default function ExploreScreen() {
+  const [searchWord, setSearchWord] = useState("");
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [showAddBookcaseModal, setShowAddBookcaseModal] = useState(false);
+
+  // 검색 중일 때 화면 렌더링
+  if (searchWord) {
+    return (
+      <View style={styles.container}>
+        <ExploreHeader
+          searchWord={searchWord}
+          setSearchWord={setSearchWord}
+          setShowFilterModal={setShowFilterModal}
+          setShowAddBookcaseModal={setShowAddBookcaseModal}
+        />
+        <Text>Search</Text>
+        <Modal
+          visible={showFilterModal}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setShowFilterModal(false)}
+        >
+          <TouchableWithoutFeedback onPress={() => setShowFilterModal(false)}>
+            <View style={styles.filterModalBackground}>
+              <TouchableWithoutFeedback>
+                <View>
+                  <ExploreFilterModal />
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+        <Modal
+          visible={showAddBookcaseModal}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setShowAddBookcaseModal(false)}
+        >
+          <TouchableWithoutFeedback
+            onPress={() => setShowAddBookcaseModal(false)}
+          >
+            <View style={styles.addBookcaseModalBackground}>
+              <TouchableWithoutFeedback>
+                <ExploreAddBookcaseModal
+                  setShowAddBookcaseModal={setShowAddBookcaseModal}
+                />
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      </View>
+    );
+  }
+
+  // 검색 중이 아닐 때 화면 렌더링
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <VocaCard />
-    </ScrollView>
+    <View style={styles.container}>
+      <ExploreHeader
+        searchWord={searchWord}
+        setSearchWord={setSearchWord}
+        setShowFilterModal={setShowFilterModal}
+        setShowAddBookcaseModal={setShowAddBookcaseModal}
+      />
+      <ScrollView>
+        <VocaCard />
+      </ScrollView>
+      <Modal
+        visible={showFilterModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowFilterModal(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setShowFilterModal(false)}>
+          <View style={styles.filterModalBackground}>
+            <TouchableWithoutFeedback>
+              <View>
+                <ExploreFilterModal />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+      <Modal
+        visible={showAddBookcaseModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowAddBookcaseModal(false)}
+      >
+        <TouchableWithoutFeedback
+          onPress={() => setShowAddBookcaseModal(false)}
+        >
+          <View style={styles.addBookcaseModalBackground}>
+            <TouchableWithoutFeedback>
+              <ExploreAddBookcaseModal
+                setShowAddBookcaseModal={setShowAddBookcaseModal}
+              />
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: "#808080",
-    bottom: -90,
-    left: -35,
-    position: "absolute",
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
   },
-  titleContainer: {
-    flexDirection: "row",
-    gap: 8,
+  filterModalBackground: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  addBookcaseModalBackground: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
