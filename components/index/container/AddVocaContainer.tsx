@@ -2,8 +2,15 @@ import { StyleSheet, View, Text, TextInput } from "react-native";
 import VocaInputField from "../VocaInputField";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-export default function AddVocaContainer() {
+export default function AddVocaContainer({
+  showBookcaseModal,
+  setShowBookcaseModal,
+}: {
+  showBookcaseModal: boolean;
+  setShowBookcaseModal: (show: boolean) => void;
+}) {
   // 여기서 state를 {}로 한번에 관리하기
   const [vocalModal, setVocalModal] = useState({
     word: "",
@@ -20,6 +27,25 @@ export default function AddVocaContainer() {
       <View style={styles.inputTitleContainer}>
         <Text style={styles.inputTitle}>Herer to add new vocabulary</Text>
         <View style={styles.inputTitleUnderline} />
+      </View>
+      <View style={styles.targetBookcaseContainer}>
+        <Text style={styles.targetBookcaseText}>Target Bookcase:</Text>
+        <Text style={styles.targetBookcaseText}>Bookcase 1</Text>
+        {showBookcaseModal ? (
+          <MaterialIcons
+            name="expand-less"
+            size={20}
+            color="black"
+            onPress={() => setShowBookcaseModal(false)}
+          />
+        ) : (
+          <MaterialIcons
+            name="expand-more"
+            size={20}
+            color="black"
+            onPress={() => setShowBookcaseModal(true)}
+          />
+        )}
       </View>
       <VocaInputField placeholder="Vocabulary (required)" />
       <VocaInputField placeholder="Meaning (required)" />
@@ -41,6 +67,16 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 10,
     paddingHorizontal: 24,
+  },
+  targetBookcaseContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  targetBookcaseText: {
+    fontSize: 14,
+    fontFamily: "Pretendard-Regular",
+    color: "#111",
   },
   inputTitleContainer: {
     flexDirection: "row",

@@ -55,8 +55,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          header: ExploreHeader,
-          headerShown: true,
+          headerShown: false,
           title: "Explore",
           tabBarIcon: ({ color }) => (
             <AntDesign name="search1" size={25} color={color} />

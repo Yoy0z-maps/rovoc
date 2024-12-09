@@ -2,8 +2,17 @@ import { SafeAreaView, View, StyleSheet, TextInput } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialIcons } from "@expo/vector-icons";
-
-export default function ExploreHeader() {
+export default function ExploreHeader({
+  setShowFilterModal,
+  setShowAddBookcaseModal,
+  searchWord,
+  setSearchWord,
+}: {
+  setShowFilterModal: (show: boolean) => void;
+  setShowAddBookcaseModal: (show: boolean) => void;
+  searchWord: string;
+  setSearchWord: (word: string) => void;
+}) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.spacing}>
@@ -18,11 +27,23 @@ export default function ExploreHeader() {
             style={styles.searchInput}
             placeholder="Search..."
             placeholderTextColor="#888"
+            value={searchWord}
+            onChangeText={(text) => setSearchWord(text)}
           />
         </View>
         <View style={styles.iconContainer}>
-          <Ionicons name="options" size={25} color="black" onPress={() => {}} />
-          <FontAwesome6 name="add" size={25} color="black" onPress={() => {}} />
+          <Ionicons
+            name="options"
+            size={25}
+            color="black"
+            onPress={() => setShowFilterModal(true)}
+          />
+          <FontAwesome6
+            name="add"
+            size={25}
+            color="black"
+            onPress={() => setShowAddBookcaseModal(true)}
+          />
         </View>
       </View>
     </SafeAreaView>
@@ -45,6 +66,7 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     height: 45,
+    justifyContent: "center",
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
@@ -66,7 +88,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     height: 45,
     flex: 1,
-    paddingVertical: 8,
+  },
+  searchInputText: {
+    marginTop: 13,
+    color: "#888",
+    fontFamily: "Pretendard-Regular",
+    fontSize: 14,
+    flexDirection: "row",
   },
   iconContainer: {
     flexDirection: "row",
