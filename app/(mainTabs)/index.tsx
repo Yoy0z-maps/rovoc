@@ -1,4 +1,10 @@
-import { StyleSheet, SafeAreaView, ScrollView, Modal } from "react-native";
+import {
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
 import HomeTitle from "@/components/index/HomeTitle";
 import AddVocaContainer from "@/components/index/container/AddVocaContainer";
 import ReviewVocaContainer from "@/components/index/container/ReviewVocaContainer";
@@ -27,7 +33,9 @@ export default function HomeScreen() {
           visible={showBookcaseModal}
           onRequestClose={() => setShowBookcaseModal(false)}
         >
-          <BookcaseModal setShowBookcaseModal={setShowBookcaseModal} />
+          <TouchableWithoutFeedback onPress={() => setShowBookcaseModal(false)}>
+            <BookcaseModal setShowBookcaseModal={setShowBookcaseModal} />
+          </TouchableWithoutFeedback>
         </Modal>
       )}
     </SafeAreaView>
