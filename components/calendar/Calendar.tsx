@@ -77,20 +77,26 @@ export default function Calendar() {
         {calendarDays.map((date, index) => (
           <Pressable
             key={index}
-            style={[
-              styles.dateContainer,
-              { backgroundColor: date === selectedDate ? "#2988F6" : "white" },
-            ]}
+            style={styles.dateButton}
             onPress={() => date && setSelectedDate(date)}
           >
-            <Text
+            <View
               style={[
-                styles.date,
-                { color: date === selectedDate ? "white" : "black" },
+                styles.dateContainer,
+                {
+                  backgroundColor: date === selectedDate ? "#2988F6" : "white",
+                },
               ]}
             >
-              {date}
-            </Text>
+              <Text
+                style={[
+                  styles.date,
+                  { color: date === selectedDate ? "white" : "black" },
+                ]}
+              >
+                {date}
+              </Text>
+            </View>
           </Pressable>
         ))}
       </View>
@@ -125,13 +131,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 10,
   },
-  dateContainer: {
+  dateButton: {
     width: "14.28%",
     height: "14.28%",
     aspectRatio: 1,
+    padding: 7,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 12,
+  },
+  dateContainer: {
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
   },
   date: {
     fontSize: 16,
