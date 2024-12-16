@@ -1,10 +1,11 @@
-import { Text, View, StyleSheet } from "react-native";
+import Calendar from "@/components/calendar/Calendar";
+import { Text, View, StyleSheet, SafeAreaView } from "react-native";
 
 export default function CalendarScreen() {
   return (
-    <View style={styles.container}>
-      <Text>Calendar Screen</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Calendar />
+    </SafeAreaView>
   );
 }
 
