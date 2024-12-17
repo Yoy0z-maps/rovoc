@@ -1,5 +1,7 @@
 import { useRouter } from "expo-router";
-import { Text, StyleSheet, Pressable } from "react-native";
+import { Text, StyleSheet, Pressable, Dimensions } from "react-native";
+
+const { width } = Dimensions.get("window");
 
 export default function SocialLoginButton({
   iconName,
@@ -27,7 +29,7 @@ export default function SocialLoginButton({
       }}
       style={[styles.button, { backgroundColor: buttonColor }]}
     >
-      <Icon name={iconName} size={24} color={iconColor} />
+      <Icon name={iconName} size={20} color={iconColor} style={styles.icon} />
       <Text style={[styles.buttonText, { color: textColor }]}>
         {buttonText}
       </Text>
@@ -36,23 +38,23 @@ export default function SocialLoginButton({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
+  button: {
+    width: width - 90,
+    height: 50,
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+    borderRadius: 6,
+    position: "relative",
   },
   buttonText: {
     fontFamily: "Pretendard-Regular",
-    fontSize: 18,
+    fontSize: 14,
+    textAlign: "center",
   },
-  button: {
-    width: 250,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    gap: 15,
-    alignItems: "center",
-    flexDirection: "row",
-    marginBottom: 10,
-    borderRadius: 12,
+  icon: {
+    position: "absolute",
+    left: 20,
   },
 });

@@ -27,6 +27,7 @@ export default function RootLayout() {
     "Pretendard-Medium": require("../assets/fonts/Pretendard-Medium.otf"),
     "Pretendard-Regular": require("../assets/fonts/Pretendard-Regular.otf"),
     "Pretendard-Thin": require("../assets/fonts/Pretendard-Thin.otf"),
+    PressStart2P: require("../assets/fonts/PressStart2P.ttf"),
   });
 
   useEffect(() => {

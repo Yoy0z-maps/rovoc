@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
     fontFamily: "Pretendard-Medium",
     fontSize: 20,
     color: "#111",
+    marginBottom: 10,
   },
   filterItem: {
     marginTop: 10,

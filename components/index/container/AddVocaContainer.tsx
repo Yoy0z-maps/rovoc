@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, TextInput } from "react-native";
+import { StyleSheet, View, Text, TextInput, Pressable } from "react-native";
 import VocaInputField from "../VocaInputField";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
@@ -30,22 +30,17 @@ export default function AddVocaContainer({
       </View>
       <View style={styles.targetBookcaseContainer}>
         <Text style={styles.targetBookcaseText}>Target Bookcase:</Text>
-        <Text style={styles.targetBookcaseText}>Bookcase 1</Text>
-        {showBookcaseModal ? (
-          <MaterialIcons
-            name="expand-less"
-            size={20}
-            color="black"
-            onPress={() => setShowBookcaseModal(false)}
-          />
-        ) : (
-          <MaterialIcons
-            name="expand-more"
-            size={20}
-            color="black"
-            onPress={() => setShowBookcaseModal(true)}
-          />
-        )}
+        <Pressable
+          style={styles.targetBookcaseButton}
+          onPress={() => setShowBookcaseModal(!showBookcaseModal)}
+        >
+          <Text style={styles.targetBookcaseText}>Bookcase 1</Text>
+          {showBookcaseModal ? (
+            <MaterialIcons name="expand-less" size={20} color="black" />
+          ) : (
+            <MaterialIcons name="expand-more" size={20} color="black" />
+          )}
+        </Pressable>
       </View>
       <VocaInputField placeholder="Vocabulary (required)" />
       <VocaInputField placeholder="Meaning (required)" />
@@ -110,5 +105,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 20,
     paddingVertical: 8,
+  },
+  targetBookcaseButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
 });
