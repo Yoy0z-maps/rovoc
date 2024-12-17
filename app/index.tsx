@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActivityIndicator, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function Index() {
   const router = useRouter();

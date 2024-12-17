@@ -1,0 +1,36 @@
+{
+  "index": {
+    "title": "你好"
+  },
+  "auth": {
+    "kakaotalk": "使用 KakaoTalk 登录",
+    "wechat": "使用微信登录",
+    "apple": "使用 Apple ID 登录"
+  },
+  "notice": {
+    "title": "你好"
+  },
+  "profile": {
+    "title": "你好"
+  },
+  "[bookcase]": {
+    "title": "你好"
+  },
+  "[game]": {
+    "title": "你好"
+  },
+  "mainTabs": {
+    "calendar": {
+      "title": "日历"
+    },
+    "game": {
+      "title": "游戏"
+    },
+    "profile": {
+      "title": "我的"
+    },
+    "explore": {
+      "title": "探索"
+    }
+  }
+}

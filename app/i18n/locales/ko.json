@@ -1,0 +1,36 @@
+{
+  "index": {
+    "title": "안녕하세요"
+  },
+  "auth": {
+    "kakaotalk": "카카오톡으로 로그인",
+    "wechat": "WeChat으로 로그인",
+    "apple": "Apple ID로 로그인"
+  },
+  "notice": {
+    "title": "안녕하세요"
+  },
+  "profile": {
+    "title": "안녕하세요"
+  },
+  "[bookcase]": {
+    "title": "안녕하세요"
+  },
+  "[game]": {
+    "title": "안녕하세요"
+  },
+  "mainTabs": {
+    "calendar": {
+      "title": "달력"
+    },
+    "game": {
+      "title": "게임"
+    },
+    "profile": {
+      "title": "프로필"
+    },
+    "explore": {
+      "title": "탐색"
+    }
+  }
+}
