@@ -18,6 +18,7 @@ export default function HomeTitle() {
 
 const styles = StyleSheet.create({
   header: {
+    marginTop: 4,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
