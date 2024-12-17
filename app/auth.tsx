@@ -5,8 +5,16 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import SocialLoginButton from "@/components/auth/SocialLoginButton";
 import Logo from "@/components/auth/Logo";
+import { useTranslation } from "react-i18next";
 
 export default function AuthPage() {
+  // i18n
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (language: string) => {
+    i18n.changeLanguage(language);
+  };
+
   return (
     <View style={styles.container}>
       <Logo />
@@ -15,7 +23,7 @@ export default function AuthPage() {
           iconColor="#111111"
           iconName="chat"
           iconComponent={MaterialCommunityIcons}
-          buttonText="Login with Kakao"
+          buttonText={t("auth.kakaotalk")}
           buttonColor="#FEE500"
           textColor="#111111"
         />
@@ -23,7 +31,7 @@ export default function AuthPage() {
           iconColor="white"
           iconName="apple1"
           iconComponent={AntDesign}
-          buttonText="Login with Apple"
+          buttonText={t("auth.apple")}
           buttonColor="#111111"
           textColor="white"
         />
@@ -31,7 +39,7 @@ export default function AuthPage() {
           iconColor="white"
           iconName="wechat"
           iconComponent={AntDesign}
-          buttonText="Login with WeChat"
+          buttonText={t("auth.wechat")}
           buttonColor="#09B83E"
           textColor="white"
         />

@@ -1,0 +1,36 @@
+{
+  "index": {
+    "title": "Hello"
+  },
+  "auth": {
+    "kakaotalk": "Login with KakaoTalk",
+    "wechat": "Login with WeChat",
+    "apple": "Login with Apple ID"
+  },
+  "notice": {
+    "title": "Hello"
+  },
+  "profile": {
+    "title": "Hello"
+  },
+  "[bookcase]": {
+    "title": "Hello"
+  },
+  "[game]": {
+    "title": "Hello"
+  },
+  "mainTabs": {
+    "calendar": {
+      "title": "Calendar"
+    },
+    "game": {
+      "title": "Game"
+    },
+    "profile": {
+      "title": "Profile"
+    },
+    "explore": {
+      "title": "Explore"
+    }
+  }
+}
