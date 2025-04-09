@@ -23,6 +23,7 @@
     "@types/react-native-snap-carousel": "^3.8.11",
     "expo": "~52.0.11",
     "expo-apple-authentication": "~7.1.2",
+    "expo-av": "^15.0.2",
     "expo-blur": "~14.0.1",
     "expo-constants": "~17.0.3",
     "expo-font": "~13.0.1",
