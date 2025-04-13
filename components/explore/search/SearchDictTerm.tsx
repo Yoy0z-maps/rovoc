@@ -1,85 +1,103 @@
 import { DictionaryEntry } from "@/types/free_dictinoary_api";
 import { useEffect, useState } from "react";
-import { View, Text } from "react-native";
-import AudioPlayer from "./AudioPlayer";
+import { View, Text, StyleSheet } from "react-native";
+
+import SearchTargetSelector from "./SearchTargetSelector";
+import { SearchTarget } from "@/types/search_target";
+import debounce from "lodash.debounce";
+import DictionaryResultView from "./DictionaryResultView";
+import MyStorageResultView from "./MyStorageResultView";
 
 export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
   const [data, setData] = useState<DictionaryEntry | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTarget, setSearchTarget] = useState<SearchTarget>("my");
 
   useEffect(() => {
     let isMounted = true;
 
-    const fetchData = async () => {
+    const fetchMyData = async () => {
+      // 사용자가 직접 등록한 단어 api 호출
+      setData({
+        word: "test",
+        phonetic: "test",
+        phonetics: [],
+        origin: "test",
+        meanings: [],
+      });
+    };
+
+    const fetchDictData = async () => {
       if (searchWord.length < 1) {
         setData(null);
+        setError(null);
         return;
       }
 
-      setIsLoading(true);
+      setError(null);
       try {
         const res = await fetch(
           `https://api.dictionaryapi.dev/api/v2/entries/en/${searchWord}`
         );
         const jsonData = await res.json();
+        console.log(jsonData);
+
         if (isMounted) {
-          setData(jsonData[0]);
+          // API - 딘어를 찾을 수 없을 때
+          if (jsonData.title === "No Definitions Found") {
+            setError("단어를 찾을 수 없습니다.");
+            setData(null);
+          } else {
+            // API - 딘어를 찾을 수 있을 때
+            setData(jsonData[0]);
+            setError(null);
+          }
         }
       } catch (error) {
         console.error("Error fetching data:", error);
         if (isMounted) {
+          setError("데이터를 가져오는 중 오류가 발생했습니다.");
           setData(null);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
         }
       }
     };
 
-    // 디바운스 처리
-    const timeoutId = setTimeout(() => {
-      fetchData();
+    const debounced = debounce(() => {
+      if (searchTarget === "dict") {
+        fetchDictData();
+      } else {
+        fetchMyData();
+      }
     }, 300);
 
+    debounced();
+
     return () => {
-      isMounted = false;
-      clearTimeout(timeoutId);
+      debounced.cancel();
     };
-  }, [searchWord]);
+  }, [searchWord, searchTarget]);
 
-  if (isLoading) {
-    return (
-      <View>
+  return (
+    <View style={styles.container}>
+      <SearchTargetSelector
+        searchTarget={searchTarget}
+        setSearchTarget={setSearchTarget}
+      />
+      {!data ? (
         <Text>Loading...</Text>
-      </View>
-    );
-  }
-
-  if (data?.word) {
-    return (
-      <View>
-        <Text>SearchDictTerm</Text>
-        <Text>{data.word}</Text>
-        <AudioPlayer audioUrl={data?.phonetics[0]?.audio || ""} />
-        {data?.meanings.map((meaning, index) => (
-          <View key={`${meaning.partOfSpeech}-${index}`}>
-            <Text>{meaning.partOfSpeech}</Text>
-            {meaning.definitions.map((definition, defIndex) => (
-              <View key={`${definition.definition}-${defIndex}`}>
-                <Text>{definition.definition}</Text>
-                <Text>{definition.example}</Text>
-              </View>
-            ))}
-          </View>
-        ))}
-      </View>
-    );
-  }
-
-  return null;
+      ) : searchTarget === "dict" ? (
+        <DictionaryResultView data={data} />
+      ) : (
+        <MyStorageResultView />
+      )}
+    </View>
+  );
 }
 
-// 오디오 재생 안 되는거 될 수 있게 고치기 (expo-av deprecated expo-audio로 수정)
-// 키 오류 이쪽에서 뜨는데 에러 확인하기
-// 인풋쪽에서 한글자만 타이핑하면 바로 결과 보이면서 더 타이핑이 안되는 오류 수정
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "column",
+    paddingTop: 10,
+    paddingHorizontal: 40,
+  },
+});
