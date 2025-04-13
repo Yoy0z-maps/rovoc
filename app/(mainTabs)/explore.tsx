@@ -7,36 +7,18 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import VocaCard from "@/components/explore/VocaCard";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import ExploreHeader from "@/components/explore/ExploreHeader";
 import ExploreFilterModal from "@/components/explore/ExploreFilterModal";
 import ExploreAddBookcaseModal from "@/components/explore/ExploreAddBookcaseModal";
 import SearchMyTerm from "@/components/explore/search/SearchMyTerm";
 import SearchDictTerm from "@/components/explore/search/SearchDictTerm";
-import SearchHeader from "@/components/explore/search/SearchHeader";
 
 export default function ExploreScreen() {
   const [searchWord, setSearchWord] = useState("");
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showAddBookcaseModal, setShowAddBookcaseModal] = useState(false);
 
-  // 검색 중일 때 화면 렌더링
-  if (searchWord) {
-    return (
-      <View style={styles.container}>
-        <SearchHeader
-          searchWord={searchWord}
-          setSearchWord={setSearchWord}
-          setShowFilterModal={setShowFilterModal}
-          setShowAddBookcaseModal={setShowAddBookcaseModal}
-        />
-        <SearchMyTerm searchWord={searchWord} />
-        <SearchDictTerm searchWord={searchWord} />
-      </View>
-    );
-  }
-
-  // 검색 중이 아닐 때 화면 렌더링
   return (
     <View style={styles.container}>
       <ExploreHeader
@@ -44,9 +26,17 @@ export default function ExploreScreen() {
         setSearchWord={setSearchWord}
         setShowFilterModal={setShowFilterModal}
         setShowAddBookcaseModal={setShowAddBookcaseModal}
+        isInSearch={searchWord ? true : false}
       />
       <ScrollView>
-        <VocaCard />
+        {searchWord ? (
+          <Fragment>
+            <SearchMyTerm searchWord={searchWord} />
+            <SearchDictTerm searchWord={searchWord} />
+          </Fragment>
+        ) : (
+          <VocaCard />
+        )}
       </ScrollView>
       <Modal
         visible={showFilterModal}
