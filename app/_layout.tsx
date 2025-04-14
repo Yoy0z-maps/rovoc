@@ -11,8 +11,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import ProfileHeader from "@/components/profile/ProfileHeader";
-
+import Toast from "react-native-toast-message";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -51,6 +50,7 @@ export default function RootLayout() {
         <Stack.Screen name="[bookcase]" />
         <Stack.Screen name="+not-found" />
       </Stack>
+      <Toast />
       <StatusBar style="auto" />
     </ThemeProvider>
   );

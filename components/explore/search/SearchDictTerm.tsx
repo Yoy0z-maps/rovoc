@@ -1,6 +1,6 @@
 import { DictionaryEntry } from "@/types/free_dictinoary_api";
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
 
 import SearchTargetSelector from "./SearchTargetSelector";
 import { SearchTarget } from "@/types/search_target";
@@ -43,12 +43,12 @@ export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
         console.log(jsonData);
 
         if (isMounted) {
-          // API - 딘어를 찾을 수 없을 때
+          // API 응답이 에러 객체인 경우
           if (jsonData.title === "No Definitions Found") {
             setError("단어를 찾을 수 없습니다.");
             setData(null);
           } else {
-            // API - 딘어를 찾을 수 있을 때
+            // 정상적인 응답인 경우
             setData(jsonData[0]);
             setError(null);
           }

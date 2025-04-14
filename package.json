@@ -50,6 +50,7 @@
     "react-native-screens": "~4.1.0",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-svg": "^15.10.1",
+    "react-native-toast-message": "^2.2.1",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.2",
     "swr": "^2.3.3",
