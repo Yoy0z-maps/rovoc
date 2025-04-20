@@ -1,6 +1,6 @@
 import { DictionaryEntry } from "@/types/free_dictinoary_api";
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 import SearchTargetSelector from "./SearchTargetSelector";
 import { SearchTarget } from "@/types/search_target";

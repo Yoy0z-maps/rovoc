@@ -1,5 +1,5 @@
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from "expo-av";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "react-native";
 
 export default function AudioPlayer({ audioUrl }: { audioUrl: string }) {
@@ -7,34 +7,31 @@ export default function AudioPlayer({ audioUrl }: { audioUrl: string }) {
     Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
       staysActiveInBackground: false,
-      playsInSilentModeIOS: true, // 🔥 핵심 설정
+      playsInSilentModeIOS: true,
       shouldDuckAndroid: true,
       interruptionModeIOS: InterruptionModeIOS.DoNotMix,
       interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
     });
   }, []);
 
-  console.log("audioUrl");
-  console.log(audioUrl);
-  const playSound = async () => {
-    try {
-      const { sound } = await Audio.Sound.createAsync({
-        uri: audioUrl,
-      });
-      await sound.playAsync();
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
 
-      // 재생이 끝나면 언로드
-      sound.setOnPlaybackStatusUpdate((status) => {
-        if (status.isLoaded) {
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync({
+      uri: audioUrl,
+    });
+    setSound(sound);
+    await sound.playAsync();
+  }
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          console.log("Unloading Sound");
           sound.unloadAsync();
         }
-      });
-      console.log("played");
-    } catch (error) {
-      console.error("Error playing sound:", error);
-      // 에러 토스트 추가하기
-    }
-  };
+      : undefined;
+  }, [sound]);
 
   return <Button title="Play" onPress={playSound} />;
 }
