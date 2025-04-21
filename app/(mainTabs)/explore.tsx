@@ -11,7 +11,7 @@ import { Fragment, useState } from "react";
 import ExploreHeader from "@/components/explore/ExploreHeader";
 import ExploreFilterModal from "@/components/explore/ExploreFilterModal";
 import ExploreAddBookcaseModal from "@/components/explore/ExploreAddBookcaseModal";
-import SearchMyTerm from "@/components/explore/search/SearchMyTerm";
+import SearchHistory from "@/components/explore/search/SearchHistory";
 import SearchDictTerm from "@/components/explore/search/SearchDictTerm";
 
 export default function ExploreScreen() {
@@ -31,7 +31,7 @@ export default function ExploreScreen() {
       <ScrollView>
         {searchWord ? (
           <Fragment>
-            <SearchMyTerm searchWord={searchWord} />
+            <SearchHistory searchWord={searchWord} />
             <SearchDictTerm searchWord={searchWord} />
           </Fragment>
         ) : (

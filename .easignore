@@ -5,3 +5,6 @@ dist/
 *.log
 *.tmp
 *.lock
+.git
+.gitignore
+.expo

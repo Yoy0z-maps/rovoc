@@ -9,11 +9,12 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
-
+import { initializeKakaoSDK } from "@react-native-kakao/core";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import Toast from "react-native-toast-message";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+initializeKakaoSDK("0eb5e8ec68637741e8154aa38486d9f9");
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();

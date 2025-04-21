@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+    paddingHorizontal: 12,
   },
   calendarHeader: {
     width: "100%",

@@ -1,6 +1,7 @@
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from "expo-av";
 import { useEffect, useState } from "react";
-import { Button } from "react-native";
+import { TouchableOpacity } from "react-native";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function AudioPlayer({ audioUrl }: { audioUrl: string }) {
   useEffect(() => {
@@ -33,5 +34,9 @@ export default function AudioPlayer({ audioUrl }: { audioUrl: string }) {
       : undefined;
   }, [sound]);
 
-  return <Button title="Play" onPress={playSound} />;
+  return (
+    <TouchableOpacity onPress={playSound}>
+      <AntDesign name="play" size={16} color="#2988F6" />
+    </TouchableOpacity>
+  );
 }

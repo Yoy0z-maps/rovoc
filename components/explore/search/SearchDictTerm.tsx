@@ -99,5 +99,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     paddingTop: 10,
     paddingHorizontal: 40,
+    paddingBottom: 80,
   },
 });

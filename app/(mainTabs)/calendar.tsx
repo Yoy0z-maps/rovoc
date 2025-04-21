@@ -1,10 +1,12 @@
 import Calendar from "@/components/calendar/Calendar";
+import CalendarVocabulary from "@/components/calendar/container/CalendarVocabulary";
 import { Text, View, StyleSheet, SafeAreaView } from "react-native";
 
 export default function CalendarScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <Calendar />
+      <CalendarVocabulary />
     </SafeAreaView>
   );
 }

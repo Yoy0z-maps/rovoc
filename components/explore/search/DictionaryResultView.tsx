@@ -13,11 +13,15 @@ export default function DictionaryResultView({
 
   return (
     <Fragment>
-      <Text>{data.word}</Text>
-      <AudioPlayer audioUrl={data?.phonetics[0]?.audio || ""} />
+      <View style={styles.wordContainer}>
+        <Text style={styles.word}>{data.word}</Text>
+        <Text style={styles.phonetic}>{data.phonetic}</Text>
+        <AudioPlayer audioUrl={data?.phonetics[0]?.audio || ""} />
+      </View>
       {data?.meanings.map((meaning, index) => (
         <View key={`${meaning.partOfSpeech}-${index}`}>
           <Text>{meaning.partOfSpeech}</Text>
+          <Text>{""}</Text>
           {meaning.definitions.map((definition, defIndex) => (
             <View key={`${definition.definition}-${defIndex}`}>
               <Text>{definition.definition}</Text>
@@ -34,5 +38,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  wordContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    gap: 7,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  word: {
+    marginRight: 10,
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  phonetic: {
+    fontSize: 14,
+    color: "#777",
   },
 });

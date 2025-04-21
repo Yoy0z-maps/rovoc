@@ -8,7 +8,7 @@ const SEARCH_HISTORY = [
   { id: "3", word: "cherry", meaning: "체리" },
 ];
 
-export default function SearchMyTerm({ searchWord }: { searchWord: string }) {
+export default function SearchHistory({ searchWord }: { searchWord: string }) {
   const [isHide, setIsHide] = useState(false);
 
   // localStorage에서 검색 기록 가져오기

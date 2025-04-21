@@ -5,12 +5,13 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "rovoca",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yoy0zmaps.rovoc"
+      "bundleIdentifier": "com.yoy0zmaps.rovoc",
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
@@ -36,7 +37,26 @@
         }
       ],
       "expo-localization",
-      "expo-audio"
+      "expo-audio",
+      "expo-apple-authentication",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraMavenRepos": [
+              "https://devrepo.kakao.com/nexus/content/groups/public"
+            ]
+          }
+        }
+      ],
+      [
+        "@react-native-kakao/core",
+        {
+          "nativeAppKey": "0eb5e8ec68637741e8154aa38486d9f9",
+          "andoird": { "authCodeHandlerActivity": true },
+          "ios": { "handleKakaoOpenUrl": true }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
