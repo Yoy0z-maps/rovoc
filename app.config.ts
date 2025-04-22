@@ -6,7 +6,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: "rovoc",
   version: "1.0.0",
   orientation: "portrait",
-  icon: "./assets/images/rovoca-icon.png",
+  icon: "./assets/images/rovoca-icon.jpg",
   scheme: "rovoca",
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
@@ -17,7 +17,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: "./assets/images/rovoca-adaptive-icon.png",
+      foregroundImage: "./assets/images/rovoca-icon.jpg",
       backgroundColor: "#ffffff",
     },
     package: "com.yoy0zmaps.rovoc",
@@ -25,7 +25,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   web: {
     bundler: "metro",
     output: "static",
-    favicon: "./assets/images/rovoca-favicon.png",
+    favicon: "./assets/images/rovoca-icon.jpg",
   },
   plugins: [
     "expo-router",
@@ -54,7 +54,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       "@react-native-kakao/core",
       {
-        nativeAppKey: process.env.NATIVE_APP_KEY,
+        nativeAppKey: process.env.KAKAO_NATIVE_APP_KEY,
         android: { authCodeHandlerActivity: true },
         ios: { handleKakaoOpenUrl: true },
       },

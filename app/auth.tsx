@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
 
 // Expo Vector Icons
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -9,6 +9,8 @@ import { useTranslation } from "react-i18next";
 
 import * as AppleAuthentication from "expo-apple-authentication";
 import { login } from "@react-native-kakao/user";
+
+const { width } = Dimensions.get("window");
 
 export default function AuthPage() {
   // i18n
@@ -44,7 +46,7 @@ export default function AuthPage() {
           buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
           buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
           cornerRadius={5}
-          style={{ width: 200, height: 44 }}
+          style={{ width: width - 100, height: 50 }}
           onPress={async () => {
             try {
               const credential = await AppleAuthentication.signInAsync({

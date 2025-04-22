@@ -14,6 +14,10 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import Toast from "react-native-toast-message";
 
 import { getKeyHashAndroid } from "@react-native-kakao/core";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import * as SecureStore from "expo-secure-store";
+import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 
 getKeyHashAndroid().then(console.log);
 
@@ -44,6 +48,28 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
+
+  useEffect(() => {
+    const restoreToken = async () => {
+      const refresh = await SecureStore.getItemAsync("refresh_token");
+      if (refresh) {
+        try {
+          const res = await axios.post(
+            `${API_SERVER_ADDRESS}/api/token/refresh/`,
+            {
+              refresh,
+            }
+          );
+          await AsyncStorage.setItem("access_token", res.data.access);
+          await SecureStore.setItemAsync("refresh_token", res.data.refresh);
+        } catch (e) {
+          console.error("Refresh failed on app start");
+        }
+      }
+    };
+
+    restoreToken();
+  }, []);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>

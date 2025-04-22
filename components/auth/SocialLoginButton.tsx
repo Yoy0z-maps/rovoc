@@ -42,7 +42,7 @@ export default function SocialLoginButton({
 
 const styles = StyleSheet.create({
   button: {
-    width: width - 90,
+    width: width - 100,
     height: 50,
     flexDirection: "row",
     alignItems: "center",
