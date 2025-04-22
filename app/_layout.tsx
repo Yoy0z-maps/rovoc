@@ -12,9 +12,14 @@ import "react-native-reanimated";
 import { initializeKakaoSDK } from "@react-native-kakao/core";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import Toast from "react-native-toast-message";
+
+import { getKeyHashAndroid } from "@react-native-kakao/core";
+
+getKeyHashAndroid().then(console.log);
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-initializeKakaoSDK("0eb5e8ec68637741e8154aa38486d9f9");
+initializeKakaoSDK(process.env.NATIVE_APP_KEY || "");
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
