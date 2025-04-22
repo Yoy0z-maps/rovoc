@@ -6,7 +6,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: "rovoc",
   version: "1.0.0",
   orientation: "portrait",
-  icon: "./assets/images/icon.png",
+  icon: "./assets/images/rovoca-icon.png",
   scheme: "rovoca",
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
@@ -17,7 +17,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: "./assets/images/adaptive-icon.png",
+      foregroundImage: "./assets/images/rovoca-adaptive-icon.png",
       backgroundColor: "#ffffff",
     },
     package: "com.yoy0zmaps.rovoc",
@@ -25,7 +25,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   web: {
     bundler: "metro",
     output: "static",
-    favicon: "./assets/images/favicon.png",
+    favicon: "./assets/images/rovoca-favicon.png",
   },
   plugins: [
     "expo-router",
