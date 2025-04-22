@@ -8,3 +8,5 @@ dist/
 .git
 .gitignore
 .expo
+/android
+/ios
