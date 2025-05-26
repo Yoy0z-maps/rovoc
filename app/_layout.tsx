@@ -1,3 +1,5 @@
+"use client";
+
 import {
   DarkTheme,
   DefaultTheme,
@@ -18,12 +20,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
+import Constants from "expo-constants";
 
+const key = "0eb5e8ec68637741e8154aa38486d9f9";
+console.log("init");
+console.log(key);
+initializeKakaoSDK(key || "");
 getKeyHashAndroid().then(console.log);
-
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-initializeKakaoSDK(process.env.NATIVE_APP_KEY || "");
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -48,28 +53,6 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
-  useEffect(() => {
-    const restoreToken = async () => {
-      const refresh = await SecureStore.getItemAsync("refresh_token");
-      if (refresh) {
-        try {
-          const res = await axios.post(
-            `${API_SERVER_ADDRESS}/api/token/refresh/`,
-            {
-              refresh,
-            }
-          );
-          await AsyncStorage.setItem("access_token", res.data.access);
-          await SecureStore.setItemAsync("refresh_token", res.data.refresh);
-        } catch (e) {
-          console.error("Refresh failed on app start");
-        }
-      }
-    };
-
-    restoreToken();
-  }, []);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
