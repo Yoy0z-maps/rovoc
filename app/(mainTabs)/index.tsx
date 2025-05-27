@@ -11,11 +11,20 @@ import HomeTitle from "@/components/index/HomeTitle";
 import AddVocaContainer from "@/components/index/container/AddVocaContainer";
 import ReviewVocaContainer from "@/components/index/container/ReviewVocaContainer";
 import BookcaseContainer from "@/components/index/container/BookcaseContainer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BookcaseModal from "@/components/index/BookcaseModal";
+import * as SecureStore from "expo-secure-store";
 
 export default function HomeScreen() {
   const [showBookcaseModal, setShowBookcaseModal] = useState(false);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user_data = await SecureStore.getItemAsync("user");
+      console.log(user_data);
+    };
+    fetchUser();
+  }, []);
 
   return (
     <SafeAreaView style={styles.safeArea}>

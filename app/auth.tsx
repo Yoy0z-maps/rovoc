@@ -11,6 +11,7 @@ import * as SecureStore from "expo-secure-store";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { login } from "@react-native-kakao/user";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
+import { router } from "expo-router";
 
 const { width } = Dimensions.get("window");
 
@@ -39,6 +40,7 @@ export default function AuthPage() {
       console.log(rovoca_res);
       const user_json = await rovoca_res.json();
       await SecureStore.setItemAsync("user", JSON.stringify(user_json));
+      router.push("/(mainTab)");
     } catch (error) {
       console.log(error);
     }
@@ -53,19 +55,24 @@ export default function AuthPage() {
         ],
       });
       console.log(credential);
-      const rovoca_res = await fetch(API_SERVER_ADDRESS, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          provider: "apple",
-          result: credential,
-        }),
-      });
+      const rovoca_res = await fetch(
+        `${API_SERVER_ADDRESS}/users/auth/social-login/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            provider: "apple",
+            result: credential,
+          }),
+        }
+      );
       console.log(rovoca_res);
       const user_json = await rovoca_res.json();
+      console.log(user_json);
       await SecureStore.setItemAsync("user", JSON.stringify(user_json));
+      router.push("/(mainTab)");
       // signed in
     } catch (error) {
       if (
@@ -102,6 +109,7 @@ export default function AuthPage() {
         <SocialLoginButton
           onPress={() => {
             console.log("naver");
+            router.push("/(mainTabs)");
           }}
           iconColor="white"
           iconName="wechat"
