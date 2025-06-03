@@ -54,7 +54,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       "@react-native-kakao/core",
       {
-        nativeAppKey: process.env.KAKAO_NATIVE_APP_KEY,
+        nativeAppKey: "0eb5e8ec68637741e8154aa38486d9f9",
         android: { authCodeHandlerActivity: true },
         ios: { handleKakaoOpenUrl: true },
       },
@@ -64,11 +64,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     typedRoutes: true,
   },
   extra: {
+    NATIVE_APP_KEY: "0eb5e8ec68637741e8154aa38486d9f9",
     router: {
       origin: false,
     },
     eas: {
-      projectId: process.env.EAS_PROJECT_ID,
+      projectId: "4b07a72d-5765-45ff-98ce-d213420a6df9",
     },
   },
   owner: "yoy0z-maps",

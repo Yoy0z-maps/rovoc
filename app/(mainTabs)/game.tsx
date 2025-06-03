@@ -33,9 +33,12 @@ export default function GameScreen() {
             source={require("@/assets/images/hangman.png")}
             style={styles.gameImage}
           />
-          <View style={styles.gameButton}>
+          <Pressable
+            onPress={() => router.push("/hangman")}
+            style={styles.gameButton}
+          >
             <Text style={styles.gameButtonText}>PLAY</Text>
-          </View>
+          </Pressable>
         </View>
         <View style={styles.gameContainer}>
           <Text style={styles.gameTitle}>QUIZ</Text>
