@@ -1,7 +1,17 @@
 import CircularProgressWithIcon from "@/components/Test";
-import { View, Text, StyleSheet, SafeAreaView, Image } from "react-native";
+import { useRouter } from "expo-router";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  Image,
+  Pressable,
+} from "react-native";
 
 export default function GameScreen() {
+  const router = useRouter();
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -26,6 +36,19 @@ export default function GameScreen() {
           <View style={styles.gameButton}>
             <Text style={styles.gameButtonText}>PLAY</Text>
           </View>
+        </View>
+        <View style={styles.gameContainer}>
+          <Text style={styles.gameTitle}>QUIZ</Text>
+          <Image
+            source={require("@/assets/images/hangman.png")}
+            style={styles.gameImage}
+          />
+          <Pressable
+            onPress={() => router.push("/quiz")}
+            style={styles.gameButton}
+          >
+            <Text style={styles.gameButtonText}>PLAY</Text>
+          </Pressable>
         </View>
         {/* <View style={styles.progressContainer}>
           <AnimatedCircularProgress
