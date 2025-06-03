@@ -10,7 +10,6 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { HapticTab } from "@/components/HapticTab";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import ExploreHeader from "@/components/explore/ExploreHeader";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -27,8 +26,7 @@ export default function TabLayout() {
             borderTopWidth: 2,
             borderTopColor: "#111111",
             backgroundColor: "#fff",
-            paddingTop: 20,
-            marginBottom: 20,
+            paddingTop: 10,
           },
         }),
       }}
@@ -116,6 +114,7 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabLabel: {
+    marginTop: 5,
     fontSize: 10,
     fontFamily: "Pretendard-Regular",
   },

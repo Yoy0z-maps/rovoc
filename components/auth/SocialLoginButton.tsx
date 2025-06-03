@@ -10,6 +10,7 @@ export default function SocialLoginButton({
   textColor,
   buttonColor,
   iconColor,
+  onPress,
 }: {
   iconName: string;
   iconComponent: any;
@@ -17,6 +18,7 @@ export default function SocialLoginButton({
   textColor: string;
   buttonColor: string;
   iconColor: string;
+  onPress: () => void;
 }) {
   const router = useRouter();
 
@@ -25,7 +27,8 @@ export default function SocialLoginButton({
       onPress={() => {
         // 일단 로그인 된다고 가정하고 메인페이지로 이동
         // 로그인 성공시 토큰 저장해야함
-        router.push("/(mainTabs)");
+        //router.push("/(mainTabs)");
+        onPress();
       }}
       style={[styles.button, { backgroundColor: buttonColor }]}
     >
@@ -39,7 +42,7 @@ export default function SocialLoginButton({
 
 const styles = StyleSheet.create({
   button: {
-    width: width - 90,
+    width: width - 100,
     height: 50,
     flexDirection: "row",
     alignItems: "center",

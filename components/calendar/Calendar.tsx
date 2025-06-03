@@ -1,12 +1,16 @@
-import { days } from "@/constants/Day";
-import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Text, Pressable } from "react-native";
+import { View, StyleSheet } from "react-native";
+import CallendarController from "./CalendarController";
+import CalendarViewer from "./CalendarViewer";
+import CalendarVocabulary from "./CalendarVocabulary";
+import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
+import { Voca } from "@/types/vocab";
 
 export default function Calendar() {
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [selectedDate, setSelectedDate] = useState(today.getDate());
 
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
   // new Date(this_year, this_month + 1, 0)는 객체 범위를 벗어난 값을 이용하여 month의 마지막 날을 얻는 일반적인 방법
@@ -27,79 +31,37 @@ export default function Calendar() {
     calendarDays.push(i);
   }
 
-  // 날짜 선택 기능
-  const [selectedDate, setSelectedDate] = useState(today.getDate());
+  // 해당 날짜에 맞게 데이터 패칭
+  const [vocaData, setVocaData] = useState<Voca[] | []>([]);
 
-  const handlePreviousMonth = () => {
-    if (currentMonth === 0) {
-      setCurrentYear(currentYear - 1);
-      setCurrentMonth(11);
-      setSelectedDate(1);
-    } else {
-      setCurrentMonth(currentMonth - 1);
-      setSelectedDate(1);
-    }
-  };
-
-  const handleNextMonth = () => {
-    if (currentMonth === 11) {
-      setCurrentYear(currentYear + 1);
-      setCurrentMonth(0);
-      setSelectedDate(1);
-    } else {
-      setCurrentMonth(currentMonth + 1);
-      setSelectedDate(1);
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      // try {
+      //   const result = await fetch(API_SERVER_ADDRESS);
+      //   const data = await result.json();
+      //   setVocaData(data);
+      // } catch (error) {
+      //   setVocaData([]);
+      // }
+    };
+    fetchData();
+  }, [selectedDate, currentMonth]);
 
   return (
     <View style={styles.container}>
-      <View style={styles.calendarHeader}>
-        <Pressable onPress={handlePreviousMonth}>
-          <MaterialIcons name="arrow-back-ios-new" size={24} color="black" />
-        </Pressable>
-        <Text style={styles.calendarHeaderText}>
-          {currentYear} · {currentMonth + 1}
-        </Text>
-        <Pressable onPress={handleNextMonth}>
-          <MaterialIcons name="arrow-forward-ios" size={24} color="black" />
-        </Pressable>
-      </View>
-      <View style={styles.calendar}>
-        {days.map((day, index) => (
-          <Text
-            key={index}
-            style={[styles.day, { color: day === "SUN" ? "red" : "black" }]}
-          >
-            {day}
-          </Text>
-        ))}
-        {calendarDays.map((date, index) => (
-          <Pressable
-            key={index}
-            style={styles.dateButton}
-            onPress={() => date && setSelectedDate(date)}
-          >
-            <View
-              style={[
-                styles.dateContainer,
-                {
-                  backgroundColor: date === selectedDate ? "#2988F6" : "white",
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  styles.date,
-                  { color: date === selectedDate ? "white" : "black" },
-                ]}
-              >
-                {date}
-              </Text>
-            </View>
-          </Pressable>
-        ))}
-      </View>
+      <CallendarController
+        setCurrentMonth={setCurrentMonth}
+        setCurrentYear={setCurrentYear}
+        setSelectedDate={setSelectedDate}
+        currentMonth={currentMonth}
+        currentYear={currentYear}
+      />
+      <CalendarViewer
+        calendarDays={calendarDays}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+      />
+      <CalendarVocabulary vocaData={vocaData} />
     </View>
   );
 }
@@ -108,46 +70,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-  },
-  calendarHeader: {
-    width: "100%",
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    gap: 15,
-  },
-  calendarHeaderText: {
-    fontFamily: "Pretendard-Medium",
-    fontSize: 24,
-  },
-  calendar: { flexDirection: "row", flexWrap: "wrap", width: "100%" },
-  day: {
-    width: "14.28%",
-    textAlign: "center",
-    aspectRatio: 1,
-    alignItems: "center",
-    fontFamily: "Pretendard-Regular",
-    fontSize: 16,
-    marginVertical: 10,
-  },
-  dateButton: {
-    width: "14.28%",
-    height: "14.28%",
-    aspectRatio: 1,
-    padding: 7,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  dateContainer: {
-    width: "100%",
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 8,
-  },
-  date: {
-    fontSize: 16,
-    fontFamily: "Pretendard-Medium",
+    paddingHorizontal: 12,
   },
 });

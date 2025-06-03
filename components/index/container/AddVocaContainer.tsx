@@ -3,6 +3,7 @@ import VocaInputField from "../VocaInputField";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Toast from "react-native-toast-message";
 
 export default function AddVocaContainer({
   showBookcaseModal,
@@ -19,13 +20,19 @@ export default function AddVocaContainer({
   });
 
   const handleSubmit = () => {
+    // Toast => iPhone14Pro 이후 다이나믹 아일랜드로 인하여 가져지는 오류 있음
+    Toast.show({
+      type: "success",
+      text1: "Success",
+      text2: "Vocabulary added successfully",
+    });
     console.log(vocalModal);
   };
 
   return (
     <View style={styles.inputContainer}>
       <View style={styles.inputTitleContainer}>
-        <Text style={styles.inputTitle}>Herer to add new vocabulary</Text>
+        <Text style={styles.inputTitle}>Here to add new vocabulary</Text>
         <View style={styles.inputTitleUnderline} />
       </View>
       <View style={styles.targetBookcaseContainer}>

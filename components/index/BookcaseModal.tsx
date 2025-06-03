@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   container: {
-    marginTop: 170,
+    marginTop: 175,
     width: 170,
     backgroundColor: "#fff",
     alignItems: "center",

@@ -5,3 +5,8 @@ dist/
 *.log
 *.tmp
 *.lock
+.git
+.gitignore
+.expo
+/android
+/ios

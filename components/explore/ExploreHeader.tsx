@@ -7,11 +7,13 @@ export default function ExploreHeader({
   setShowAddBookcaseModal,
   searchWord,
   setSearchWord,
+  isInSearch,
 }: {
   setShowFilterModal: (show: boolean) => void;
   setShowAddBookcaseModal: (show: boolean) => void;
   searchWord: string;
   setSearchWord: (word: string) => void;
+  isInSearch: boolean;
 }) {
   return (
     <SafeAreaView style={styles.container}>
@@ -31,20 +33,22 @@ export default function ExploreHeader({
             onChangeText={(text) => setSearchWord(text)}
           />
         </View>
-        <View style={styles.iconContainer}>
-          <Ionicons
-            name="options"
-            size={25}
-            color="black"
-            onPress={() => setShowFilterModal(true)}
-          />
-          <FontAwesome6
-            name="add"
-            size={25}
-            color="black"
-            onPress={() => setShowAddBookcaseModal(true)}
-          />
-        </View>
+        {!isInSearch && (
+          <View style={styles.iconContainer}>
+            <Ionicons
+              name="options"
+              size={25}
+              color="black"
+              onPress={() => setShowFilterModal(true)}
+            />
+            <FontAwesome6
+              name="add"
+              size={25}
+              color="black"
+              onPress={() => setShowAddBookcaseModal(true)}
+            />
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

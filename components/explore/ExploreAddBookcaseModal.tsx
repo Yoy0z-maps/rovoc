@@ -1,5 +1,6 @@
 import { View, StyleSheet, Text, Pressable } from "react-native";
 import VocaInputField from "../index/VocaInputField";
+import Toast from "react-native-toast-message";
 
 export default function ExploreAddBookcaseModal({
   setShowAddBookcaseModal,
@@ -29,6 +30,11 @@ export default function ExploreAddBookcaseModal({
         </Pressable>
         <Pressable
           onPress={() => {
+            Toast.show({
+              type: "success",
+              text1: "Success",
+              text2: "Bookcase added successfully",
+            });
             setShowAddBookcaseModal(false);
           }}
         >
