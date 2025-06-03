@@ -7,9 +7,12 @@ import { SearchTarget } from "@/types/search_target";
 import debounce from "lodash.debounce";
 import DictionaryResultView from "./DictionaryResultView";
 import MyStorageResultView from "./MyStorageResultView";
+import { Voca } from "@/types/vocab";
+import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 
 export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
-  const [data, setData] = useState<DictionaryEntry | null>(null);
+  const [myData, setMyData] = useState<Voca[] | null>(null);
+  const [dictData, setDictData] = useState<DictionaryEntry | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [searchTarget, setSearchTarget] = useState<SearchTarget>("my");
 
@@ -18,18 +21,21 @@ export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
 
     const fetchMyData = async () => {
       // 사용자가 직접 등록한 단어 api 호출
-      setData({
-        word: "test",
-        phonetic: "test",
-        phonetics: [],
-        origin: "test",
-        meanings: [],
-      });
+      try {
+        // const res = await fetch(`${API_SERVER_ADDRESS}/words/search/?text=${searchWord}`)
+        // setMyData(res);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        if (isMounted) {
+          setError("데이터를 가져오는 중 오류가 발생했습니다.");
+        }
+        setMyData(null);
+      }
     };
 
     const fetchDictData = async () => {
       if (searchWord.length < 1) {
-        setData(null);
+        setDictData(null);
         setError(null);
         return;
       }
@@ -46,10 +52,10 @@ export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
           // API 응답이 에러 객체인 경우
           if (jsonData.title === "No Definitions Found") {
             setError("단어를 찾을 수 없습니다.");
-            setData(null);
+            setDictData(null);
           } else {
             // 정상적인 응답인 경우
-            setData(jsonData[0]);
+            setDictData(jsonData[0]);
             setError(null);
           }
         }
@@ -57,7 +63,7 @@ export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
         console.error("Error fetching data:", error);
         if (isMounted) {
           setError("데이터를 가져오는 중 오류가 발생했습니다.");
-          setData(null);
+          setDictData(null);
         }
       }
     };
@@ -83,12 +89,10 @@ export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
         searchTarget={searchTarget}
         setSearchTarget={setSearchTarget}
       />
-      {!data ? (
-        <Text>Loading...</Text>
-      ) : searchTarget === "dict" ? (
-        <DictionaryResultView data={data} />
+      {searchTarget === "dict" ? (
+        <DictionaryResultView data={dictData} />
       ) : (
-        <MyStorageResultView />
+        <MyStorageResultView data={myData} />
       )}
     </View>
   );

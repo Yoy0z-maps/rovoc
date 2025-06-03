@@ -1,15 +1,24 @@
 import { DictionaryEntry } from "@/types/free_dictinoary_api";
 import AudioPlayer from "./AudioPlayer";
 import { Fragment } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 
 export default function DictionaryResultView({
   data,
 }: {
-  data: DictionaryEntry;
+  data: DictionaryEntry | null;
 }) {
   // 내부에서 없는 단어일 경우까지 관리하기
   // Search Page 바텀네비게이션바 밑에 여백(?)있어서 컨텐츠가 보임 (다른 페이지에서도 그런건지 모르겠는데 에러 수정해야함)
+
+  if (data === null || !data.word) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size={"large"} color={"#2988F6"} />
+        <Text style={{ color: "#555" }}>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <Fragment>
@@ -35,6 +44,13 @@ export default function DictionaryResultView({
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flexDirection: "column",
+    width: "100%",
+    alignItems: "center",
+    marginTop: 40,
+    gap: 20,
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",

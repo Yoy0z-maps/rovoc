@@ -40,7 +40,7 @@ export default function AuthPage() {
       console.log(rovoca_res);
       const user_json = await rovoca_res.json();
       await SecureStore.setItemAsync("user", JSON.stringify(user_json));
-      router.push("/(mainTab)");
+      router.push("/(mainTabs)");
     } catch (error) {
       console.log(error);
     }
@@ -72,7 +72,7 @@ export default function AuthPage() {
       const user_json = await rovoca_res.json();
       console.log(user_json);
       await SecureStore.setItemAsync("user", JSON.stringify(user_json));
-      router.push("/(mainTab)");
+      router.push("/(mainTabs)");
       // signed in
     } catch (error) {
       if (
