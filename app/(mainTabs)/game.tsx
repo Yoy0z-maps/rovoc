@@ -1,5 +1,6 @@
-import CircularProgressWithIcon from "@/components/Test";
-import { useRouter } from "expo-router";
+import GameItems from "@/components/game/GameItems";
+import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
+import { useEffect } from "react";
 import {
   View,
   Text,
@@ -8,9 +9,27 @@ import {
   Image,
   Pressable,
 } from "react-native";
+import * as SecureStore from "expo-secure-store";
+import GameList from "@/components/game/GameList";
+import More from "@/components/game/More";
 
 export default function GameScreen() {
-  const router = useRouter();
+  useEffect(() => {
+    const fetchData = async () => {
+      const user_data = await SecureStore.getItemAsync("user");
+      const token = JSON.parse(user_data || "{}").access;
+      console.log(token);
+      const response = await fetch(`${API_SERVER_ADDRESS}/users/game/status/`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+    };
+    fetchData();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -27,33 +46,18 @@ export default function GameScreen() {
         </View>
       </View>
       <View style={{ marginTop: 20 }}>
-        <View style={styles.gameContainer}>
-          <Text style={styles.gameTitle}>HANGMAN</Text>
-          <Image
-            source={require("@/assets/images/hangman.png")}
-            style={styles.gameImage}
-          />
-          <Pressable
-            onPress={() => router.push("/hangman")}
-            style={styles.gameButton}
-          >
-            <Text style={styles.gameButtonText}>PLAY</Text>
-          </Pressable>
-        </View>
-        <View style={styles.gameContainer}>
-          <Text style={styles.gameTitle}>QUIZ</Text>
-          <Image
-            source={require("@/assets/images/hangman.png")}
-            style={styles.gameImage}
-          />
-          <Pressable
-            onPress={() => router.push("/quiz")}
-            style={styles.gameButton}
-          >
-            <Text style={styles.gameButtonText}>PLAY</Text>
-          </Pressable>
-        </View>
-        {/* <View style={styles.progressContainer}>
+        <Image
+          source={require("@/assets/images/battery_empty.png")}
+          style={{ width: 25, height: 25 }}
+        />
+        <Image
+          source={require("@/assets/images/battery_full.png")}
+          style={{ width: 25, height: 25 }}
+        />
+      </View>
+      <GameList />
+      <More />
+      {/* <View style={styles.progressContainer}>
           <AnimatedCircularProgress
             lineCap="round"
             size={150} // 원 크기
@@ -76,10 +80,9 @@ export default function GameScreen() {
             )}
           </AnimatedCircularProgress>
         </View> */}
-      </View>
-      <View style={{ marginTop: 20, justifyContent: "center" }}>
+      {/* <View style={{ marginTop: 20, justifyContent: "center" }}>
         <CircularProgressWithIcon fill={10} />
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 }

@@ -1,3 +1,4 @@
+import { HangmanDrawing } from "@/components/game/HangmanDrawing";
 import { TEST_VOCABULARY } from "@/constants/TestVoca";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -115,7 +116,7 @@ export default function HangmanScreen() {
           </Text>
         ))}
       </View>
-
+      <HangmanDrawing wrongCount={wrongLetters.length} />
       <Text>틀린 글자: {wrongLetters.join(", ")}</Text>
       <Text>남은 기회: {6 - wrongLetters.length}</Text>
 

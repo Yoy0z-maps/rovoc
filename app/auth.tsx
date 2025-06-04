@@ -1,4 +1,4 @@
-import { View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions, Pressable } from "react-native";
 
 // Expo Vector Icons
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -12,6 +12,7 @@ import * as AppleAuthentication from "expo-apple-authentication";
 import { login } from "@react-native-kakao/user";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { router } from "expo-router";
+import { useState } from "react";
 
 const { width } = Dimensions.get("window");
 
@@ -68,9 +69,9 @@ export default function AuthPage() {
           }),
         }
       );
-      console.log(rovoca_res);
+
       const user_json = await rovoca_res.json();
-      console.log(user_json);
+
       await SecureStore.setItemAsync("user", JSON.stringify(user_json));
       router.push("/(mainTabs)");
       // signed in
@@ -86,9 +87,19 @@ export default function AuthPage() {
     }
   };
 
+  const [count, setCount] = useState(0);
+  const handleCount = () => {
+    setCount(count + 1);
+    if (count === 4) {
+      router.push("/(mainTabs)");
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Logo />
+      <Pressable onPress={handleCount}>
+        <Logo />
+      </Pressable>
       <View style={styles.socialLoginButtonContainer}>
         <SocialLoginButton
           onPress={handleKakaoLogin}
@@ -106,7 +117,7 @@ export default function AuthPage() {
           style={{ width: width - 100, height: 50 }}
           onPress={handleAppleLogin}
         />
-        <SocialLoginButton
+        {/* <SocialLoginButton
           onPress={() => {
             console.log("naver");
             router.push("/(mainTabs)");
@@ -117,7 +128,7 @@ export default function AuthPage() {
           buttonText={t("auth.wechat")}
           buttonColor="#2DB400"
           textColor="white"
-        />
+        /> */}
       </View>
     </View>
   );
