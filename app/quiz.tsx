@@ -10,12 +10,11 @@ import {
 
 import { createQuiz } from "../utils/quizUtils"; // 퀴즈 로직
 import { TEST_VOCABULARY } from "@/constants/TestVoca";
-import { useRouter } from "expo-router";
 import ResultModal from "@/components/game/ResultModal";
+import GameTitle from "@/components/game/GameTitle";
 
 const QuizScreen = () => {
   const wordList = TEST_VOCABULARY;
-  const router = useRouter();
 
   const [quiz, setQuiz] = useState(() => createQuiz(wordList));
   const [selected, setSelected] = useState<string | null>(null);
@@ -54,7 +53,7 @@ const QuizScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>단어 퀴즈</Text>
+      <GameTitle title="Quiz" />
       <Text style={styles.question}>{quiz.question}</Text>
 
       <View style={styles.optionsContainer}>
