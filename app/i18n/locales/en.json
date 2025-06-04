@@ -16,8 +16,19 @@
   "[bookcase]": {
     "title": "Hello"
   },
-  "[game]": {
-    "title": "Hello"
+  "game": {
+    "title": "Hello",
+    "hint": "Hint",
+    "quit": "Quit",
+    "next": "Next",
+    "remaining": "Attempts left",
+    "modal": {
+      "result": "Result",
+      "correct": "Correct",
+      "incorrect": "Incorrect",
+      "accuracy": "Accuracy",
+      "close": "Home"
+    }
   },
   "mainTabs": {
     "calendar": {

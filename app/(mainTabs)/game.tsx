@@ -1,4 +1,3 @@
-import GameItems from "@/components/game/GameItems";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { useEffect } from "react";
 import {

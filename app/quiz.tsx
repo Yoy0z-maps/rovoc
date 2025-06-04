@@ -11,6 +11,7 @@ import {
 import { createQuiz } from "../utils/quizUtils"; // 퀴즈 로직
 import { TEST_VOCABULARY } from "@/constants/TestVoca";
 import { useRouter } from "expo-router";
+import ResultModal from "@/components/game/ResultModal";
 
 const QuizScreen = () => {
   const wordList = TEST_VOCABULARY;
@@ -85,23 +86,12 @@ const QuizScreen = () => {
           <Text>다음 문제</Text>
         </TouchableOpacity>
       </View>
-      <Modal visible={showResult} transparent animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>결과</Text>
-            <Text>맞은 개수: {score.correct}</Text>
-            <Text>틀린 개수: {score.wrong}</Text>
-            <TouchableOpacity
-              onPress={() => {
-                setShowResult(false);
-                router.back();
-              }}
-            >
-              <Text style={styles.closeButton}>닫기</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <ResultModal
+        game="quiz"
+        showResult={showResult}
+        score={score}
+        setShowResult={setShowResult}
+      />
     </View>
   );
 };
@@ -130,29 +120,6 @@ const styles = StyleSheet.create({
   nextButton: {
     marginTop: 30,
     padding: 15,
-    backgroundColor: "#ddd",
-    borderRadius: 8,
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  closeButton: {
-    marginTop: 15,
-    padding: 10,
     backgroundColor: "#ddd",
     borderRadius: 8,
   },

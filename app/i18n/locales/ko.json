@@ -16,8 +16,19 @@
   "[bookcase]": {
     "title": "안녕하세요"
   },
-  "[game]": {
-    "title": "안녕하세요"
+  "game": {
+    "title": "안녕하세요",
+    "hint": "힌트",
+    "quit": "그만하기",
+    "next": "다음 단어",
+    "remaining": "남은 기회",
+    "modal": {
+      "result": "결과",
+      "correct": "맞은 개수",
+      "incorrect": "틀린 개수",
+      "accuracy": "정확도",
+      "close": "홈으로"
+    }
   },
   "mainTabs": {
     "calendar": {

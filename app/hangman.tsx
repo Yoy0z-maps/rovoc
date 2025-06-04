@@ -1,16 +1,17 @@
 import { HangmanDrawing } from "@/components/game/HangmanDrawing";
 import { TEST_VOCABULARY } from "@/constants/TestVoca";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  FlatList,
   Alert,
   Modal,
 } from "react-native";
+import LottieView from "lottie-react-native";
+import ResultModal from "@/components/game/ResultModal";
 
 // 타입 정의
 export type Mean = {
@@ -54,6 +55,12 @@ export default function HangmanScreen() {
     setCurrentIndex(0);
     setGameOver(false);
     loadNextWord(shuffled, 0);
+  }, []);
+
+  const animationRef = useRef<LottieView>(null);
+
+  useEffect(() => {
+    animationRef.current?.play();
   }, []);
 
   const loadNextWord = (shuffled: Voca[], index: number) => {
@@ -154,23 +161,12 @@ export default function HangmanScreen() {
           <Text>다음 단어</Text>
         </TouchableOpacity>
       </View>
-      <Modal visible={showResult} transparent animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>결과</Text>
-            <Text>맞은 개수: {score.correct}</Text>
-            <Text>틀린 개수: {score.wrong}</Text>
-            <TouchableOpacity
-              onPress={() => {
-                setShowResult(false);
-                router.back();
-              }}
-            >
-              <Text style={styles.closeButton}>닫기</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <ResultModal
+        game="hangman"
+        showResult={showResult}
+        score={score}
+        setShowResult={setShowResult}
+      />
     </View>
   );
 }
@@ -224,28 +220,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  closeButton: {
-    marginTop: 15,
-    padding: 10,
-    backgroundColor: "#ddd",
-    borderRadius: 8,
   },
 });
