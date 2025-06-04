@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   head: {
     position: "absolute",
     top: 135,
-    left: 114,
+    left: 113,
     resizeMode: "contain",
   },
   body: {
