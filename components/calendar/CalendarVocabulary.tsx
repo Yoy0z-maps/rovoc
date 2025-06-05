@@ -15,7 +15,7 @@ export default function CalendarVocabulary({
       <Text style={styles.text}>There is no voca added today</Text>
       <Text style={styles.question}>?</Text>
       <Image
-        source={require("@/assets/images/rovoca-rmbg.png")}
+        source={require("@/assets/images/rovoca-gray.png")}
         style={styles.image}
       />
     </View>
@@ -28,19 +28,23 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     paddingHorizontal: 24,
     alignItems: "center",
+    marginTop: 10,
   },
   text: {
     fontFamily: "PressStart2P",
     fontSize: 12,
+    gap: 10,
     color: "#787878",
   },
   question: {
+    marginTop: 24,
     fontFamily: "PressStart2P",
     color: "#787878",
     fontSize: 24,
   },
   image: {
-    width: 250,
-    height: 250,
+    marginTop: 30,
+    width: 150,
+    height: 150,
   },
 });

@@ -3,7 +3,7 @@
     "title": "Hello"
   },
   "auth": {
-    "kakaotalk": "Login with KakaoTalk",
+    "kakaotalk": "Sign in with KakaoTalk",
     "wechat": "Login with WeChat",
     "apple": "Login with Apple ID"
   },
@@ -16,8 +16,27 @@
   "[bookcase]": {
     "title": "Hello"
   },
-  "[game]": {
-    "title": "Hello"
+  "game": {
+    "title": "ROVOCA GAME",
+    "subtitle": "Learn and review words through various games",
+    "more": "ROVOCA will add more games in the near future!",
+    "hint": "Hint",
+    "quit": "Quit",
+    "next": "Next",
+    "remaining": "Attempts left",
+    "wrongLetters": "Wrong letters",
+    "alert": {
+      "noWords": "No words to start the game.",
+      "noMoreQuiz": "No more quizzes!",
+      "gameOver": "Game Over"
+    },
+    "modal": {
+      "result": "Result",
+      "correct": "Correct",
+      "incorrect": "Incorrect",
+      "accuracy": "Accuracy",
+      "close": "Home"
+    }
   },
   "mainTabs": {
     "calendar": {

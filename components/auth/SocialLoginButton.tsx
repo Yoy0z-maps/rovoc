@@ -32,7 +32,7 @@ export default function SocialLoginButton({
       }}
       style={[styles.button, { backgroundColor: buttonColor }]}
     >
-      <Icon name={iconName} size={20} color={iconColor} style={styles.icon} />
+      <Icon name={iconName} size={18} color={iconColor} style={styles.icon} />
       <Text style={[styles.buttonText, { color: textColor }]}>
         {buttonText}
       </Text>
@@ -52,12 +52,11 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   buttonText: {
-    fontFamily: "Pretendard-Regular",
-    fontSize: 14,
+    fontFamily: "Pretendard-Medium",
+    fontSize: 18,
     textAlign: "center",
   },
   icon: {
-    position: "absolute",
-    left: 20,
+    marginRight: 5,
   },
 });
