@@ -54,6 +54,8 @@ export default function HangmanInfo({
 
 const styles = StyleSheet.create({
   infoContainer: {
+    marginTop: 20,
+    marginBottom: 10,
     flexDirection: "row",
     width: "85%",
     justifyContent: "space-between",

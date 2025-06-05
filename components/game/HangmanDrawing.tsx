@@ -6,8 +6,6 @@ type Props = {
 };
 
 export const HangmanDrawing = ({ wrongCount }: Props) => {
-  console.log(wrongCount);
-
   return (
     <View style={styles.container}>
       <Image source={require("@/assets/images/pole.png")} style={styles.pole} />

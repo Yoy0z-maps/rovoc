@@ -18,10 +18,10 @@ export default function GameButtonContainer({
         style={styles.quitButton}
         onPress={() => setShowResult(true)}
       >
-        <Text>{t("game.quit")}</Text>
+        <Text style={styles.quitButtonText}>{t("game.quit")}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-        <Text>{t("game.next")}</Text>
+        <Text style={styles.nextButtonText}>{t("game.next")}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -31,8 +31,16 @@ const styles = StyleSheet.create({
   nextButton: {
     marginTop: 10,
   },
+  nextButtonText: {
+    color: "rgba(74, 138, 244, 1)",
+    fontSize: 15,
+  },
   quitButton: {
-    marginTop: 15,
+    marginTop: 10,
+  },
+  quitButtonText: {
+    color: "rgba(240, 86, 80, 1)",
+    fontSize: 15,
   },
   buttonContainer: {
     flexDirection: "row",
