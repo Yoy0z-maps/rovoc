@@ -1,7 +1,6 @@
 import { View, StyleSheet, Dimensions, Pressable } from "react-native";
 
 // Expo Vector Icons
-import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import SocialLoginButton from "@/components/auth/SocialLoginButton";
 import Logo from "@/components/auth/Logo";

@@ -10,6 +10,7 @@ import Keyboard from "@/components/game/Keyboard";
 import HangmanInfo from "@/components/game/HangmanInfo";
 import { router } from "expo-router";
 import GameButtonContainer from "@/components/game/GameButtonContainer";
+import HangmanResult from "@/components/game/HangmanResult";
 
 const shuffleArray = <T,>(arr: T[]): T[] => {
   const array = [...arr];
@@ -75,6 +76,11 @@ export default function HangmanScreen() {
       <GameTitle title="Hangman" />
       <HangmanDrawing wrongCount={wrongLetters.length} />
       <HangmanWord revealed={revealed} />
+      <HangmanResult
+        isWin={isWin}
+        gameOver={gameOver}
+        currentWord={currentWord}
+      />
       <HangmanInfo
         wrongLetters={wrongLetters}
         hint={shuffledWords[currentIndex]?.meaning[0]?.definition || "..."} // shuffledWords[currentIndex]가 초기화되기 전에 접근 Undefined 처리

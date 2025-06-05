@@ -12,6 +12,7 @@ import { createQuiz } from "../utils/quizUtils"; // 퀴즈 로직
 import { TEST_VOCABULARY } from "@/constants/TestVoca";
 import ResultModal from "@/components/game/ResultModal";
 import GameTitle from "@/components/game/GameTitle";
+import GameButtonContainer from "@/components/game/GameButtonContainer";
 
 const QuizScreen = () => {
   const wordList = TEST_VOCABULARY;
@@ -74,17 +75,10 @@ const QuizScreen = () => {
       </View>
 
       {feedback && <Text style={styles.feedback}>{feedback}</Text>}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.quitButton}
-          onPress={() => setShowResult(true)}
-        >
-          <Text>그만하기</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.nextButton} onPress={nextQuiz}>
-          <Text>다음 문제</Text>
-        </TouchableOpacity>
-      </View>
+      <GameButtonContainer
+        handleNext={nextQuiz}
+        setShowResult={setShowResult}
+      />
       <ResultModal
         game="quiz"
         showResult={showResult}
@@ -105,7 +99,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
-  question: { fontSize: 20, marginBottom: 20 },
+  question: {
+    fontSize: 20,
+    marginBottom: 20,
+    fontFamily: "PressStart2P",
+  },
   optionsContainer: { width: "100%" },
   optionButton: {
     padding: 15,

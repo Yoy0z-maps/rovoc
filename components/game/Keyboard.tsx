@@ -1,3 +1,10 @@
+import {
+  Audio,
+  AVPlaybackSource,
+  InterruptionModeAndroid,
+  InterruptionModeIOS,
+} from "expo-av";
+import { useEffect, useState } from "react";
 import { TouchableOpacity, View, Text, StyleSheet, Alert } from "react-native";
 
 interface KeyboardProps {
@@ -31,6 +38,9 @@ export default function Keyboard({
   setWrongLetters,
   setGameOver,
 }: KeyboardProps) {
+  const correctSound = require("../../assets/sounds/correct.mp3");
+  const incorrectSound = require("../../assets/sounds/incorrect.mp3");
+
   const handleLetterPress = (letter: string) => {
     if (usedLetters.includes(letter) || gameOver) return;
 
@@ -44,18 +54,46 @@ export default function Keyboard({
 
       if (!updated.includes("_")) {
         setIsWin(true);
-        Alert.alert("승리!", "단어를 모두 맞췄습니다!");
+        playSound(correctSound);
         setScore({ ...score, correct: score.correct + 1 });
       }
     } else {
       setWrongLetters([...wrongLetters, letter]);
       if (wrongLetters.length + 1 >= 6) {
         setGameOver(true);
-        Alert.alert("패배!", `정답은: ${currentWord}`);
+        playSound(incorrectSound);
         setScore({ ...score, wrong: score.wrong + 1 });
       }
     }
   };
+
+  useEffect(() => {
+    Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      staysActiveInBackground: false,
+      playsInSilentModeIOS: true,
+      shouldDuckAndroid: true,
+      interruptionModeIOS: InterruptionModeIOS.DoNotMix,
+      interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
+    });
+  }, []);
+
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+
+  async function playSound(sound: AVPlaybackSource) {
+    const { sound: soundObject } = await Audio.Sound.createAsync(sound);
+    setSound(soundObject);
+    await soundObject.playAsync();
+  }
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          console.log("Unloading Sound");
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
 
   return (
     <View style={styles.keyboard}>

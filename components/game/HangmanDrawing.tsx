@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     position: "relative",
     justifyContent: "flex-end",
     alignItems: "center",
+    marginBottom: 10,
   },
   pole: {
     position: "absolute",
