@@ -1,15 +1,15 @@
 import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 
-interface GameButtonContainerProps {
+interface HangmanButtonContainerProps {
   handleNext: () => void;
   setShowResult: (show: boolean) => void;
 }
 
-export default function GameButtonContainer({
+export default function HangmanButtonContainer({
   handleNext,
   setShowResult,
-}: GameButtonContainerProps) {
+}: HangmanButtonContainerProps) {
   const { t } = useTranslation();
 
   return (
@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   buttonContainer: {
+    marginTop: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     width: "90%",

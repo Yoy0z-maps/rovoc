@@ -23,6 +23,11 @@
     "next": "Next",
     "remaining": "Attempts left",
     "wrongLetters": "Wrong letters",
+    "alert": {
+      "noWords": "No words to start the game.",
+      "noMoreQuiz": "No more quizzes!",
+      "gameOver": "Game Over"
+    },
     "modal": {
       "result": "Result",
       "correct": "Correct",

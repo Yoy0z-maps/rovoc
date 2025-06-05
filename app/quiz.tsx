@@ -1,25 +1,62 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { View, Alert } from "react-native";
+
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  Modal,
-} from "react-native";
+  Audio,
+  AVPlaybackSource,
+  InterruptionModeAndroid,
+  InterruptionModeIOS,
+} from "expo-av";
 
 import { createQuiz } from "../utils/quizUtils"; // 퀴즈 로직
 import { TEST_VOCABULARY } from "@/constants/TestVoca";
 import ResultModal from "@/components/game/ResultModal";
 import GameTitle from "@/components/game/GameTitle";
-import GameButtonContainer from "@/components/game/GameButtonContainer";
+import GameButtonContainer from "@/components/game/QuizButtonContainer";
+import QuizResult from "@/components/game/QuizResult";
+import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
+import QuizQuestion from "@/components/game/QuizQuestion";
+import QuizSelections from "@/components/game/QuizSelections";
 
 const QuizScreen = () => {
+  const { t } = useTranslation();
+
+  const correctSound = require("../assets/sounds/correct.mp3");
+  const incorrectSound = require("../assets/sounds/incorrect.mp3");
+
+  useEffect(() => {
+    Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      staysActiveInBackground: false,
+      playsInSilentModeIOS: true,
+      shouldDuckAndroid: true,
+      interruptionModeIOS: InterruptionModeIOS.DoNotMix,
+      interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
+    });
+  }, []);
+
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+
+  async function playSound(sound: AVPlaybackSource) {
+    const { sound: soundObject } = await Audio.Sound.createAsync(sound);
+    setSound(soundObject);
+    await soundObject.playAsync();
+  }
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
+
   const wordList = TEST_VOCABULARY;
 
   const [quiz, setQuiz] = useState(() => createQuiz(wordList));
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<string | null>(null);
 
   const [score, setScore] = useState({ correct: 0, wrong: 0 });
   const [showResult, setShowResult] = useState(false); // 모달 표시 여부
@@ -29,10 +66,12 @@ const QuizScreen = () => {
     setSelected(option);
 
     if (option === quiz.answer) {
-      setFeedback("정답입니다!");
+      playSound(correctSound);
+      setIsCorrect(true);
       setScore((prev) => ({ ...prev, correct: prev.correct + 1 }));
     } else {
-      setFeedback(`틀렸습니다! 정답은: ${quiz.answer}`);
+      playSound(incorrectSound);
+      setIsCorrect(false);
       setScore((prev) => ({ ...prev, wrong: prev.wrong + 1 }));
     }
   };
@@ -40,41 +79,37 @@ const QuizScreen = () => {
   const nextQuiz = () => {
     const newQuiz = createQuiz(wordList);
     if (!newQuiz) {
-      Alert.alert("게임 종료", "더 이상 문제가 없습니다!");
+      Alert.alert(t("game.alert.gameOver"), t("game.alert.noMoreQuiz"));
       return;
     }
     setQuiz(newQuiz);
     setSelected(null);
-    setFeedback(null);
+    setIsCorrect(null);
   };
 
   if (!quiz) {
-    return <Text>단어가 부족해 게임을 시작할 수 없습니다.</Text>;
+    router.back();
+    Alert.alert(t("game.alert.gameOver"), t("game.alert.noWords"));
+    return;
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        flex: 1,
+        paddingTop: 80,
+        paddingHorizontal: 20,
+        alignItems: "center",
+      }}
+    >
       <GameTitle title="Quiz" />
-      <Text style={styles.question}>{quiz.question}</Text>
-
-      <View style={styles.optionsContainer}>
-        {quiz.options.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.optionButton,
-              selected === option &&
-                (option === quiz.answer ? styles.correct : styles.wrong),
-            ]}
-            onPress={() => handleSelect(option)}
-            disabled={!!selected}
-          >
-            <Text>{option}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {feedback && <Text style={styles.feedback}>{feedback}</Text>}
+      <QuizQuestion question={quiz.question} />
+      <QuizSelections
+        quiz={quiz}
+        selected={selected}
+        handleSelect={handleSelect}
+      />
+      <QuizResult isCorrect={isCorrect} />
       <GameButtonContainer
         handleNext={nextQuiz}
         setShowResult={setShowResult}
@@ -90,45 +125,3 @@ const QuizScreen = () => {
 };
 
 export default QuizScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
-  question: {
-    fontSize: 20,
-    marginBottom: 20,
-    fontFamily: "PressStart2P",
-  },
-  optionsContainer: { width: "100%" },
-  optionButton: {
-    padding: 15,
-    marginVertical: 5,
-    backgroundColor: "#eee",
-    borderRadius: 8,
-  },
-  correct: { backgroundColor: "lightgreen" },
-  wrong: { backgroundColor: "salmon" },
-  feedback: { marginTop: 20, fontSize: 16, fontWeight: "bold" },
-  nextButton: {
-    marginTop: 30,
-    padding: 15,
-    backgroundColor: "#ddd",
-    borderRadius: 8,
-  },
-  quitButton: {
-    marginTop: 15,
-    padding: 15,
-    backgroundColor: "#ccc",
-    borderRadius: 8,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-});

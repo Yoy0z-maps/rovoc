@@ -9,8 +9,8 @@ import { Voca } from "@/types/vocab";
 import Keyboard from "@/components/game/Keyboard";
 import HangmanInfo from "@/components/game/HangmanInfo";
 import { router } from "expo-router";
-import GameButtonContainer from "@/components/game/GameButtonContainer";
 import HangmanResult from "@/components/game/HangmanResult";
+import HangmanButtonContainer from "@/components/game/HangmanButtonContainer";
 
 const shuffleArray = <T,>(arr: T[]): T[] => {
   const array = [...arr];
@@ -100,7 +100,7 @@ export default function HangmanScreen() {
         setWrongLetters={setWrongLetters}
         setGameOver={setGameOver}
       />
-      <GameButtonContainer
+      <HangmanButtonContainer
         handleNext={handleNext}
         setShowResult={setShowResult}
       />

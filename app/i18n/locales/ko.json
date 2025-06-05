@@ -23,6 +23,11 @@
     "next": "다음 단어",
     "remaining": "남은 기회",
     "wrongLetters": "틀린 글자",
+    "alert": {
+      "noWords": "단어가 부족해 게임을 시작할 수 없습니다.",
+      "noMoreQuiz": "더 이상 문제가 없습니다!",
+      "gameOver": "게임 종료"
+    },
     "modal": {
       "result": "결과",
       "correct": "맞은 개수",

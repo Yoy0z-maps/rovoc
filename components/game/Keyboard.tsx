@@ -5,7 +5,7 @@ import {
   InterruptionModeIOS,
 } from "expo-av";
 import { useEffect, useState } from "react";
-import { TouchableOpacity, View, Text, StyleSheet, Alert } from "react-native";
+import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 
 interface KeyboardProps {
   currentWord: string;
@@ -89,7 +89,6 @@ export default function Keyboard({
   useEffect(() => {
     return sound
       ? () => {
-          console.log("Unloading Sound");
           sound.unloadAsync();
         }
       : undefined;
