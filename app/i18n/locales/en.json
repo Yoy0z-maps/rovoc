@@ -17,7 +17,9 @@
     "title": "Hello"
   },
   "game": {
-    "title": "Hello",
+    "title": "ROVOCA GAME",
+    "subtitle": "Learn and review words through various games",
+    "more": "ROVOCA will add more games in the near future!",
     "hint": "Hint",
     "quit": "Quit",
     "next": "Next",
