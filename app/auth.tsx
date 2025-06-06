@@ -12,6 +12,7 @@ import { login } from "@react-native-kakao/user";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { router } from "expo-router";
 import { useState } from "react";
+import GoogleLogin from "@/components/auth/GoogleLoginButton";
 
 const { width } = Dimensions.get("window");
 
@@ -116,6 +117,7 @@ export default function AuthPage() {
           style={{ width: width - 100, height: 50 }}
           onPress={handleAppleLogin}
         />
+        <GoogleLogin />
         {/* <SocialLoginButton
           onPress={() => {
             console.log("naver");
