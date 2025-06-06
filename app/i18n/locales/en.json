@@ -5,7 +5,8 @@
   "auth": {
     "kakaotalk": "Sign in with KakaoTalk",
     "wechat": "Login with WeChat",
-    "apple": "Login with Apple ID"
+    "apple": "Login with Apple ID",
+    "google": "Sign in with Google"
   },
   "notice": {
     "title": "Hello"
