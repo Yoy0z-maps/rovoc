@@ -63,6 +63,7 @@ export default function RootLayout() {
         <Stack.Screen name="auth" options={{ headerShown: false }} />
         <Stack.Screen name="quiz" options={{ headerShown: false }} />
         <Stack.Screen name="hangman" options={{ headerShown: false }} />
+        <Stack.Screen name="sentence" options={{ headerShown: false }} />
         <Stack.Screen name="[bookcase]" />
         <Stack.Screen name="+not-found" />
       </Stack>

@@ -8,6 +8,7 @@ import { useState } from "react";
 import GoogleLogin from "@/components/auth/GoogleLoginButton";
 import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import AppleLoginButton from "@/components/auth/AppleLoginButton";
+import NaverLoginButton from "@/components/auth/NaverLoginButton";
 
 export default function AuthPage() {
   // i18n
@@ -45,18 +46,7 @@ export default function AuthPage() {
         <KakaoLoginButton />
         <AppleLoginButton />
         <GoogleLogin />
-        {/* <SocialLoginButton
-          onPress={() => {
-            console.log("naver");
-            router.push("/(mainTabs)");
-          }}
-          iconColor="white"
-          iconName="wechat"
-          iconComponent={AntDesign}
-          buttonText={t("auth.wechat")}
-          buttonColor="#2DB400"
-          textColor="white"
-        /> */}
+        {/* <NaverLoginButton /> */}
       </View>
     </View>
   );
