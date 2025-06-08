@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Pressable,
-  Image,
-  Text,
-  Platform,
-  StyleSheet,
-  Dimensions,
-} from "react-native";
+import { Pressable, Image, Text, StyleSheet, Dimensions } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,10 +14,8 @@ export default function GoogleLogin() {
   const [userInfo, setUserInfo] = useState(null);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: Platform.select({
-      ios: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_IOS_CLIENT_ID,
-      android: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_ANDROID_CLIENT_ID,
-    }),
+    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_IOS_CLIENT_ID,
+    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_ANDROID_CLIENT_ID,
     redirectUri: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_REDIRECT_URI,
     scopes: ["profile", "email"],
   });
@@ -82,8 +73,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#e6e6e6",
   },
   image: {
-    width: 20,
-    height: 20,
+    width: 18,
+    height: 18,
     marginRight: 8,
   },
   text: {
