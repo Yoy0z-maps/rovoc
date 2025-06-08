@@ -1,65 +1,90 @@
-import { View, StyleSheet, Text, Dimensions, Pressable } from "react-native";
+import { View, StyleSheet, Text, Dimensions, Image } from "react-native";
 
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIcons";
-import Entypo from "@expo/vector-icons/Entypo";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import ProfileMenuTopItem from "./ProfileMenuTopItem";
+import ProfileMenuBottomItem from "./ProfileMenuBottomItem";
+import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 export default function ProfileMenu() {
+  const { t, i18n } = useTranslation();
+
   return (
-    <View style={styles.container2}>
+    <View style={styles.container}>
       <View style={styles.topContainer}>
-        <Pressable style={styles.topContainerIconTextContainer}>
-          <AntDesign name="customerservice" size={24} color="black" />
-          <Text style={styles.topContainerText}>이용약관</Text>
-        </Pressable>
-        <Pressable style={styles.topContainerIconTextContainer}>
-          <MaterialIcons name="policy" size={24} color="black" />
-          <Text style={styles.topContainerText}>개인정보처리방침</Text>
-        </Pressable>
-        <Pressable style={styles.topContainerIconTextContainer}>
-          <MaterialCommunityIcons name="license" size={24} color="black" />
-          <Text style={styles.topContainerText}>오픈소스 라이선스</Text>
-        </Pressable>
-        <Pressable style={styles.topContainerIconTextContainer}>
-          <MaterialIcons name="coffee" size={24} color="black" />
-          <Text style={styles.topContainerText}>후원하기</Text>
-        </Pressable>
-        <Pressable style={styles.topContainerIconTextContainer}>
-          <Entypo name="link" size={24} color="black" />
-          <Text style={styles.topContainerText}>소셜 연동 / 해제</Text>
-        </Pressable>
+        <ProfileMenuTopItem
+          icon={<AntDesign name="customerservice" size={24} color="black" />}
+          label={t("profile.menu.terms")}
+          onPress={() => {}}
+        />
+        <ProfileMenuTopItem
+          icon={<MaterialIcons name="policy" size={24} color="black" />}
+          label={t("profile.menu.privacy")}
+          onPress={() => {}}
+        />
+        <ProfileMenuTopItem
+          icon={
+            <MaterialCommunityIcons name="license" size={24} color="black" />
+          }
+          label={t("profile.menu.license")}
+          onPress={() => {}}
+        />
+        <ProfileMenuTopItem
+          icon={<MaterialIcons name="coffee" size={24} color="black" />}
+          label={t("profile.menu.support")}
+          onPress={() => {
+            router.push({
+              pathname: "/webview",
+              params: {
+                url: encodeURIComponent("https://buymeacoffe.com/yoy0zmaps"),
+              },
+            });
+          }}
+        />
+        <Image
+          source={require("@/assets/images/rovoca-gray.png")}
+          style={styles.rovocaImage}
+        />
         <Text style={styles.versionText}>
           Rovoca V1.0.0@ Copyright 2025. All rights reserved.
         </Text>
       </View>
       <View style={styles.bottomContainer}>
-        <View style={styles.iconTextContainer}>
-          <MaterialIcons name="rate-review" size={24} color="black" />
-          <Text style={styles.text}>리뷰쓰기</Text>
-        </View>
-        <View style={styles.iconTextContainer}>
-          <MaterialIcons name="question-mark" size={26} color="black" />
-          <Text style={styles.text}>문의하기</Text>
-        </View>
-        <View style={styles.iconTextContainer}>
-          <MaterialIcons name="logout" size={26} color="black" />
-          <Text style={styles.text}>로그아웃</Text>
-        </View>
-        <View style={styles.iconTextContainer}>
-          <AntDesign name="deleteuser" size={26} color="black" />
-          <Text style={styles.text}>회원탈퇴</Text>
-        </View>
+        <ProfileMenuBottomItem
+          icon={<MaterialIcons name="rate-review" size={24} color="black" />}
+          label={t("profile.menu.review")}
+          onPress={() => {}}
+        />
+        <ProfileMenuBottomItem
+          icon={<Ionicons name="language-outline" size={24} color="black" />}
+          label={t("profile.menu.language")}
+          onPress={() => {
+            i18n.changeLanguage(i18n.language === "ko" ? "en" : "ko");
+          }}
+        />
+        <ProfileMenuBottomItem
+          icon={<MaterialIcons name="logout" size={24} color="black" />}
+          label={t("profile.menu.logout")}
+          onPress={() => {}}
+        />
+        <ProfileMenuBottomItem
+          icon={<AntDesign name="deleteuser" size={24} color="black" />}
+          label={t("profile.menu.delete")}
+          onPress={() => {}}
+        />
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container2: {
+  container: {
     left: 24,
     position: "absolute",
     width: screenWidth - 48,
@@ -74,17 +99,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     height: screenHeight * 0.45,
   },
-  topContainerIconTextContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 20,
-  },
-  topContainerText: {
-    fontSize: 18,
-    fontFamily: "Pretendard-Regular",
-  },
   bottomContainer: {
     alignContent: "center",
     justifyContent: "space-between",
@@ -95,21 +109,17 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     height: screenHeight * 0.1,
   },
-  iconTextContainer: {
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 7,
-  },
-  text: {
-    fontSize: 12,
-    fontFamily: "Pretendard-Regular",
-  },
   versionText: {
     fontSize: 12,
     fontFamily: "Pretendard-Regular",
     textAlign: "center",
     marginTop: "auto",
     color: "#777",
+  },
+  rovocaImage: {
+    marginTop: 15,
+    width: 100,
+    height: 100,
+    alignSelf: "center",
   },
 });

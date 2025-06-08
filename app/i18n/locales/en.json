@@ -12,7 +12,16 @@
     "title": "Hello"
   },
   "profile": {
-    "title": "Hello"
+    "menu": {
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy",
+      "license": "Open Source License",
+      "support": "Support",
+      "review": "Review",
+      "language": "Language",
+      "logout": "Logout",
+      "delete": "Withdraw"
+    }
   },
   "[bookcase]": {
     "title": "Hello"
