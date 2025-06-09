@@ -2,7 +2,7 @@ import { Dimensions } from "react-native";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { router } from "expo-router";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import * as SecureStore from "expo-secure-store";
+import { setUser } from "@/utils/user";
 
 const { width } = Dimensions.get("window");
 
@@ -32,7 +32,7 @@ export default function AppleLoginButton() {
 
       const user_json = await rovoca_res.json();
 
-      await SecureStore.setItemAsync("user", JSON.stringify(user_json));
+      await setUser(user_json);
       router.push("/(mainTabs)");
       // signed in
     } catch (error) {

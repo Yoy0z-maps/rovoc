@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Pressable, Image, Text, StyleSheet, Dimensions } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
+import { setUser } from "@/utils/user";
 
 const { width } = Dimensions.get("window");
 
@@ -39,7 +39,7 @@ export default function GoogleLogin() {
       });
       const user = await res.json();
       setUserInfo(user);
-      await AsyncStorage.setItem("user", JSON.stringify(user));
+      await setUser(user);
     } catch (error) {
       console.error("Failed to fetch user info:", error);
     }

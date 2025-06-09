@@ -4,7 +4,7 @@ import { Text, StyleSheet, Pressable, Dimensions } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { login } from "@react-native-kakao/user";
-import * as SecureStore from "expo-secure-store";
+import { setUser } from "@/utils/user";
 
 const { width } = Dimensions.get("window");
 
@@ -28,7 +28,7 @@ export default function KakaoLoginButton() {
       });
       console.log(rovoca_res);
       const user_json = await rovoca_res.json();
-      await SecureStore.setItemAsync("user", JSON.stringify(user_json));
+      await setUser(user_json);
       router.push("/(mainTabs)");
     } catch (error) {
       console.log(error);

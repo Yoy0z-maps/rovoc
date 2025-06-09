@@ -1,18 +1,16 @@
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { useEffect } from "react";
 import { SafeAreaView } from "react-native";
-import * as SecureStore from "expo-secure-store";
 import GameList from "@/components/game/GameList";
 import More from "@/components/game/More";
 import GameScreenTitle from "@/components/game/GameScreenTitle";
 import GameEnergy from "@/components/game/GameEnergy";
+import { getAccessToken } from "@/utils/token";
 
 export default function GameScreen() {
   useEffect(() => {
     const fetchData = async () => {
-      const user_data = await SecureStore.getItemAsync("user");
-      const token = JSON.parse(user_data || "{}").access;
-      console.log(token);
+      const token = await getAccessToken();
       const response = await fetch(`${API_SERVER_ADDRESS}/users/game/status/`, {
         method: "GET",
         headers: {
