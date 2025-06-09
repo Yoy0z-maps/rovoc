@@ -24,19 +24,30 @@ export default function DictionaryResultView({
     <Fragment>
       <View style={styles.wordContainer}>
         <Text style={styles.word}>{data.word}</Text>
-        <Text style={styles.phonetic}>{data.phonetic}</Text>
         <AudioPlayer audioUrl={data?.phonetics[0]?.audio || ""} />
+        <Text style={styles.phonetic}>{data.phonetic}</Text>
       </View>
       {data?.meanings.map((meaning, index) => (
-        <View key={`${meaning.partOfSpeech}-${index}`}>
-          <Text>{meaning.partOfSpeech}</Text>
-          <Text>{""}</Text>
-          {meaning.definitions.map((definition, defIndex) => (
-            <View key={`${definition.definition}-${defIndex}`}>
-              <Text>{definition.definition}</Text>
-              <Text>{definition.example}</Text>
-            </View>
-          ))}
+        <View
+          key={`${meaning.partOfSpeech}-${index}`}
+          style={styles.meaningContainer}
+        >
+          <Text style={styles.partOfSpeech}>{meaning.partOfSpeech}</Text>
+          <View>
+            {meaning.definitions.map((definition, defIndex) => (
+              <View
+                key={`${definition.definition}-${defIndex}`}
+                style={styles.definitionContainer}
+              >
+                <View style={{ width: 270 }}>
+                  <Text style={styles.definition}>{`${defIndex + 1}. ${
+                    definition.definition
+                  }`}</Text>
+                </View>
+                <Text>{definition.example}</Text>
+              </View>
+            ))}
+          </View>
         </View>
       ))}
     </Fragment>
@@ -60,15 +71,32 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     gap: 7,
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 16,
   },
   word: {
-    marginRight: 10,
+    marginRight: 14,
     fontSize: 24,
     fontWeight: "bold",
   },
   phonetic: {
     fontSize: 14,
     color: "#777",
+  },
+  meaningContainer: {
+    flexDirection: "row",
+    marginBottom: 12,
+    gap: 14,
+  },
+  partOfSpeech: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  definitionContainer: {
+    flexDirection: "column",
+    marginBottom: 12,
+  },
+  definition: {
+    fontSize: 14,
   },
 });

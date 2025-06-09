@@ -35,7 +35,7 @@ export default function AudioPlayer({ audioUrl }: { audioUrl: string }) {
   }, [sound]);
 
   return (
-    <TouchableOpacity onPress={playSound}>
+    <TouchableOpacity style={{ marginLeft: 12 }} onPress={playSound}>
       <AntDesign name="play" size={16} color="#2988F6" />
     </TouchableOpacity>
   );
