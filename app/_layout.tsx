@@ -16,11 +16,6 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import Toast from "react-native-toast-message";
 
 import { getKeyHashAndroid } from "@react-native-kakao/core";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import * as SecureStore from "expo-secure-store";
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import Constants from "expo-constants";
 
 const key = "0eb5e8ec68637741e8154aa38486d9f9";
 console.log("init");

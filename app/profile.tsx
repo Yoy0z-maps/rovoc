@@ -3,8 +3,23 @@ import ProfileHeader from "@/components/profile/ProfileHeader";
 import UserStatus from "@/components/profile/UserStatus";
 import ProfileMenu from "@/components/profile/ProfileMenu";
 import { SafeAreaView, StyleSheet, View } from "react-native";
+import { useEffect, useState } from "react";
+import { getUser } from "@/utils/user";
+import { AuthResponse } from "@/types/user";
 
 export default function ProfileScreen() {
+  const [user, setUser] = useState<AuthResponse | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user_data = await getUser();
+      if (user_data) {
+        setUser(JSON.parse(user_data));
+      }
+    };
+    fetchUser();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <ProfileHeader />

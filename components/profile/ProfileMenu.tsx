@@ -8,6 +8,8 @@ import ProfileMenuTopItem from "./ProfileMenuTopItem";
 import ProfileMenuBottomItem from "./ProfileMenuBottomItem";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { deleteUser } from "@/utils/user";
+import { getAccessToken } from "@/utils/token";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -76,7 +78,13 @@ export default function ProfileMenu() {
         <ProfileMenuBottomItem
           icon={<AntDesign name="deleteuser" size={24} color="black" />}
           label={t("profile.menu.delete")}
-          onPress={() => {}}
+          onPress={async () => {
+            const token = await getAccessToken();
+            if (token) {
+              await deleteUser(token);
+              router.replace("/auth");
+            }
+          }}
         />
       </View>
     </View>
