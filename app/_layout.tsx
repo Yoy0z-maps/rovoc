@@ -6,7 +6,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -16,6 +16,9 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import Toast from "react-native-toast-message";
 
 import { getKeyHashAndroid } from "@react-native-kakao/core";
+
+import { jwtDecode } from "jwt-decode";
+import { getAccessToken, refreshToken } from "@/utils/token";
 
 const key = "0eb5e8ec68637741e8154aa38486d9f9";
 console.log("init");
@@ -38,6 +41,26 @@ export default function RootLayout() {
     "Pretendard-Thin": require("../assets/fonts/Pretendard-Thin.otf"),
     PressStart2P: require("../assets/fonts/PressStart2P.ttf"),
   });
+
+  // 토큰 유효성 검사
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = await getAccessToken();
+      if (!token) {
+        return;
+      }
+      const decoded = jwtDecode(token);
+      if (decoded.exp && decoded.exp < Date.now() / 1000) {
+        console.log("Token expired");
+        refreshToken();
+        return;
+      } else {
+        console.log("Token valid");
+        return;
+      }
+    };
+    checkToken();
+  }, []);
 
   useEffect(() => {
     if (loaded) {

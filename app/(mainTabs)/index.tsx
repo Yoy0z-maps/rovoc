@@ -6,7 +6,6 @@ import {
   TouchableWithoutFeedback,
   View,
   Platform,
-  Button,
 } from "react-native";
 import HomeTitle from "@/components/index/HomeTitle";
 import AddVocaContainer from "@/components/index/container/AddVocaContainer";
@@ -15,7 +14,6 @@ import BookcaseContainer from "@/components/index/container/BookcaseContainer";
 import { useEffect, useState } from "react";
 import BookcaseModal from "@/components/index/BookcaseModal";
 import { getUser } from "@/utils/user";
-import { refreshToken } from "@/utils/token";
 
 export default function HomeScreen() {
   const [showBookcaseModal, setShowBookcaseModal] = useState(false);
@@ -35,7 +33,6 @@ export default function HomeScreen() {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <Button title="Refresh Token" onPress={refreshToken} />
           <HomeTitle />
           <AddVocaContainer
             showBookcaseModal={showBookcaseModal}
