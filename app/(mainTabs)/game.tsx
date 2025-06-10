@@ -1,5 +1,5 @@
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native";
 import GameList from "@/components/game/GameList";
 import More from "@/components/game/More";
@@ -8,6 +8,8 @@ import GameEnergy from "@/components/game/GameEnergy";
 import { getAccessToken } from "@/utils/token";
 
 export default function GameScreen() {
+  const [attempt, setAttempt] = useState<number>(0);
+
   useEffect(() => {
     const fetchData = async () => {
       const token = await getAccessToken();
@@ -18,6 +20,7 @@ export default function GameScreen() {
         },
       });
       const data = await response.json();
+      setAttempt(data.remaining);
       console.log(data);
     };
     fetchData();
@@ -32,7 +35,7 @@ export default function GameScreen() {
       }}
     >
       <GameScreenTitle />
-      <GameEnergy />
+      <GameEnergy attempt={attempt} />
       <GameList />
       <More />
       {/* <View style={styles.progressContainer}>
