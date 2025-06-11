@@ -4,6 +4,7 @@ import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { Wordbook } from "@/types/wordbooks";
 import { importantBookcase } from "@/utils/bookcase";
 import VocaCardOptions from "./VocaCardOptions";
+import { useRouter } from "expo-router";
 
 export default function VocaCard({
   bookcase,
@@ -12,12 +13,21 @@ export default function VocaCard({
   bookcase: Wordbook;
   triggerBookcases: () => void;
 }) {
+  const router = useRouter();
+
   const [isImportant, setIsImportant] = useState(bookcase.is_important);
   const [showOptions, setShowOptions] = useState(false);
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => console.log("clicked")}>
+      <Pressable
+        onPress={() =>
+          router.push({
+            pathname: "/[bookcase]",
+            params: { bookcase: bookcase.id },
+          })
+        }
+      >
         <View style={styles.card}>
           <View style={styles.header}>
             <Text style={styles.title}>{bookcase.name}</Text>
