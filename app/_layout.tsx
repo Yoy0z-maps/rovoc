@@ -6,7 +6,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { router, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -19,6 +19,18 @@ import { getKeyHashAndroid } from "@react-native-kakao/core";
 
 import { jwtDecode } from "jwt-decode";
 import { getAccessToken, refreshToken } from "@/utils/token";
+import ToastSuccess from "@/components/toast/ToastSuccess";
+import ToastError from "@/components/toast/ToastError";
+
+const toastConfig = {
+  ToastSuccess: ({ text1, text2 }: { text1?: string; text2?: string }) => (
+    <ToastSuccess text1={text1} text2={text2} />
+  ),
+
+  ToastError: ({ text1, text2 }: { text1?: string; text2?: string }) => (
+    <ToastError text1={text1} text2={text2} />
+  ),
+};
 
 const key = "0eb5e8ec68637741e8154aa38486d9f9";
 console.log("init");
@@ -87,7 +99,7 @@ export default function RootLayout() {
         <Stack.Screen name="[bookcase]" />
         <Stack.Screen name="+not-found" />
       </Stack>
-      <Toast />
+      <Toast config={toastConfig} />
       <StatusBar style="auto" />
     </ThemeProvider>
   );

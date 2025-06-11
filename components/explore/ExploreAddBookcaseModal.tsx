@@ -35,7 +35,7 @@ export default function ExploreAddBookcaseModal({
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       Toast.show({
-        type: "success",
+        type: "ToastSuccess",
         text1: t("modal.addBookcase.success"),
         text2: t("modal.addBookcase.imageAdded"),
       });
@@ -74,27 +74,27 @@ export default function ExploreAddBookcaseModal({
 
       if (response.ok) {
         Toast.show({
-          type: "success",
+          type: "ToastSuccess",
           text1: t("modal.addBookcase.success"),
           text2: t("modal.addBookcase.bookcaseAdded"),
         });
         setShowAddBookcaseModal(false);
       } else if (response.status === 413) {
         Toast.show({
-          type: "error",
+          type: "ToastError",
           text1: t("modal.addBookcase.error"),
           text2: t("modal.addBookcase.imageSizeError"),
         });
       } else {
         Toast.show({
-          type: "error",
+          type: "ToastError",
           text1: t("modal.addBookcase.error"),
           text2: t("modal.addBookcase.bookcaseAddedFailed"),
         });
       }
     } catch (error) {
       Toast.show({
-        type: "error",
+        type: "ToastError",
         text1: t("modal.addBookcase.error"),
         text2: t("modal.addBookcase.bookcaseAddedFailed"),
       });

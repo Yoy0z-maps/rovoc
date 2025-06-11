@@ -20,9 +20,8 @@ export default function AddVocaContainer({
   });
 
   const handleSubmit = () => {
-    // Toast => iPhone14Pro 이후 다이나믹 아일랜드로 인하여 가져지는 오류 있음
     Toast.show({
-      type: "success",
+      type: "ToastSuccess",
       text1: "Success",
       text2: "Vocabulary added successfully",
     });
