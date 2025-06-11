@@ -74,7 +74,13 @@
       "here": "here",
       "toAddBookcasePhoto": "to add Bookcase Photo",
       "cancel": "Cancel",
-      "add": "Add"
+      "add": "Add",
+      "success": "Success",
+      "bookcaseAdded": "Bookcase added successfully",
+      "imageAdded": "Image added successfully",
+      "error": "Error",
+      "bookcaseAddedFailed": "Bookcase added failed",
+      "imageSizeError": "Image size is too large (10MB or less)"
     }
   }
 }

@@ -73,7 +73,13 @@
       "here": "여기",
       "toAddBookcasePhoto": "를 클릭해서 단어장 사진을 추가해요",
       "cancel": "취소",
-      "add": "추가"
+      "add": "추가",
+      "success": "성공",
+      "bookcaseAdded": "단어장을 추가했어요",
+      "imageAdded": "사진을 추가했어요",
+      "error": "오류 발생",
+      "bookcaseAddedFailed": "단어장 추가 실패",
+      "imageSizeError": "이미지 크기가 너무 큽니다 (10MB 이하)"
     }
   }
 }

@@ -1,8 +1,17 @@
-import { View, StyleSheet, Text, Pressable } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import VocaInputField from "../index/VocaInputField";
 import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
+import * as ImagePicker from "expo-image-picker";
+import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
+import { getAccessToken } from "@/utils/token";
 
 export default function ExploreAddBookcaseModal({
   setShowAddBookcaseModal,
@@ -10,6 +19,87 @@ export default function ExploreAddBookcaseModal({
   setShowAddBookcaseModal: (value: boolean) => void;
 }) {
   const { t, i18n } = useTranslation();
+
+  const [image, setImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const pickImage = async () => {
+    setLoading(true);
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.5,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      Toast.show({
+        type: "success",
+        text1: t("modal.addBookcase.success"),
+        text2: t("modal.addBookcase.imageAdded"),
+      });
+    }
+    setLoading(false);
+  };
+
+  const addBookcase = async () => {
+    try {
+      const token = await getAccessToken();
+
+      const formData = new FormData();
+      formData.append("name", "test");
+      formData.append("description", "test");
+
+      if (image) {
+        const filename = image.split("/").pop() || `photo.jpg`;
+        const match = /\.(\w+)$/.exec(filename ?? "");
+        const ext = match ? match[1] : "jpg";
+        const type = `image/${ext}`;
+
+        formData.append("image", {
+          uri: image,
+          type,
+          name: filename,
+        } as any);
+      }
+
+      const response = await fetch(`${API_SERVER_ADDRESS}/word/wordbooks/`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        Toast.show({
+          type: "success",
+          text1: t("modal.addBookcase.success"),
+          text2: t("modal.addBookcase.bookcaseAdded"),
+        });
+        setShowAddBookcaseModal(false);
+      } else if (response.status === 413) {
+        Toast.show({
+          type: "error",
+          text1: t("modal.addBookcase.error"),
+          text2: t("modal.addBookcase.imageSizeError"),
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: t("modal.addBookcase.error"),
+          text2: t("modal.addBookcase.bookcaseAddedFailed"),
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: t("modal.addBookcase.error"),
+        text2: t("modal.addBookcase.bookcaseAddedFailed"),
+      });
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -20,7 +110,7 @@ export default function ExploreAddBookcaseModal({
       <View style={styles.photoTextContainer}>
         {i18n.language === "ko" ? (
           <Fragment>
-            <Pressable onPress={() => {}}>
+            <Pressable onPress={pickImage}>
               <Text style={styles.photoTextLink}>
                 {t("modal.addBookcase.here")}
               </Text>
@@ -30,7 +120,7 @@ export default function ExploreAddBookcaseModal({
         ) : (
           <Fragment>
             <Text style={styles.photoText}>{t("modal.addBookcase.click")}</Text>
-            <Pressable onPress={() => {}}>
+            <Pressable onPress={pickImage}>
               <Text style={styles.photoTextLink}>
                 {t("modal.addBookcase.here")}
               </Text>
@@ -41,6 +131,11 @@ export default function ExploreAddBookcaseModal({
           </Fragment>
         )}
       </View>
+      {loading && (
+        <View style={{ marginTop: 10, alignItems: "center" }}>
+          <ActivityIndicator size="small" color="#2988F6" />
+        </View>
+      )}
       <View style={styles.buttonContainer}>
         <Pressable
           onPress={() => {
@@ -51,16 +146,7 @@ export default function ExploreAddBookcaseModal({
             {t("modal.addBookcase.cancel")}
           </Text>
         </Pressable>
-        <Pressable
-          onPress={() => {
-            Toast.show({
-              type: "success",
-              text1: "Success",
-              text2: "Bookcase added successfully",
-            });
-            setShowAddBookcaseModal(false);
-          }}
-        >
+        <Pressable onPress={addBookcase}>
           <Text style={styles.addButtonText}>{t("modal.addBookcase.add")}</Text>
         </Pressable>
       </View>
@@ -116,7 +202,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   cancelButtonText: {
-    color: "#c1c1c1",
+    color: "#878787",
     fontSize: 18,
     fontFamily: "Pretendard-Regular",
   },
