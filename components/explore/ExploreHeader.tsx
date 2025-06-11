@@ -2,6 +2,9 @@ import { SafeAreaView, View, StyleSheet, TextInput } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useEffect, useRef } from "react";
+import { addSearchHistory } from "@/utils/searchHistory";
+
 export default function ExploreHeader({
   setShowFilterModal,
   setShowAddBookcaseModal,
@@ -15,6 +18,27 @@ export default function ExploreHeader({
   setSearchWord: (word: string) => void;
   isInSearch: boolean;
 }) {
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (!searchWord.trim()) return;
+
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      addSearchHistory(searchWord.trim());
+      console.log("searchWord", searchWord);
+    }, 2000);
+
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, [searchWord]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.spacing}>

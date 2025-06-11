@@ -31,7 +31,7 @@ export default function ExploreScreen() {
       <ScrollView>
         {searchWord ? (
           <Fragment>
-            <SearchHistory searchWord={searchWord} />
+            <SearchHistory />
             <SearchDictTerm searchWord={searchWord} />
           </Fragment>
         ) : (

@@ -1,17 +1,23 @@
 import { View, Text, StyleSheet } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Feather from "@expo/vector-icons/Feather";
-import { useState } from "react";
-const SEARCH_HISTORY = [
-  { id: "1", word: "apple", meaning: "사과" },
-  { id: "2", word: "banana", meaning: "바나나" },
-  { id: "3", word: "cherry", meaning: "체리" },
-];
+import { useEffect, useState } from "react";
+import { deleteSearchHistory, getSearchHistory } from "@/utils/searchHistory";
+import { useTranslation } from "react-i18next";
 
-export default function SearchHistory({ searchWord }: { searchWord: string }) {
+export default function SearchHistory() {
   const [isHide, setIsHide] = useState(false);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const { t } = useTranslation();
 
-  // localStorage에서 검색 기록 가져오기
+  useEffect(() => {
+    const fetchSearchHistory = async () => {
+      const history = await getSearchHistory();
+      setSearchHistory(history);
+      console.log("history", history);
+    };
+    fetchSearchHistory();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -20,16 +26,27 @@ export default function SearchHistory({ searchWord }: { searchWord: string }) {
           <MaterialIcons name="history" size={24} color="black" />
           <Text style={styles.historyText}>History</Text>
         </View>
-        <Text onPress={() => setIsHide(!isHide)}>Hide</Text>
+        <Text onPress={() => setIsHide(!isHide)}>
+          {isHide ? t("mainTabs.explore.show") : t("mainTabs.explore.hide")}
+        </Text>
       </View>
       {!isHide &&
-        SEARCH_HISTORY.map((item) => (
-          <View key={item.id} style={styles.vocabularyContainer}>
+        searchHistory.map((item, index) => (
+          <View key={index} style={styles.vocabularyContainer}>
             <View style={styles.vocabularyWordMeaningContainer}>
-              <Text style={styles.textWord}>{item.word}</Text>
-              <Text style={styles.textMeaning}>{item.meaning}</Text>
+              <Text style={styles.textWord}>{item}</Text>
+              <Text style={styles.textMeaning}>meaning</Text>
             </View>
-            <Feather name="x" size={12} color="black" />
+            <Feather
+              name="x"
+              size={12}
+              color="black"
+              onPress={async () => {
+                await deleteSearchHistory(item);
+                const history = await getSearchHistory();
+                setSearchHistory(history);
+              }}
+            />
           </View>
         ))}
     </View>

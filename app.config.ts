@@ -57,6 +57,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
             "https://devrepo.kakao.com/nexus/content/groups/public",
           ],
         },
+        // ios: {
+        //   useFrameworks: "static",
+        // },
       },
     ],
     [
@@ -65,6 +68,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         nativeAppKey: "0eb5e8ec68637741e8154aa38486d9f9",
         android: { authCodeHandlerActivity: true },
         ios: { handleKakaoOpenUrl: true },
+      },
+    ],
+    [
+      "expo-image-picker",
+      {
+        photosPermission: "The app needs access to your photos.",
       },
     ],
   ],

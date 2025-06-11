@@ -59,7 +59,10 @@
       "title": "Profile"
     },
     "explore": {
-      "title": "Explore"
+      "title": "Explore",
+      "history": "History",
+      "hide": "Hide",
+      "show": "Show"
     }
   }
 }

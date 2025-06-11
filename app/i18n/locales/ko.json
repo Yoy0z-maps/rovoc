@@ -58,7 +58,10 @@
       "title": "프로필"
     },
     "explore": {
-      "title": "탐색"
+      "title": "탐색",
+      "history": "검색기록",
+      "hide": "숨기기",
+      "show": "보기"
     }
   }
 }

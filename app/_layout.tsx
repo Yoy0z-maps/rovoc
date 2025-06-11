@@ -53,6 +53,7 @@ export default function RootLayout() {
       if (decoded.exp && decoded.exp < Date.now() / 1000) {
         console.log("Token expired");
         refreshToken();
+        console.log("Token refreshed");
         return;
       } else {
         console.log("Token valid");
