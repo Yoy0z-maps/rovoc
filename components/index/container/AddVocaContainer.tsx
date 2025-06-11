@@ -4,28 +4,78 @@ import SubmitButton from "../SubmitButton";
 import { useState } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Toast from "react-native-toast-message";
+import { Wordbook } from "@/types/wordbooks";
+import PartOfSpeechOptions from "../PartOfSpeechOptions";
+import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
+import { getAccessToken } from "@/utils/token";
 
 export default function AddVocaContainer({
+  targetBookcase,
   showBookcaseModal,
   setShowBookcaseModal,
 }: {
+  targetBookcase: Wordbook | null;
   showBookcaseModal: boolean;
   setShowBookcaseModal: (show: boolean) => void;
 }) {
-  // 여기서 state를 {}로 한번에 관리하기
+  const [word, setWord] = useState("");
   const [vocalModal, setVocalModal] = useState({
-    word: "",
+    partOfSpeech: "",
     meaning: "",
     description: "",
   });
 
-  const handleSubmit = () => {
-    Toast.show({
-      type: "ToastSuccess",
-      text1: "Success",
-      text2: "Vocabulary added successfully",
+  const handleSubmit = async () => {
+    if (!targetBookcase) {
+      Toast.show({
+        type: "ToastError",
+        text1: "Error",
+        text2: "Please select a target bookcase",
+      });
+      return;
+    }
+    const token = await getAccessToken();
+
+    const response = await fetch(`${API_SERVER_ADDRESS}/word/words/`, {
+      method: "POST",
+      body: JSON.stringify({
+        wordbook: targetBookcase.id,
+        text: word,
+        meanings: [
+          {
+            part: vocalModal.partOfSpeech,
+            definition: vocalModal.meaning,
+            example: vocalModal.description || "",
+          },
+        ],
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
-    console.log(vocalModal);
+
+    console.log(response);
+
+    if (response.ok) {
+      Toast.show({
+        type: "ToastSuccess",
+        text1: "Success",
+        text2: "Vocabulary added successfully",
+      });
+      setWord("");
+      setVocalModal({
+        partOfSpeech: "",
+        meaning: "",
+        description: "",
+      });
+    } else {
+      Toast.show({
+        type: "ToastError",
+        text1: "Error",
+        text2: "Failed to add vocabulary",
+      });
+    }
   };
 
   return (
@@ -40,7 +90,7 @@ export default function AddVocaContainer({
           style={styles.targetBookcaseButton}
           onPress={() => setShowBookcaseModal(!showBookcaseModal)}
         >
-          <Text style={styles.targetBookcaseText}>Bookcase 1</Text>
+          <Text style={styles.targetBookcaseText}>{targetBookcase?.name}</Text>
           {showBookcaseModal ? (
             <MaterialIcons name="expand-less" size={20} color="black" />
           ) : (
@@ -48,12 +98,34 @@ export default function AddVocaContainer({
           )}
         </Pressable>
       </View>
-      <VocaInputField placeholder="Vocabulary (required)" />
-      <VocaInputField placeholder="Meaning (required)" />
+      <VocaInputField
+        placeholder="Vocabulary (required)"
+        value={word}
+        onChangeText={(text) => setWord(text)}
+      />
+      <View style={styles.partMeaningContainer}>
+        <PartOfSpeechOptions
+          vocalModal={{ partOfSpeech: vocalModal.partOfSpeech }}
+          setVocalModal={(newValue) =>
+            setVocalModal({ ...vocalModal, ...newValue })
+          }
+        />
+        <TextInput
+          placeholder="Meaning (required)"
+          value={vocalModal.meaning}
+          onChangeText={(text) =>
+            setVocalModal({ ...vocalModal, meaning: text })
+          }
+        />
+      </View>
       <View style={styles.submitButtonContainer}>
         <TextInput
           placeholder="Description (optional)"
-          style={styles.descriptionInput}
+          style={styles.textInput}
+          value={vocalModal.description}
+          onChangeText={(text) =>
+            setVocalModal({ ...vocalModal, description: text })
+          }
         />
         <SubmitButton onPress={handleSubmit} />
       </View>
@@ -101,7 +173,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
   },
-  descriptionInput: {
+  textInput: {
     flex: 1,
     borderColor: "#111",
     borderTopWidth: 2,
@@ -111,10 +183,27 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 20,
     paddingVertical: 8,
+    height: 50,
   },
   targetBookcaseButton: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
+  },
+  partMeaningContainer: {
+    position: "relative",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    flex: 1,
+    borderColor: "#111",
+    borderTopWidth: 2,
+    borderLeftWidth: 2,
+    borderRightWidth: 3.5,
+    borderBottomWidth: 3.5,
+    borderRadius: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    height: 50,
   },
 });

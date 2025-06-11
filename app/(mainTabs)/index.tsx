@@ -13,17 +13,21 @@ import ReviewVocaContainer from "@/components/index/container/ReviewVocaContaine
 import BookcaseContainer from "@/components/index/container/BookcaseContainer";
 import { useEffect, useState } from "react";
 import BookcaseModal from "@/components/index/BookcaseModal";
-import { getUser } from "@/utils/user";
+import { getAllBookcases } from "@/utils/bookcase";
+import { Wordbook } from "@/types/wordbooks";
 
 export default function HomeScreen() {
   const [showBookcaseModal, setShowBookcaseModal] = useState(false);
+  const [bookcases, setBookcases] = useState<Wordbook[]>([]);
+  const [targetBookcase, setTargetBookcase] = useState<Wordbook | null>(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const user = await getUser();
-      console.log(user);
+    const fetchBookcases = async () => {
+      const bookcases = await getAllBookcases();
+      setBookcases(bookcases.results);
+      setTargetBookcase(bookcases.results[0]);
     };
-    fetchUser();
+    fetchBookcases();
   }, []);
 
   return (
@@ -35,6 +39,7 @@ export default function HomeScreen() {
         >
           <HomeTitle />
           <AddVocaContainer
+            targetBookcase={targetBookcase}
             showBookcaseModal={showBookcaseModal}
             setShowBookcaseModal={setShowBookcaseModal}
           />
@@ -50,7 +55,12 @@ export default function HomeScreen() {
           <TouchableWithoutFeedback onPress={() => setShowBookcaseModal(false)}>
             <View style={styles.modalOverlay}>
               <TouchableWithoutFeedback>
-                <BookcaseModal setShowBookcaseModal={setShowBookcaseModal} />
+                <BookcaseModal
+                  bookcases={bookcases}
+                  targetBookcase={targetBookcase}
+                  setTargetBookcase={setTargetBookcase}
+                  setShowBookcaseModal={setShowBookcaseModal}
+                />
               </TouchableWithoutFeedback>
             </View>
           </TouchableWithoutFeedback>
