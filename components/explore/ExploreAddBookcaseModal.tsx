@@ -14,14 +14,21 @@ import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { getAccessToken } from "@/utils/token";
 
 export default function ExploreAddBookcaseModal({
+  bookcaseId,
+  triggerBookcases,
   setShowAddBookcaseModal,
 }: {
+  bookcaseId?: string;
+  triggerBookcases: () => void;
   setShowAddBookcaseModal: (value: boolean) => void;
 }) {
   const { t, i18n } = useTranslation();
 
   const [image, setImage] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(false);
 
   const pickImage = async () => {
     setLoading(true);
@@ -44,12 +51,13 @@ export default function ExploreAddBookcaseModal({
   };
 
   const addBookcase = async () => {
+    setFetchLoading(true);
     try {
       const token = await getAccessToken();
 
       const formData = new FormData();
-      formData.append("name", "test");
-      formData.append("description", "test");
+      formData.append("name", name);
+      formData.append("description", description);
 
       if (image) {
         const filename = image.split("/").pop() || `photo.jpg`;
@@ -79,6 +87,7 @@ export default function ExploreAddBookcaseModal({
           text2: t("modal.addBookcase.bookcaseAdded"),
         });
         setShowAddBookcaseModal(false);
+        triggerBookcases();
       } else if (response.status === 413) {
         Toast.show({
           type: "ToastError",
@@ -98,15 +107,25 @@ export default function ExploreAddBookcaseModal({
         text1: t("modal.addBookcase.error"),
         text2: t("modal.addBookcase.bookcaseAddedFailed"),
       });
+    } finally {
+      setFetchLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{t("modal.addBookcase.title")}</Text>
-      <VocaInputField placeholder={t("modal.addBookcase.name")} />
+      <VocaInputField
+        placeholder={t("modal.addBookcase.name")}
+        value={name}
+        onChangeText={setName}
+      />
       <View style={styles.spacing} />
-      <VocaInputField placeholder={t("modal.addBookcase.description")} />
+      <VocaInputField
+        placeholder={t("modal.addBookcase.description")}
+        value={description}
+        onChangeText={setDescription}
+      />
       <View style={styles.photoTextContainer}>
         {i18n.language === "ko" ? (
           <Fragment>
@@ -146,9 +165,15 @@ export default function ExploreAddBookcaseModal({
             {t("modal.addBookcase.cancel")}
           </Text>
         </Pressable>
-        <Pressable onPress={addBookcase}>
-          <Text style={styles.addButtonText}>{t("modal.addBookcase.add")}</Text>
-        </Pressable>
+        {fetchLoading ? (
+          <ActivityIndicator size="small" color="#2988F6" />
+        ) : (
+          <Pressable onPress={addBookcase}>
+            <Text style={styles.addButtonText}>
+              {t("modal.addBookcase.add")}
+            </Text>
+          </Pressable>
+        )}
       </View>
     </View>
   );

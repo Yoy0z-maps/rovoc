@@ -2,10 +2,21 @@ import { TextInput, StyleSheet } from "react-native";
 
 export default function VocaInputField({
   placeholder,
+  value,
+  onChangeText,
 }: {
   placeholder: string;
+  value: string;
+  onChangeText: (text: string) => void;
 }) {
-  return <TextInput style={styles.input} placeholder={placeholder} />;
+  return (
+    <TextInput
+      style={styles.input}
+      placeholder={placeholder}
+      value={value}
+      onChangeText={onChangeText}
+    />
+  );
 }
 
 const styles = StyleSheet.create({

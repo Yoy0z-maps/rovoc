@@ -2,22 +2,61 @@ import {
   StyleSheet,
   ScrollView,
   View,
-  Text,
   Modal,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from "react-native";
 import VocaCard from "@/components/explore/VocaCard";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import ExploreHeader from "@/components/explore/ExploreHeader";
 import ExploreFilterModal from "@/components/explore/ExploreFilterModal";
 import ExploreAddBookcaseModal from "@/components/explore/ExploreAddBookcaseModal";
 import SearchHistory from "@/components/explore/search/SearchHistory";
 import SearchDictTerm from "@/components/explore/search/SearchDictTerm";
+import { getAllBookcases } from "@/utils/bookcase";
+import { Wordbook } from "@/types/wordbooks";
+import NoBookcase from "@/components/explore/NoBookcase";
 
 export default function ExploreScreen() {
   const [searchWord, setSearchWord] = useState("");
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showAddBookcaseModal, setShowAddBookcaseModal] = useState(false);
+  const [bookcases, setBookcases] = useState<Wordbook[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const triggerBookcases = async () => {
+    const updatedBookcases = await getAllBookcases();
+    setBookcases(updatedBookcases.results);
+  };
+
+  useEffect(() => {
+    const fetchBookcases = async () => {
+      const bookcases = await getAllBookcases();
+      setBookcases(bookcases.results);
+      setLoading(false);
+    };
+    setLoading(true);
+    fetchBookcases();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ExploreHeader
+          searchWord={searchWord}
+          setSearchWord={setSearchWord}
+          setShowFilterModal={setShowFilterModal}
+          setShowAddBookcaseModal={setShowAddBookcaseModal}
+          isInSearch={searchWord ? true : false}
+        />
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size="large" color="#2988F6" />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -35,7 +74,21 @@ export default function ExploreScreen() {
             <SearchDictTerm searchWord={searchWord} />
           </Fragment>
         ) : (
-          <VocaCard />
+          <Fragment>
+            {bookcases.length > 0 ? (
+              <Fragment>
+                {bookcases.map((bookcase) => (
+                  <VocaCard
+                    key={bookcase.id}
+                    bookcase={bookcase}
+                    triggerBookcases={triggerBookcases}
+                  />
+                ))}
+              </Fragment>
+            ) : (
+              <NoBookcase setShowAddBookcaseModal={setShowAddBookcaseModal} />
+            )}
+          </Fragment>
         )}
       </ScrollView>
       <Modal
@@ -66,6 +119,7 @@ export default function ExploreScreen() {
           <View style={styles.addBookcaseModalBackground}>
             <TouchableWithoutFeedback>
               <ExploreAddBookcaseModal
+                triggerBookcases={triggerBookcases}
                 setShowAddBookcaseModal={setShowAddBookcaseModal}
               />
             </TouchableWithoutFeedback>

@@ -1,41 +1,76 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { Wordbook } from "@/types/wordbooks";
+import { importantBookcase } from "@/utils/bookcase";
+import VocaCardOptions from "./VocaCardOptions";
 
-export default function VocaCard() {
-  // 클릭 시 /[explore]로 이동
-  const router = useRouter();
+export default function VocaCard({
+  bookcase,
+  triggerBookcases,
+}: {
+  bookcase: Wordbook;
+  triggerBookcases: () => void;
+}) {
+  const [isImportant, setIsImportant] = useState(bookcase.is_important);
+  const [showOptions, setShowOptions] = useState(false);
 
   return (
-    <Pressable onPress={() => console.log("clicked")}>
-      <View style={styles.card}>
-        <View style={styles.header}>
-          <Text style={styles.title}>TOEFL</Text>
-          <View style={styles.iconContainer}>
-            <FontAwesome name="star" size={24} color="gold" />
-            <MaterialIcons name="more-vert" size={24} color="black" />
+    <View style={styles.container}>
+      <Pressable onPress={() => console.log("clicked")}>
+        <View style={styles.card}>
+          <View style={styles.header}>
+            <Text style={styles.title}>{bookcase.name}</Text>
+            <View style={styles.iconContainer}>
+              <Pressable
+                onPress={async () => {
+                  setIsImportant(!isImportant);
+                  await importantBookcase(bookcase.id);
+                }}
+              >
+                <FontAwesome
+                  name="star"
+                  size={24}
+                  color={isImportant ? "gold" : "#dcdcdc"}
+                />
+              </Pressable>
+              <Pressable onPress={() => setShowOptions(!showOptions)}>
+                <MaterialIcons name="more-vert" size={24} color="black" />
+              </Pressable>
+            </View>
+          </View>
+          <Text style={styles.description}>{bookcase.description}</Text>
+          <View style={styles.footer}>
+            <View style={styles.footerItem}>
+              <FontAwesome name="font" size={18} color="black" />
+              <Text style={styles.footerText}>
+                Total {bookcase.word_count} words
+              </Text>
+            </View>
+            <View style={styles.footerItem}>
+              <FontAwesome name="eye" size={18} color="black" />
+              <Text style={styles.footerText}>
+                Total {bookcase.views} repetitions
+              </Text>
+            </View>
           </View>
         </View>
-        <Text style={styles.description}>
-          TOEFL시험 출제 빈도수 최대 단어 모음집
-        </Text>
-        <View style={styles.footer}>
-          <View style={styles.footerItem}>
-            <FontAwesome name="font" size={18} color="black" />
-            <Text style={styles.footerText}>Total 172 words</Text>
-          </View>
-          <View style={styles.footerItem}>
-            <FontAwesome name="eye" size={18} color="black" />
-            <Text style={styles.footerText}>Total 14 repetitions</Text>
-          </View>
-        </View>
-      </View>
-    </Pressable>
+      </Pressable>
+      {showOptions && (
+        <VocaCardOptions
+          setShowOptions={setShowOptions}
+          bookcaseId={bookcase.id}
+          triggerBookcases={triggerBookcases}
+        />
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    position: "relative",
+  },
   card: {
     borderTopWidth: 2,
     borderBottomWidth: 3.5,

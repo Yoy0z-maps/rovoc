@@ -2,6 +2,10 @@
   "index": {
     "title": "Hello"
   },
+  "explore": {
+    "edit": "Edit",
+    "delete": "Delete"
+  },
   "auth": {
     "kakaotalk": "Sign in with KakaoTalk",
     "wechat": "Login with WeChat",
