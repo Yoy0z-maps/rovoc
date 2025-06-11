@@ -64,5 +64,17 @@
       "hide": "Hide",
       "show": "Show"
     }
+  },
+  "modal": {
+    "addBookcase": {
+      "title": "ADD BOOKCASE",
+      "name": "Bookcase Name (required)",
+      "description": "Description (optional)",
+      "click": "Click",
+      "here": "here",
+      "toAddBookcasePhoto": "to add Bookcase Photo",
+      "cancel": "Cancel",
+      "add": "Add"
+    }
   }
 }

@@ -1,24 +1,45 @@
 import { View, StyleSheet, Text, Pressable } from "react-native";
 import VocaInputField from "../index/VocaInputField";
 import Toast from "react-native-toast-message";
+import { useTranslation } from "react-i18next";
+import { Fragment } from "react";
 
 export default function ExploreAddBookcaseModal({
   setShowAddBookcaseModal,
 }: {
   setShowAddBookcaseModal: (value: boolean) => void;
 }) {
+  const { t, i18n } = useTranslation();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>ADD BOOKCASE</Text>
-      <VocaInputField placeholder="Bookcase Name (required)" />
+      <Text style={styles.title}>{t("modal.addBookcase.title")}</Text>
+      <VocaInputField placeholder={t("modal.addBookcase.name")} />
       <View style={styles.spacing} />
-      <VocaInputField placeholder="Description (optional)" />
+      <VocaInputField placeholder={t("modal.addBookcase.description")} />
       <View style={styles.photoTextContainer}>
-        <Text style={styles.photoText}>Click </Text>
-        <Pressable onPress={() => {}}>
-          <Text style={styles.photoTextLink}>here</Text>
-        </Pressable>
-        <Text style={styles.photoText}>to add Bookcase Photo</Text>
+        {i18n.language === "ko" ? (
+          <Fragment>
+            <Pressable onPress={() => {}}>
+              <Text style={styles.photoTextLink}>
+                {t("modal.addBookcase.here")}
+              </Text>
+            </Pressable>
+            <Text style={styles.photoText}>to add Bookcase Photo</Text>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <Text style={styles.photoText}>{t("modal.addBookcase.click")}</Text>
+            <Pressable onPress={() => {}}>
+              <Text style={styles.photoTextLink}>
+                {t("modal.addBookcase.here")}
+              </Text>
+            </Pressable>
+            <Text style={styles.photoText}>
+              {t("modal.addBookcase.toAddBookcasePhoto")}
+            </Text>
+          </Fragment>
+        )}
       </View>
       <View style={styles.buttonContainer}>
         <Pressable
@@ -26,7 +47,9 @@ export default function ExploreAddBookcaseModal({
             setShowAddBookcaseModal(false);
           }}
         >
-          <Text style={styles.cancelButtonText}>Cancel</Text>
+          <Text style={styles.cancelButtonText}>
+            {t("modal.addBookcase.cancel")}
+          </Text>
         </Pressable>
         <Pressable
           onPress={() => {
@@ -38,7 +61,7 @@ export default function ExploreAddBookcaseModal({
             setShowAddBookcaseModal(false);
           }}
         >
-          <Text style={styles.addButtonText}>Add</Text>
+          <Text style={styles.addButtonText}>{t("modal.addBookcase.add")}</Text>
         </Pressable>
       </View>
     </View>

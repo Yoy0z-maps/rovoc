@@ -63,5 +63,17 @@
       "hide": "숨기기",
       "show": "보기"
     }
+  },
+  "modal": {
+    "addBookcase": {
+      "title": "단어장 추가",
+      "name": "단어장 이름 (필수)",
+      "description": "설명 (선택)",
+      "click": "",
+      "here": "여기",
+      "toAddBookcasePhoto": "를 클릭해서 단어장 사진을 추가해요",
+      "cancel": "취소",
+      "add": "추가"
+    }
   }
 }
