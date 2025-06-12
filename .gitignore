@@ -42,3 +42,6 @@ ios/
 android/
 
 client_secret_712812670881-ohclfkq8guj300an8iblntrvdc83q6ae.apps.googleusercontent.com.json
+CertificateSigningRequest.certSigningRequest
+aps.cer
+ios_development.cer
