@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import BookcaseModal from "@/components/index/BookcaseModal";
 import { getAllBookcases } from "@/utils/bookcase";
 import { Wordbook } from "@/types/wordbooks";
+import { getAccessToken } from "@/utils/token";
 
 export default function HomeScreen() {
   const [showBookcaseModal, setShowBookcaseModal] = useState(false);

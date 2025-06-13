@@ -15,7 +15,6 @@ export default function AppleLoginButton() {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
-      console.log(credential);
       const rovoca_res = await fetch(
         `${API_SERVER_ADDRESS}/users/auth/social-login/`,
         {

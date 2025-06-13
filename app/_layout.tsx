@@ -54,27 +54,6 @@ export default function RootLayout() {
     PressStart2P: require("../assets/fonts/PressStart2P.ttf"),
   });
 
-  // 토큰 유효성 검사
-  useEffect(() => {
-    const checkToken = async () => {
-      const token = await getAccessToken();
-      if (!token) {
-        return;
-      }
-      const decoded = jwtDecode(token);
-      if (decoded.exp && decoded.exp < Date.now() / 1000) {
-        console.log("Token expired");
-        refreshToken();
-        console.log("Token refreshed");
-        return;
-      } else {
-        console.log("Token valid");
-        return;
-      }
-    };
-    checkToken();
-  }, []);
-
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
