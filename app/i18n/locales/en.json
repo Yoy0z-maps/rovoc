@@ -1,6 +1,13 @@
 {
   "index": {
-    "title": "Hello"
+    "title": "Hello",
+    "review": {
+      "title": "Vocabulary recently added",
+      "subtitle": "Do you still remember?",
+      "noWords": "No words added.",
+      "show": "Show",
+      "hide": "Hide"
+    }
   },
   "explore": {
     "edit": "Edit",

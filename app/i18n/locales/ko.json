@@ -1,6 +1,13 @@
 {
   "index": {
-    "title": "안녕하세요"
+    "title": "안녕하세요",
+    "review": {
+      "title": "최근에 추가된 단어",
+      "subtitle": "아직 기억하고 있나요?",
+      "noWords": "추가된 단어가 없어요.",
+      "show": "보기",
+      "hide": "가리기"
+    }
   },
   "explore": {
     "edit": "수정",

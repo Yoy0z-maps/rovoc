@@ -1,5 +1,5 @@
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import { Voca } from "@/types/vocab";
+import { Word } from "@/types/word";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const fetchRecentWords = async (accessToken: string) => {
@@ -12,7 +12,7 @@ export const fetchRecentWords = async (accessToken: string) => {
       Authorization: `Bearer ${accessToken}`,
     },
   });
-  const data: Voca[] = await response.json();
+  const data: Word[] = await response.json();
 
   try {
     await AsyncStorage.setItem("recentWords", JSON.stringify(data));
