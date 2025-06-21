@@ -34,5 +34,7 @@ export async function refreshToken() {
       refresh: data.refresh,
     };
     await setUser(updatedUser);
+    return data.access;
   }
+  return "";
 }

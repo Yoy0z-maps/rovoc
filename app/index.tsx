@@ -3,6 +3,8 @@ import { useRouter } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 import { getAccessToken, refreshToken } from "@/utils/token";
 import { jwtDecode } from "jwt-decode";
+import LottieView from "lottie-react-native";
+import { fetchRecentWords } from "@/utils/word";
 
 export default function Index() {
   const router = useRouter();
@@ -11,33 +13,45 @@ export default function Index() {
     const decoded = jwtDecode(token);
     if (decoded.exp && decoded.exp < Date.now() / 1000) {
       console.log("Token expired");
-      await refreshToken();
+      const newToken = await refreshToken();
       console.log("Token refreshed");
-      return;
+      return newToken;
     } else {
       console.log("Token valid");
-      return;
+      return token;
     }
   };
 
-  const checkLogin = async () => {
+  const initialize = async () => {
     const token = await getAccessToken();
     if (token) {
-      await checkToken(token);
+      const accessToken = await checkToken(token);
+      await fetchRecentWords(accessToken);
       router.replace("/(mainTabs)");
     } else {
       router.replace("/auth");
     }
   };
 
-  // 로그인 페이지에서 로그인 후, 글러벌 상태 관리를 해서 인증 상태 관리하고 상태 변경에 따라 네비게이션 트리거 필요
   useEffect(() => {
-    checkLogin();
+    initialize();
   }, []);
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <ActivityIndicator size="large" color="#2988F6" />
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#fff",
+      }}
+    >
+      <LottieView
+        source={require("@/assets/lottie/Loading.json")}
+        autoPlay
+        loop
+        style={{ width: 220, height: 200 }}
+      />
     </View>
   );
 }
