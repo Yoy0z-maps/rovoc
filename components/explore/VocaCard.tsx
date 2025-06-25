@@ -24,7 +24,7 @@ export default function VocaCard({
         onPress={() =>
           router.push({
             pathname: "/[bookcase]",
-            params: { bookcase: bookcase.id },
+            params: { bookcase: bookcase.id, bookcase_name: bookcase.name },
           })
         }
       >

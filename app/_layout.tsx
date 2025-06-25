@@ -76,7 +76,7 @@ export default function RootLayout() {
         <Stack.Screen name="quiz" options={{ headerShown: false }} />
         <Stack.Screen name="hangman" options={{ headerShown: false }} />
         <Stack.Screen name="sentence" options={{ headerShown: false }} />
-        <Stack.Screen name="[bookcase]" />
+        <Stack.Screen name="[bookcase]" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <Toast config={toastConfig} />

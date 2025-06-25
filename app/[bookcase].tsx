@@ -1,13 +1,14 @@
-import { View, Text, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator, SafeAreaView } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { getAccessToken } from "@/utils/token";
-import { Voca } from "@/types/vocab";
+import { Word } from "@/types/word";
+import BookcaseHeader from "@/components/bookcase/BookcaseHeader";
 
 export default function BookcasScreen() {
-  const { bookcase } = useLocalSearchParams();
-  const [bookcaseWords, setBookcaseWords] = useState<Voca[]>([]);
+  const { bookcase, bookcase_name } = useLocalSearchParams();
+  const [bookcaseWords, setBookcaseWords] = useState<Word[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -50,11 +51,8 @@ export default function BookcasScreen() {
   }
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 20 }}>
-        Bookcase ID: {bookcase}
-      </Text>
-
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <BookcaseHeader bookcase_name={bookcase_name as string} />
       {bookcaseWords.length === 0 ? (
         <Text>No words found in this bookcase.</Text>
       ) : (
@@ -62,7 +60,7 @@ export default function BookcasScreen() {
           <View
             key={word.id}
             style={{
-              marginBottom: 15,
+              marginVertical: 15,
               padding: 10,
               backgroundColor: "tomato",
               borderRadius: 8,
@@ -87,6 +85,6 @@ export default function BookcasScreen() {
           </View>
         ))
       )}
-    </View>
+    </SafeAreaView>
   );
 }
