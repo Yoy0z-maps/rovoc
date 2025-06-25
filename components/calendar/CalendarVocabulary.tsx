@@ -1,23 +1,49 @@
-import { Voca } from "@/types/vocab";
+import LottieView from "lottie-react-native";
 import { View, StyleSheet, Text, Image } from "react-native";
+import ReviewVocaItem from "../index/ReviewVocaItem";
+import { Word } from "@/types/word";
 
 export default function CalendarVocabulary({
   vocaData,
+  isLoading,
 }: {
-  vocaData: Voca[] | [];
+  vocaData: Word[] | [];
+  isLoading: boolean;
 }) {
-  // /(mainTabs)/index.tsx에 있는 단어랑 뜻 보여주는 컴포넌트 재사용하기
-  if (vocaData.length > 0) return <View></View>;
+  if (isLoading)
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LottieView
+          source={require("@/assets/lottie/Loading.json")}
+          autoPlay
+          loop
+          style={{ width: 220, height: 200 }}
+        />
+      </View>
+    );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Ooops...</Text>
-      <Text style={styles.text}>There is no voca added today</Text>
-      <Text style={styles.question}>?</Text>
-      <Image
-        source={require("@/assets/images/rovoca-gray.png")}
-        style={styles.image}
-      />
+      {vocaData.length > 0 ? (
+        vocaData.map((word) => <ReviewVocaItem key={word.id} word={word} />)
+      ) : (
+        <View style={styles.container}>
+          <Text style={styles.text}>Ooops...</Text>
+          <Text style={styles.text}>There is no voca added today</Text>
+          <Text style={styles.question}>?</Text>
+          <Image
+            source={require("@/assets/images/rovoca-gray.png")}
+            style={styles.image}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -25,10 +51,11 @@ export default function CalendarVocabulary({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 30,
     flexDirection: "column",
-    paddingHorizontal: 24,
     alignItems: "center",
     marginTop: 10,
+    gap: 10,
   },
   text: {
     fontFamily: "PressStart2P",
