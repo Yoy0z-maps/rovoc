@@ -16,7 +16,8 @@
   "auth": {
     "kakaotalk": "카카오톡으로 로그인",
     "wechat": "WeChat으로 로그인",
-    "apple": "Apple ID로 로그인"
+    "apple": "Apple ID로 로그인",
+    "google": "Google 계정으로 로그인"
   },
   "notice": {
     "title": "안녕하세요"

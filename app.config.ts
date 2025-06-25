@@ -49,6 +49,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     "expo-localization",
     "expo-audio",
     "expo-apple-authentication",
+    "@react-native-google-signin/google-signin",
     [
       "expo-build-properties",
       {

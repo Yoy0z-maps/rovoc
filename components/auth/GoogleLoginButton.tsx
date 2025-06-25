@@ -1,36 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Pressable, Image, Text, StyleSheet, Dimensions } from "react-native";
-import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
 import { useTranslation } from "react-i18next";
 import { setUser } from "@/utils/user";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 const { width } = Dimensions.get("window");
-
-WebBrowser.maybeCompleteAuthSession();
 
 export default function GoogleLogin() {
   const { t } = useTranslation();
   const [userInfo, setUserInfo] = useState(null);
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_IOS_CLIENT_ID,
-    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_ANDROID_CLIENT_ID,
-    redirectUri: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_REDIRECT_URI,
-    scopes: ["profile", "email"],
-  });
-
   useEffect(() => {
-    if (response?.type === "success" && response.authentication?.accessToken) {
-      fetchUserInfo(response.authentication.accessToken);
-    }
-  }, [response]);
+    GoogleSignin.configure({
+      webClientId:
+        "323791863136-r56tlsb1k9eunero324c8klpuq4asbc3.apps.googleusercontent.com",
+      scopes: ["email", "profile"],
+      offlineAccess: false,
+      forceCodeForRefreshToken: false,
+    });
+  }, []);
 
-  useEffect(() => {
-    if (userInfo) {
+  const handleGoogleLogin = useCallback(async () => {
+    console.log("handleGoogleLogin");
+    try {
+      // Google Play Services 확인 (Android)
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
       console.log(userInfo);
+    } catch (error) {
+      console.log("Google Sign In error:", error);
     }
-  }, [userInfo]);
+  }, []);
 
   async function fetchUserInfo(token: string) {
     try {
@@ -46,11 +46,7 @@ export default function GoogleLogin() {
   }
 
   return (
-    <Pressable
-      style={styles.container}
-      onPress={() => promptAsync()}
-      disabled={!request}
-    >
+    <Pressable style={styles.container} onPress={handleGoogleLogin}>
       <Image
         source={require("@/assets/images/google.png")}
         style={styles.image}

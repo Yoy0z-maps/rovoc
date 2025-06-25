@@ -36,7 +36,7 @@ const key = "0eb5e8ec68637741e8154aa38486d9f9";
 console.log("init");
 console.log(key);
 initializeKakaoSDK(key || "");
-getKeyHashAndroid().then(console.log);
+// getKeyHashAndroid().then(console.log);
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 

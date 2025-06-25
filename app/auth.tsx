@@ -1,4 +1,4 @@
-import { View, Pressable } from "react-native";
+import { View, Pressable, Platform } from "react-native";
 
 import Logo from "@/components/auth/Logo";
 import { useTranslation } from "react-i18next";
@@ -9,16 +9,12 @@ import GoogleLogin from "@/components/auth/GoogleLoginButton";
 import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import AppleLoginButton from "@/components/auth/AppleLoginButton";
 import NaverLoginButton from "@/components/auth/NaverLoginButton";
+import LanguageSelector from "@/components/auth/LanguageSelector";
 
 export default function AuthPage() {
-  // i18n
-  const { t, i18n } = useTranslation();
-
-  const changeLanguage = (language: string) => {
-    i18n.changeLanguage(language);
-  };
-
+  const deviceType = Platform.OS;
   const [count, setCount] = useState(0);
+
   const handleCount = () => {
     setCount(count + 1);
     if (count === 4) {
@@ -34,6 +30,7 @@ export default function AuthPage() {
         alignItems: "center",
       }}
     >
+      <LanguageSelector />
       <Pressable onPress={handleCount}>
         <Logo />
       </Pressable>
@@ -44,8 +41,8 @@ export default function AuthPage() {
         }}
       >
         <KakaoLoginButton />
-        <AppleLoginButton />
-        <GoogleLogin />
+        {deviceType === "ios" && <AppleLoginButton />}
+        {deviceType === "android" && <GoogleLogin />}
         {/* <NaverLoginButton /> */}
       </View>
     </View>
