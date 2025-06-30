@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, Animated } from "react-native";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { Wordbook } from "@/types/wordbooks";
 import { importantBookcase } from "@/utils/bookcase";
 import VocaCardOptions from "./VocaCardOptions";
 import { useRouter } from "expo-router";
+import useAnimatedImportant from "@/hooks/useAnimatedImportant";
 
 export default function BookcaseCard({
   bookcase,
@@ -17,7 +18,9 @@ export default function BookcaseCard({
 }) {
   const router = useRouter();
 
-  const [isImportant, setIsImportant] = useState(bookcase.is_important);
+  const { isImportant, scaleAnim, importantAnimation } = useAnimatedImportant({
+    bookcase,
+  });
   const [showOptions, setShowOptions] = useState(false);
 
   return (
@@ -36,15 +39,16 @@ export default function BookcaseCard({
             <View style={styles.iconContainer}>
               <Pressable
                 onPress={async () => {
-                  setIsImportant(!isImportant);
-                  await importantBookcase(bookcase.id);
+                  await importantAnimation(bookcase.id);
                 }}
               >
-                <FontAwesome
-                  name="star"
-                  size={24}
-                  color={isImportant ? "gold" : "#dcdcdc"}
-                />
+                <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+                  <FontAwesome
+                    name="star"
+                    size={20}
+                    color={isImportant ? "gold" : "#dcdcdc"}
+                  />
+                </Animated.View>
               </Pressable>
               <Pressable onPress={() => setShowOptions(!showOptions)}>
                 <MaterialIcons name="more-vert" size={24} color="black" />

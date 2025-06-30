@@ -1,10 +1,19 @@
-import { View, Text, ActivityIndicator, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  SafeAreaView,
+  Animated,
+  RefreshControl,
+} from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { getAccessToken } from "@/utils/token";
 import { Word } from "@/types/word";
 import BookcaseHeader from "@/components/bookcase/BookcaseHeader";
+import LottieView from "lottie-react-native";
+import VocaItem from "@/components/bookcase/VocaItem";
 
 export default function BookcasScreen() {
   const { bookcase, bookcase_name } = useLocalSearchParams();
@@ -16,7 +25,7 @@ export default function BookcasScreen() {
       try {
         const token = await getAccessToken();
         const response = await fetch(
-          `${API_SERVER_ADDRESS}/word/words/?wordbook=${bookcase}`,
+          `${API_SERVER_ADDRESS}/word/wordbooks/id/?wordbook=${bookcase}`,
           {
             method: "GET",
             headers: {
@@ -24,11 +33,10 @@ export default function BookcasScreen() {
             },
           }
         );
-
         if (response.ok) {
           const data = await response.json();
-          console.log("API Response:", data);
-          setBookcaseWords(data.results || []);
+          console.log(data.words);
+          setBookcaseWords(data.words || []);
         }
       } catch (error) {
         console.error("Error fetching words:", error);
@@ -42,6 +50,30 @@ export default function BookcasScreen() {
     }
   }, [bookcase]);
 
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const showLottie = scrollY.interpolate({
+    inputRange: [-100, 0],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+
+  const [refreshing, setRefreshing] = useState(false);
+  const lottieRef = useRef<LottieView>(null);
+
+  scrollY.addListener(({ value }) => {
+    const pullDistance = Math.min(Math.abs(value), 100); // 0 ~ 100
+    const progress = pullDistance / 100;
+    lottieRef.current?.play(progress);
+  });
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    lottieRef.current?.play(); // 실제 새로고침 시작
+    await new Promise((res) => setTimeout(res, 2000));
+    setRefreshing(false);
+    lottieRef.current?.reset();
+  };
+
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -53,38 +85,43 @@ export default function BookcasScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <BookcaseHeader bookcase_name={bookcase_name as string} />
-      {bookcaseWords.length === 0 ? (
-        <Text>No words found in this bookcase.</Text>
-      ) : (
-        bookcaseWords.map((word) => (
-          <View
-            key={word.id}
-            style={{
-              marginVertical: 15,
-              padding: 10,
-              backgroundColor: "tomato",
-              borderRadius: 8,
-            }}
-          >
-            {/* Voca 타입 백엔드 응답에 맞게 바꿔야함!!!*/}
-            <Text
-              style={{ fontSize: 16, fontWeight: "bold", color: "#2988F6" }}
-            >
-              {word.text}
-            </Text>
-            {/* {word.meaning && word.meaning.length > 0 && (
-              <Fragment>
-                <Text>Definition: {word.meaning[0]?.definition || "N/A"}</Text>
-                <Text>Part of Speech: {word.meaning[0]?.part || "N/A"}</Text>
-                <Text>Example: {word.meaning[0]?.example || "N/A"}</Text>
-              </Fragment>
-            )} */}
-            <Text style={{ fontSize: 12, color: "#666" }}>
-              Created: {word.created_at}
-            </Text>
-          </View>
-        ))
-      )}
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: 130,
+          alignSelf: "center",
+          zIndex: 10,
+          opacity: showLottie, // 👉 여기 핵심!
+          transform: [{ scale: showLottie }],
+        }}
+      >
+        <LottieView
+          ref={lottieRef}
+          source={require("@/assets/lottie/Refresh.json")}
+          style={{ width: 100, height: 100 }}
+          loop={false}
+          autoPlay={false}
+          progress={0}
+        />
+      </Animated.View>
+      <Animated.FlatList
+        data={bookcaseWords}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <VocaItem word={item} />}
+        scrollEventThrottle={4}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["transparent"]}
+          />
+        }
+        contentContainerStyle={{ paddingVertical: 30, paddingHorizontal: 24 }} // 상단 여유 공간 확보
+      />
     </SafeAreaView>
   );
 }

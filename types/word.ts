@@ -8,4 +8,5 @@ export interface Word {
   }[];
   created_at: string;
   is_learned: boolean;
+  is_important: boolean;
 }
