@@ -15,20 +15,16 @@ import { useEffect, useState } from "react";
 import BookcaseModal from "@/components/index/BookcaseModal";
 import { getAllBookcases } from "@/utils/bookcase";
 import { Wordbook } from "@/types/wordbooks";
-import { getAccessToken } from "@/utils/token";
+import { useBookcases } from "@/hooks/useBookcase";
 
 export default function HomeScreen() {
   const [showBookcaseModal, setShowBookcaseModal] = useState(false);
-  const [bookcases, setBookcases] = useState<Wordbook[]>([]);
   const [targetBookcase, setTargetBookcase] = useState<Wordbook | null>(null);
 
+  const { bookcases, loading, refetch } = useBookcases();
+
   useEffect(() => {
-    const fetchBookcases = async () => {
-      const bookcases = await getAllBookcases();
-      setBookcases(bookcases.results);
-      setTargetBookcase(bookcases.results[0]);
-    };
-    fetchBookcases();
+    setTargetBookcase(bookcases[0]);
   }, []);
 
   return (
@@ -45,7 +41,7 @@ export default function HomeScreen() {
             setShowBookcaseModal={setShowBookcaseModal}
           />
           <ReviewVocaContainer />
-          <BookcaseContainer />
+          <BookcaseContainer bookcases={bookcases} />
         </ScrollView>
         <Modal
           transparent={true}

@@ -1,7 +1,12 @@
 import { StyleSheet, View, Text, ScrollView } from "react-native";
-import BookcaseCard from "@/components/index/BookcaseCard";
+import BookcaseCarWithImage from "@/components/index/BookcaseCardWithImage";
+import { Wordbook } from "@/types/wordbooks";
 
-export default function BookcaseContainer() {
+export default function BookcaseContainer({
+  bookcases,
+}: {
+  bookcases: Wordbook[];
+}) {
   return (
     <View style={styles.vocabularyBookcaseContainer}>
       <Text style={styles.vocabularyBookcaseTitle}>My Vocab Bookcase</Text>
@@ -10,9 +15,9 @@ export default function BookcaseContainer() {
         style={{ marginTop: 15 }}
         showsHorizontalScrollIndicator={false}
       >
-        <BookcaseCard />
-        <BookcaseCard />
-        <BookcaseCard />
+        {bookcases.map((bookcase) => (
+          <BookcaseCarWithImage key={bookcase.id} bookcase={bookcase} />
+        ))}
       </ScrollView>
     </View>
   );

@@ -1,47 +1,35 @@
 import {
-  StyleSheet,
   ScrollView,
   View,
   Modal,
   TouchableWithoutFeedback,
   ActivityIndicator,
 } from "react-native";
-import VocaCard from "@/components/explore/VocaCard";
-import { Fragment, useEffect, useState } from "react";
+import BookcaseCard from "@/components/explore/BookcaseCard";
+import { Fragment, useState } from "react";
 import ExploreHeader from "@/components/explore/ExploreHeader";
 import ExploreFilterModal from "@/components/explore/ExploreFilterModal";
 import ExploreAddBookcaseModal from "@/components/explore/ExploreAddBookcaseModal";
 import SearchHistory from "@/components/explore/search/SearchHistory";
 import SearchDictTerm from "@/components/explore/search/SearchDictTerm";
-import { getAllBookcases } from "@/utils/bookcase";
-import { Wordbook } from "@/types/wordbooks";
 import NoBookcase from "@/components/explore/NoBookcase";
+import { useBookcases } from "@/hooks/useBookcase";
 
 export default function ExploreScreen() {
   const [searchWord, setSearchWord] = useState("");
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showAddBookcaseModal, setShowAddBookcaseModal] = useState(false);
-  const [bookcases, setBookcases] = useState<Wordbook[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  const triggerBookcases = async () => {
-    const updatedBookcases = await getAllBookcases();
-    setBookcases(updatedBookcases.results);
-  };
-
-  useEffect(() => {
-    const fetchBookcases = async () => {
-      const bookcases = await getAllBookcases();
-      setBookcases(bookcases.results);
-      setLoading(false);
-    };
-    setLoading(true);
-    fetchBookcases();
-  }, []);
+  const { bookcases, loading, refetch } = useBookcases();
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#fff",
+        }}
+      >
         <ExploreHeader
           searchWord={searchWord}
           setSearchWord={setSearchWord}
@@ -59,7 +47,12 @@ export default function ExploreScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+      }}
+    >
       <ExploreHeader
         searchWord={searchWord}
         setSearchWord={setSearchWord}
@@ -77,11 +70,12 @@ export default function ExploreScreen() {
           <Fragment>
             {bookcases.length > 0 ? (
               <Fragment>
-                {bookcases.map((bookcase) => (
-                  <VocaCard
+                {bookcases.map((bookcase, index) => (
+                  <BookcaseCard
                     key={bookcase.id}
                     bookcase={bookcase}
-                    triggerBookcases={triggerBookcases}
+                    triggerBookcases={refetch}
+                    isLast={index === bookcases.length - 1}
                   />
                 ))}
               </Fragment>
@@ -98,7 +92,14 @@ export default function ExploreScreen() {
         onRequestClose={() => setShowFilterModal(false)}
       >
         <TouchableWithoutFeedback onPress={() => setShowFilterModal(false)}>
-          <View style={styles.filterModalBackground}>
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
             <TouchableWithoutFeedback>
               <View>
                 <ExploreFilterModal />
@@ -116,10 +117,17 @@ export default function ExploreScreen() {
         <TouchableWithoutFeedback
           onPress={() => setShowAddBookcaseModal(false)}
         >
-          <View style={styles.addBookcaseModalBackground}>
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <TouchableWithoutFeedback>
               <ExploreAddBookcaseModal
-                triggerBookcases={triggerBookcases}
+                triggerBookcases={refetch}
                 setShowAddBookcaseModal={setShowAddBookcaseModal}
               />
             </TouchableWithoutFeedback>
@@ -129,22 +137,3 @@ export default function ExploreScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  filterModalBackground: {
-    width: "100%",
-    height: "100%",
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
-  addBookcaseModalBackground: {
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

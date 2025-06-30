@@ -1,16 +1,27 @@
-import { View, StyleSheet, Image, Text } from "react-native";
+import { Wordbook } from "@/types/wordbooks";
+import { View, StyleSheet, Image, Text, Pressable } from "react-native";
 
-export default function BookcaseCard() {
+export default function BookcaseCarWithImage({
+  bookcase,
+}: {
+  bookcase: Wordbook;
+}) {
   return (
-    <View style={styles.container}>
-      <Image
-        source={require("../../assets/images/business.jpg")}
-        style={styles.image}
-      />
+    <Pressable style={styles.container}>
+      {bookcase.image ? (
+        <Image source={{ uri: bookcase.image }} style={styles.image} />
+      ) : (
+        <Image
+          source={require("../../assets/images/rovoca-icon.jpg")}
+          style={styles.image}
+        />
+      )}
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>Business</Text>
+        <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+          {bookcase.name}
+        </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -33,6 +44,7 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   titleContainer: {
+    maxWidth: "80%",
     position: "absolute",
     top: 10,
     left: 10,

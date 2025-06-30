@@ -6,12 +6,14 @@ import { importantBookcase } from "@/utils/bookcase";
 import VocaCardOptions from "./VocaCardOptions";
 import { useRouter } from "expo-router";
 
-export default function VocaCard({
+export default function BookcaseCard({
   bookcase,
   triggerBookcases,
+  isLast,
 }: {
   bookcase: Wordbook;
   triggerBookcases: () => void;
+  isLast?: boolean;
 }) {
   const router = useRouter();
 
@@ -19,7 +21,7 @@ export default function VocaCard({
   const [showOptions, setShowOptions] = useState(false);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isLast && { marginBottom: 100 }]}>
       <Pressable
         onPress={() =>
           router.push({
