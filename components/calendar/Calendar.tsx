@@ -83,7 +83,11 @@ export default function Calendar() {
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
       />
-      <CalendarVocabulary vocaData={vocaData} isLoading={isLoading} />
+      <CalendarVocabulary
+        vocaData={vocaData}
+        isLoading={isLoading}
+        selectedDate={`${currentYear}-${currentMonth + 1}-${selectedDate}`}
+      />
     </View>
   );
 }
