@@ -57,6 +57,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           extraMavenRepos: [
             "https://devrepo.kakao.com/nexus/content/groups/public",
           ],
+          targetSdkVersion: 35,
+          compileSdkVersion: 35,
         },
         // ios: {
         //   useFrameworks: "static",
