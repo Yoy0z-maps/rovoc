@@ -8,12 +8,12 @@ import {
 import BookcaseCard from "@/components/explore/BookcaseCard";
 import { Fragment, useState } from "react";
 import ExploreHeader from "@/components/explore/ExploreHeader";
-import ExploreFilterModal from "@/components/explore/ExploreFilterModal";
 import ExploreAddBookcaseModal from "@/components/explore/ExploreAddBookcaseModal";
 import SearchHistory from "@/components/explore/search/SearchHistory";
 import SearchDictTerm from "@/components/explore/search/SearchDictTerm";
 import NoBookcase from "@/components/explore/NoBookcase";
 import { useBookcases } from "@/hooks/useBookcase";
+import ExploreFilterBottomSheet from "@/components/explore/ExploreFilterBottomSheet";
 
 export default function ExploreScreen() {
   const [searchWord, setSearchWord] = useState("");
@@ -91,22 +91,7 @@ export default function ExploreScreen() {
         animationType="slide"
         onRequestClose={() => setShowFilterModal(false)}
       >
-        <TouchableWithoutFeedback onPress={() => setShowFilterModal(false)}>
-          <View
-            style={{
-              width: "100%",
-              height: "100%",
-              justifyContent: "flex-end",
-              alignItems: "center",
-            }}
-          >
-            <TouchableWithoutFeedback>
-              <View>
-                <ExploreFilterModal />
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
+        <ExploreFilterBottomSheet setShowFilterModal={setShowFilterModal} />
       </Modal>
       <Modal
         visible={showAddBookcaseModal}
@@ -114,25 +99,10 @@ export default function ExploreScreen() {
         animationType="fade"
         onRequestClose={() => setShowAddBookcaseModal(false)}
       >
-        <TouchableWithoutFeedback
-          onPress={() => setShowAddBookcaseModal(false)}
-        >
-          <View
-            style={{
-              width: "100%",
-              height: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <TouchableWithoutFeedback>
-              <ExploreAddBookcaseModal
-                triggerBookcases={refetch}
-                setShowAddBookcaseModal={setShowAddBookcaseModal}
-              />
-            </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
+        <ExploreAddBookcaseModal
+          triggerBookcases={refetch}
+          setShowAddBookcaseModal={setShowAddBookcaseModal}
+        />
       </Modal>
     </View>
   );

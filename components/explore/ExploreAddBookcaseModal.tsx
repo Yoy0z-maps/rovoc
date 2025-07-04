@@ -4,6 +4,7 @@ import {
   Text,
   Pressable,
   ActivityIndicator,
+  TouchableWithoutFeedback,
 } from "react-native";
 import VocaInputField from "../index/VocaInputField";
 import Toast from "react-native-toast-message";
@@ -14,11 +15,9 @@ import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { getAccessToken } from "@/utils/token";
 
 export default function ExploreAddBookcaseModal({
-  bookcaseId,
   triggerBookcases,
   setShowAddBookcaseModal,
 }: {
-  bookcaseId?: string;
   triggerBookcases: () => void;
   setShowAddBookcaseModal: (value: boolean) => void;
 }) {
@@ -113,69 +112,82 @@ export default function ExploreAddBookcaseModal({
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{t("modal.addBookcase.title")}</Text>
-      <VocaInputField
-        placeholder={t("modal.addBookcase.name")}
-        value={name}
-        onChangeText={setName}
-      />
-      <View style={styles.spacing} />
-      <VocaInputField
-        placeholder={t("modal.addBookcase.description")}
-        value={description}
-        onChangeText={setDescription}
-      />
-      <View style={styles.photoTextContainer}>
-        {i18n.language === "ko" ? (
-          <Fragment>
-            <Pressable onPress={pickImage}>
-              <Text style={styles.photoTextLink}>
-                {t("modal.addBookcase.here")}
+    <TouchableWithoutFeedback onPress={() => setShowAddBookcaseModal(false)}>
+      <View
+        style={{
+          width: "100%",
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <View style={styles.container}>
+          <Text style={styles.title}>{t("modal.addBookcase.title")}</Text>
+          <VocaInputField
+            placeholder={t("modal.addBookcase.name")}
+            value={name}
+            onChangeText={setName}
+          />
+          <View style={styles.spacing} />
+          <VocaInputField
+            placeholder={t("modal.addBookcase.description")}
+            value={description}
+            onChangeText={setDescription}
+          />
+          <View style={styles.photoTextContainer}>
+            {i18n.language === "ko" ? (
+              <Fragment>
+                <Pressable onPress={pickImage}>
+                  <Text style={styles.photoTextLink}>
+                    {t("modal.addBookcase.here")}
+                  </Text>
+                </Pressable>
+                <Text style={styles.photoText}>to add Bookcase Photo</Text>
+              </Fragment>
+            ) : (
+              <Fragment>
+                <Text style={styles.photoText}>
+                  {t("modal.addBookcase.click")}
+                </Text>
+                <Pressable onPress={pickImage}>
+                  <Text style={styles.photoTextLink}>
+                    {t("modal.addBookcase.here")}
+                  </Text>
+                </Pressable>
+                <Text style={styles.photoText}>
+                  {t("modal.addBookcase.toAddBookcasePhoto")}
+                </Text>
+              </Fragment>
+            )}
+          </View>
+          {loading && (
+            <View style={{ marginTop: 10, alignItems: "center" }}>
+              <ActivityIndicator size="small" color="#2988F6" />
+            </View>
+          )}
+          <View style={styles.buttonContainer}>
+            <Pressable
+              onPress={() => {
+                setShowAddBookcaseModal(false);
+              }}
+            >
+              <Text style={styles.cancelButtonText}>
+                {t("modal.addBookcase.cancel")}
               </Text>
             </Pressable>
-            <Text style={styles.photoText}>to add Bookcase Photo</Text>
-          </Fragment>
-        ) : (
-          <Fragment>
-            <Text style={styles.photoText}>{t("modal.addBookcase.click")}</Text>
-            <Pressable onPress={pickImage}>
-              <Text style={styles.photoTextLink}>
-                {t("modal.addBookcase.here")}
-              </Text>
-            </Pressable>
-            <Text style={styles.photoText}>
-              {t("modal.addBookcase.toAddBookcasePhoto")}
-            </Text>
-          </Fragment>
-        )}
-      </View>
-      {loading && (
-        <View style={{ marginTop: 10, alignItems: "center" }}>
-          <ActivityIndicator size="small" color="#2988F6" />
+            {fetchLoading ? (
+              <ActivityIndicator size="small" color="#2988F6" />
+            ) : (
+              <Pressable onPress={addBookcase}>
+                <Text style={styles.addButtonText}>
+                  {t("modal.addBookcase.add")}
+                </Text>
+              </Pressable>
+            )}
+          </View>
         </View>
-      )}
-      <View style={styles.buttonContainer}>
-        <Pressable
-          onPress={() => {
-            setShowAddBookcaseModal(false);
-          }}
-        >
-          <Text style={styles.cancelButtonText}>
-            {t("modal.addBookcase.cancel")}
-          </Text>
-        </Pressable>
-        {fetchLoading ? (
-          <ActivityIndicator size="small" color="#2988F6" />
-        ) : (
-          <Pressable onPress={addBookcase}>
-            <Text style={styles.addButtonText}>
-              {t("modal.addBookcase.add")}
-            </Text>
-          </Pressable>
-        )}
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
