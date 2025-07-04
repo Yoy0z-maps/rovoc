@@ -1,7 +1,7 @@
-// hooks/useBookcases.ts
 import { useCallback, useEffect, useState } from "react";
 import { getAllBookcases } from "@/utils/bookcase";
 import { Wordbook } from "@/types/wordbooks";
+import { filterBookcases } from "@/utils/bookcaseFilter";
 
 export function useBookcases(filterState?: {
   sortByRecent: boolean;
@@ -17,20 +17,8 @@ export function useBookcases(filterState?: {
       const res = await getAllBookcases();
       let results = res.results;
 
-      if (filterState?.showOnlyStarred) {
-        results = results.filter((item: Wordbook) => item.is_important);
-      }
-
-      if (filterState?.sortByRecent) {
-        results = results.sort(
-          (a: Wordbook, b: Wordbook) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-      } else if (filterState?.sortByOldest) {
-        results = results.sort(
-          (a: Wordbook, b: Wordbook) =>
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-        );
+      if (filterState) {
+        results = filterBookcases(results, filterState);
       }
 
       setBookcases(results);
