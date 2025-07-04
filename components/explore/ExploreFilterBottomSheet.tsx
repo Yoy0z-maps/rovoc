@@ -7,7 +7,9 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from "react-native";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
+import ExploreFilterItem from "./ExploreFilterItem";
+import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 const width = Dimensions.get("window").width;
 
@@ -16,6 +18,14 @@ export default function ExploreFilterBottomSheet({
 }: {
   setShowFilterModal: (show: boolean) => void;
 }) {
+  const { t } = useTranslation();
+
+  const [filterState, setFilterState] = useState({
+    sortByRecent: false,
+    sortByOldest: false,
+    showOnlyStarred: false,
+  });
+
   return (
     <TouchableWithoutFeedback onPress={() => setShowFilterModal(false)}>
       <View
@@ -30,7 +40,9 @@ export default function ExploreFilterBottomSheet({
           <View style={styles.spacing} />
           <View>
             <View style={styles.filterTitleContainer}>
-              <Text style={styles.filterTitle}>Vocabulary Filter Settings</Text>
+              <Text style={styles.filterTitle}>
+                {t("explore.filter.title")}
+              </Text>
               <TouchableOpacity
                 onPress={() => setShowFilterModal(false)}
                 style={{ marginBottom: 4 }}
@@ -38,50 +50,39 @@ export default function ExploreFilterBottomSheet({
                 <AntDesign name="close" size={20} color="#767676" />
               </TouchableOpacity>
             </View>
-            <View style={styles.filterItem}>
-              <BouncyCheckbox
-                fillColor="#2988F6"
-                unFillColor="#FFFFFF"
-                disableText={true}
-                onPress={(isChecked: boolean) => {
-                  console.log(isChecked);
-                }}
-              />
-              <Text style={styles.filterItemText}>Sort by recent</Text>
-            </View>
-            <View style={styles.filterItem}>
-              <BouncyCheckbox
-                fillColor="#2988F6"
-                unFillColor="#FFFFFF"
-                disableText={true}
-                onPress={(isChecked: boolean) => {
-                  console.log(isChecked);
-                }}
-              />
-              <Text style={styles.filterItemText}>Sort by alphabet</Text>
-            </View>
-            <View style={styles.filterItem}>
-              <BouncyCheckbox
-                fillColor="#2988F6"
-                unFillColor="#FFFFFF"
-                disableText={true}
-                onPress={(isChecked: boolean) => {
-                  console.log(isChecked);
-                }}
-              />
-              <Text style={styles.filterItemText}>Sort by oldest</Text>
-            </View>
-            <View style={styles.filterItem}>
-              <BouncyCheckbox
-                fillColor="#2988F6"
-                unFillColor="#FFFFFF"
-                disableText={true}
-                onPress={(isChecked: boolean) => {
-                  console.log(isChecked);
-                }}
-              />
-              <Text style={styles.filterItemText}>Show only starred items</Text>
-            </View>
+            <ExploreFilterItem
+              text={t("explore.filter.sortByRecent")}
+              isChecked={filterState.sortByRecent}
+              onPress={() => {
+                setFilterState({
+                  sortByRecent: !filterState.sortByRecent,
+                  sortByOldest: false,
+                  showOnlyStarred: false,
+                });
+              }}
+            />
+            <ExploreFilterItem
+              text={t("explore.filter.sortByOldest")}
+              isChecked={filterState.sortByOldest}
+              onPress={() => {
+                setFilterState({
+                  sortByRecent: false,
+                  sortByOldest: !filterState.sortByOldest,
+                  showOnlyStarred: false,
+                });
+              }}
+            />
+            <ExploreFilterItem
+              text={t("explore.filter.showOnlyStarred")}
+              isChecked={filterState.showOnlyStarred}
+              onPress={() => {
+                setFilterState({
+                  sortByRecent: false,
+                  sortByOldest: false,
+                  showOnlyStarred: !filterState.showOnlyStarred,
+                });
+              }}
+            />
           </View>
         </View>
       </View>
@@ -112,16 +113,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#111",
     marginBottom: 10,
-  },
-  filterItem: {
-    marginTop: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 15,
-  },
-  filterItemText: {
-    fontFamily: "Pretendard-Regular",
-    fontSize: 16,
-    color: "#111",
   },
 });

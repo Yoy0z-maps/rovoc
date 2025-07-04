@@ -11,7 +11,13 @@
   },
   "explore": {
     "edit": "수정",
-    "delete": "삭제"
+    "delete": "삭제",
+    "filter": {
+      "title": "단어장 필터 설정",
+      "sortByRecent": "최근 추가된 순",
+      "sortByOldest": "오래된 순",
+      "showOnlyStarred": "즐겨찾기만 보기"
+    }
   },
   "auth": {
     "kakaotalk": "카카오톡으로 로그인",

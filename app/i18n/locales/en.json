@@ -11,7 +11,13 @@
   },
   "explore": {
     "edit": "Edit",
-    "delete": "Delete"
+    "delete": "Delete",
+    "filter": {
+      "title": "Bookcase Filter Settings",
+      "sortByRecent": "Sort by recent",
+      "sortByOldest": "Sort by oldest",
+      "showOnlyStarred": "Show only starred items"
+    }
   },
   "auth": {
     "kakaotalk": "Sign in with KakaoTalk",
