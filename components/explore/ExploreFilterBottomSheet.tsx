@@ -15,16 +15,22 @@ const width = Dimensions.get("window").width;
 
 export default function ExploreFilterBottomSheet({
   setShowFilterModal,
+  filterState,
+  setFilterState,
 }: {
   setShowFilterModal: (show: boolean) => void;
+  filterState: {
+    sortByRecent: boolean;
+    sortByOldest: boolean;
+    showOnlyStarred: boolean;
+  };
+  setFilterState: (state: {
+    sortByRecent: boolean;
+    sortByOldest: boolean;
+    showOnlyStarred: boolean;
+  }) => void;
 }) {
   const { t } = useTranslation();
-
-  const [filterState, setFilterState] = useState({
-    sortByRecent: false,
-    sortByOldest: false,
-    showOnlyStarred: false,
-  });
 
   return (
     <TouchableWithoutFeedback onPress={() => setShowFilterModal(false)}>

@@ -1,10 +1,4 @@
-import {
-  ScrollView,
-  View,
-  Modal,
-  TouchableWithoutFeedback,
-  ActivityIndicator,
-} from "react-native";
+import { ScrollView, View, Modal, ActivityIndicator } from "react-native";
 import BookcaseCard from "@/components/explore/BookcaseCard";
 import { Fragment, useState } from "react";
 import ExploreHeader from "@/components/explore/ExploreHeader";
@@ -20,7 +14,14 @@ export default function ExploreScreen() {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showAddBookcaseModal, setShowAddBookcaseModal] = useState(false);
 
-  const { bookcases, loading, refetch } = useBookcases();
+  // ExploreFilterBottomSheet에서 필터 상태
+  const [filterState, setFilterState] = useState({
+    sortByRecent: false,
+    sortByOldest: false,
+    showOnlyStarred: false,
+  });
+
+  const { bookcases, loading, refetch } = useBookcases(filterState);
 
   if (loading) {
     return (
@@ -91,7 +92,11 @@ export default function ExploreScreen() {
         animationType="slide"
         onRequestClose={() => setShowFilterModal(false)}
       >
-        <ExploreFilterBottomSheet setShowFilterModal={setShowFilterModal} />
+        <ExploreFilterBottomSheet
+          setShowFilterModal={setShowFilterModal}
+          filterState={filterState}
+          setFilterState={setFilterState}
+        />
       </Modal>
       <Modal
         visible={showAddBookcaseModal}

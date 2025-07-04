@@ -13,7 +13,6 @@ import ReviewVocaContainer from "@/components/index/container/ReviewVocaContaine
 import BookcaseContainer from "@/components/index/container/BookcaseContainer";
 import { useEffect, useState } from "react";
 import BookcaseModal from "@/components/index/BookcaseModal";
-import { getAllBookcases } from "@/utils/bookcase";
 import { Wordbook } from "@/types/wordbooks";
 import { useBookcases } from "@/hooks/useBookcase";
 
@@ -41,7 +40,7 @@ export default function HomeScreen() {
             setShowBookcaseModal={setShowBookcaseModal}
           />
           <ReviewVocaContainer />
-          <BookcaseContainer bookcases={bookcases} />
+          {!loading && <BookcaseContainer bookcases={bookcases} />}
         </ScrollView>
         <Modal
           transparent={true}
