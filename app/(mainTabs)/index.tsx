@@ -11,7 +11,8 @@ import HomeTitle from "@/components/index/HomeTitle";
 import AddVocaContainer from "@/components/index/container/AddVocaContainer";
 import ReviewVocaContainer from "@/components/index/container/ReviewVocaContainer";
 import BookcaseContainer from "@/components/index/container/BookcaseContainer";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import BookcaseModal from "@/components/index/BookcaseModal";
 import { Wordbook } from "@/types/wordbooks";
 import { useBookcases } from "@/hooks/useBookcase";
@@ -22,9 +23,16 @@ export default function HomeScreen() {
 
   const { bookcases, loading, refetch } = useBookcases();
 
+  // 화면이 포커스 될 때마다 (useEffect는 마운트/언마운트 될 때만 실행되므로 뒤돌아가면 실행되지 않음)
+  useFocusEffect(
+    React.useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
+
   useEffect(() => {
     setTargetBookcase(bookcases[0]);
-  }, []);
+  }, [bookcases]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
