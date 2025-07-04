@@ -41,7 +41,13 @@
     }
   },
   "[bookcase]": {
-    "title": "안녕하세요"
+    "filter": {
+      "title": "단어장 필터 설정",
+      "sortByRecent": "최근 추가된 순",
+      "sortByOldest": "오래된 순",
+      "showOnlyStarred": "즐겨찾기만 보기",
+      "sortByAlphabet": "알파벳 순"
+    }
   },
   "game": {
     "title": "ROVOCA GAME",

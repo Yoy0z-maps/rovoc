@@ -6,12 +6,14 @@ import CalendarVocabulary from "./CalendarVocabulary";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { getAccessToken } from "@/utils/token";
 import { Word } from "@/types/word";
+import useWord from "@/hooks/useWord";
 
 export default function Calendar() {
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [selectedDate, setSelectedDate] = useState(today.getDate());
+  const [date, setDate] = useState<string>();
 
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
   // new Date(this_year, this_month + 1, 0)는 객체 범위를 벗어난 값을 이용하여 month의 마지막 날을 얻는 일반적인 방법
@@ -33,41 +35,15 @@ export default function Calendar() {
   }
 
   // 해당 날짜에 맞게 데이터 패칭
-  const [vocaData, setVocaData] = useState<Word[] | []>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const accessToken = await getAccessToken();
-        const selectedDateString =
-          currentMonth < 10
-            ? `${currentYear}-0${currentMonth + 1}-${selectedDate}`
-            : `${currentYear}-${currentMonth + 1}-${selectedDate}`;
-        const result = await fetch(
-          `${API_SERVER_ADDRESS}/word/words/date/?date=${selectedDateString}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        const data = await result.json();
-        setVocaData(data);
-      } catch (error) {
-        setVocaData([]);
-      }
-      setIsLoading(false);
-    };
-    fetchData();
+    const selectedDateString =
+      currentMonth < 10
+        ? `${currentYear}-0${currentMonth + 1}-${selectedDate}`
+        : `${currentYear}-${currentMonth + 1}-${selectedDate}`;
+    setDate(selectedDateString);
   }, [selectedDate, currentMonth]);
 
-  useEffect(() => {
-    console.log(isLoading);
-  }, [isLoading]);
+  const { words, loading } = useWord({ date: date });
 
   return (
     <View style={styles.container}>
@@ -83,11 +59,13 @@ export default function Calendar() {
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
       />
-      <CalendarVocabulary
-        vocaData={vocaData}
-        isLoading={isLoading}
-        selectedDate={`${currentYear}-${currentMonth + 1}-${selectedDate}`}
-      />
+      {!loading && (
+        <CalendarVocabulary
+          vocaData={words}
+          isLoading={loading}
+          selectedDate={`${currentYear}-${currentMonth + 1}-${selectedDate}`}
+        />
+      )}
     </View>
   );
 }

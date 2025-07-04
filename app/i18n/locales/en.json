@@ -41,7 +41,13 @@
     }
   },
   "[bookcase]": {
-    "title": "Hello"
+    "filter": {
+      "title": "Bookcase Filter Settings",
+      "sortByRecent": "Sort by recent",
+      "sortByOldest": "Sort by oldest",
+      "showOnlyStarred": "Show only starred items",
+      "sortByAlphabet": "Sort by alphabet"
+    }
   },
   "game": {
     "title": "ROVOCA GAME",

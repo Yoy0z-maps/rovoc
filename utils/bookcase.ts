@@ -24,7 +24,6 @@ export async function deleteBookcase(bookcaseId: string) {
       },
     }
   );
-  console.log(response);
 }
 
 export async function getAllBookcases() {

@@ -7,7 +7,6 @@ import {
   RefreshControl,
   Animated,
 } from "react-native";
-import ReviewVocaItem from "../index/ReviewVocaItem";
 import { Word } from "@/types/word";
 import VocaItem from "../bookcase/VocaItem";
 import { useRef, useState } from "react";
@@ -72,7 +71,7 @@ export default function CalendarVocabulary({
           <Animated.View
             style={{
               position: "absolute",
-              top: 130,
+              top: 20,
               alignSelf: "center",
               zIndex: 10,
               opacity: showLottie, // 👉 여기 핵심!

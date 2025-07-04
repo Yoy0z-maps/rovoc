@@ -1,54 +1,23 @@
 import {
   View,
-  Text,
   ActivityIndicator,
   SafeAreaView,
   Animated,
   RefreshControl,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import { getAccessToken } from "@/utils/token";
-import { Word } from "@/types/word";
+import { useRef, useState } from "react";
+
 import BookcaseHeader from "@/components/bookcase/BookcaseHeader";
 import LottieView from "lottie-react-native";
 import VocaItem from "@/components/bookcase/VocaItem";
+import useWord from "@/hooks/useWord";
 
 export default function BookcasScreen() {
   const { bookcase, bookcase_name } = useLocalSearchParams();
-  const [bookcaseWords, setBookcaseWords] = useState<Word[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchBookcaseWords = async () => {
-      try {
-        const token = await getAccessToken();
-        const response = await fetch(
-          `${API_SERVER_ADDRESS}/word/wordbooks/id/?wordbook=${bookcase}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data.words);
-          setBookcaseWords(data.words || []);
-        }
-      } catch (error) {
-        console.error("Error fetching words:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (bookcase) {
-      fetchBookcaseWords();
-    }
-  }, [bookcase]);
+  const { words, loading } = useWord({
+    bookcaseId: bookcase as unknown as string,
+  });
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const showLottie = scrollY.interpolate({
@@ -91,7 +60,7 @@ export default function BookcasScreen() {
           top: 130,
           alignSelf: "center",
           zIndex: 10,
-          opacity: showLottie, // 👉 여기 핵심!
+          opacity: showLottie,
           transform: [{ scale: showLottie }],
         }}
       >
@@ -105,7 +74,7 @@ export default function BookcasScreen() {
         />
       </Animated.View>
       <Animated.FlatList
-        data={bookcaseWords}
+        data={words}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <VocaItem word={item} />}
         scrollEventThrottle={4}
