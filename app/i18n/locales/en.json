@@ -104,6 +104,13 @@
       "error": "Error",
       "bookcaseAddedFailed": "Bookcase added failed",
       "imageSizeError": "Image size is too large (10MB or less)"
+    },
+    "editBookcase": {
+      "title": "Edit Bookcase",
+      "name": "Bookcase Name (required)",
+      "description": "Description (optional)",
+      "cancel": "Cancel",
+      "save": "Save"
     }
   }
 }

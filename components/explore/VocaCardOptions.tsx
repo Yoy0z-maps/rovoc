@@ -1,25 +1,30 @@
+import { Wordbook } from "@/types/wordbooks";
 import { deleteBookcase } from "@/utils/bookcase";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { Pressable, View, Text, StyleSheet } from "react-native";
 
 export default function VocaCardOptions({
+  setShowEditBookcaseModal,
   setShowOptions,
-  bookcaseId,
+  bookcase,
   triggerBookcases,
 }: {
+  setShowEditBookcaseModal: (value: boolean) => void;
   setShowOptions: (value: boolean) => void;
-  bookcaseId: string;
+  bookcase: Wordbook;
   triggerBookcases: () => void;
 }) {
   const { t } = useTranslation();
 
   const handleDeleteBookcase = async () => {
-    await deleteBookcase(bookcaseId);
+    await deleteBookcase(bookcase.id);
     triggerBookcases();
   };
 
-  const handleEditBookcase = () => {};
+  const handleEditBookcase = () => {
+    setShowEditBookcaseModal(true);
+  };
 
   return (
     <View style={styles.optionsContainer}>
@@ -27,6 +32,7 @@ export default function VocaCardOptions({
         style={styles.optionButton}
         onPress={() => {
           setShowOptions(false);
+          handleEditBookcase();
         }}
       >
         <MaterialIcons name="edit" size={20} color="#676767" />

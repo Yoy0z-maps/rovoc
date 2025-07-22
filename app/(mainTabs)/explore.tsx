@@ -8,11 +8,13 @@ import SearchDictTerm from "@/components/explore/search/SearchDictTerm";
 import NoBookcase from "@/components/explore/NoBookcase";
 import { useBookcases } from "@/hooks/useBookcase";
 import ExploreFilterBottomSheet from "@/components/explore/ExploreFilterBottomSheet";
+import EditBookcaseModal from "@/components/explore/EditBookcaseModal";
 
 export default function ExploreScreen() {
   const [searchWord, setSearchWord] = useState("");
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showAddBookcaseModal, setShowAddBookcaseModal] = useState(false);
+  const [showEditBookcaseModal, setShowEditBookcaseModal] = useState(false);
 
   // ExploreFilterBottomSheet에서 필터 상태
   const [filterState, setFilterState] = useState({
@@ -74,9 +76,12 @@ export default function ExploreScreen() {
                 {bookcases.map((bookcase, index) => (
                   <BookcaseCard
                     key={bookcase.id}
+                    refetch={refetch}
+                    showEditBookcaseModal={showEditBookcaseModal}
                     bookcase={bookcase}
                     triggerBookcases={refetch}
                     isLast={index === bookcases.length - 1}
+                    setShowEditBookcaseModal={setShowEditBookcaseModal}
                   />
                 ))}
               </Fragment>
