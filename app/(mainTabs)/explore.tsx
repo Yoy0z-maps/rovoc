@@ -9,12 +9,14 @@ import NoBookcase from "@/components/explore/NoBookcase";
 import { useBookcases } from "@/hooks/useBookcase";
 import ExploreFilterBottomSheet from "@/components/explore/ExploreFilterBottomSheet";
 import EditBookcaseModal from "@/components/explore/EditBookcaseModal";
+import { Wordbook } from "@/types/wordbooks";
 
 export default function ExploreScreen() {
   const [searchWord, setSearchWord] = useState("");
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showAddBookcaseModal, setShowAddBookcaseModal] = useState(false);
   const [showEditBookcaseModal, setShowEditBookcaseModal] = useState(false);
+  const [selectedBookcase, setSelectedBookcase] = useState<Wordbook>();
 
   // ExploreFilterBottomSheet에서 필터 상태
   const [filterState, setFilterState] = useState({
@@ -24,6 +26,11 @@ export default function ExploreScreen() {
   });
 
   const { bookcases, loading, refetch } = useBookcases(filterState);
+
+  function onEditPress(bookcase: Wordbook) {
+    setSelectedBookcase(bookcase);
+    setShowEditBookcaseModal(true);
+  }
 
   if (loading) {
     return (
@@ -81,7 +88,7 @@ export default function ExploreScreen() {
                     bookcase={bookcase}
                     triggerBookcases={refetch}
                     isLast={index === bookcases.length - 1}
-                    setShowEditBookcaseModal={setShowEditBookcaseModal}
+                    onEditPress={onEditPress}
                   />
                 ))}
               </Fragment>
@@ -112,6 +119,18 @@ export default function ExploreScreen() {
         <ExploreAddBookcaseModal
           triggerBookcases={refetch}
           setShowAddBookcaseModal={setShowAddBookcaseModal}
+        />
+      </Modal>
+      <Modal
+        visible={showEditBookcaseModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowEditBookcaseModal(false)}
+      >
+        <EditBookcaseModal
+          bookcase={selectedBookcase!}
+          triggerBookcases={refetch}
+          setShowEditBookcaseModal={setShowEditBookcaseModal}
         />
       </Modal>
     </View>

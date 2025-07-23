@@ -1,33 +1,25 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  Animated,
-  Modal,
-} from "react-native";
+import { View, Text, StyleSheet, Pressable, Animated } from "react-native";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { Wordbook } from "@/types/wordbooks";
 import VocaCardOptions from "./VocaCardOptions";
 import { useRouter } from "expo-router";
 import useAnimatedImportant from "@/hooks/useAnimatedImportant";
-import EditBookcaseModal from "./EditBookcaseModal";
 
 export default function BookcaseCard({
   refetch,
   showEditBookcaseModal,
-  setShowEditBookcaseModal,
   bookcase,
   triggerBookcases,
   isLast,
+  onEditPress,
 }: {
   refetch: () => void;
   showEditBookcaseModal: boolean;
-  setShowEditBookcaseModal: (value: boolean) => void;
   bookcase: Wordbook;
   triggerBookcases: () => void;
   isLast?: boolean;
+  onEditPress: (bookcase: Wordbook) => void;
 }) {
   const router = useRouter();
 
@@ -87,30 +79,19 @@ export default function BookcaseCard({
       </Pressable>
       {showOptions && (
         <VocaCardOptions
-          setShowEditBookcaseModal={setShowEditBookcaseModal}
+          onEditPress={onEditPress}
           setShowOptions={setShowOptions}
           bookcase={bookcase}
           triggerBookcases={triggerBookcases}
         />
       )}
-      <Modal
-        visible={showEditBookcaseModal}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setShowEditBookcaseModal(false)}
-      >
-        <EditBookcaseModal
-          bookcase={bookcase}
-          triggerBookcases={refetch}
-          setShowEditBookcaseModal={setShowEditBookcaseModal}
-        />
-      </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    zIndex: 1000,
     position: "relative",
   },
   card: {

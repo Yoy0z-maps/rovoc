@@ -110,7 +110,14 @@
       "name": "단어장 이름 (필수)",
       "description": "설명 (선택)",
       "cancel": "취소",
-      "save": "저장"
+      "save": "저장",
+      "click": "",
+      "here": "여기",
+      "toAddBookcasePhoto": "를 클릭해서 단어장 사진을 변경해요",
+      "imageAdded": "사진을 추가했어요",
+      "error": "오류 발생",
+      "bookcaseAddedFailed": "단어장 추가 실패",
+      "imageSizeError": "이미지 크기가 너무 큽니다 (10MB 이하)"
     }
   }
 }

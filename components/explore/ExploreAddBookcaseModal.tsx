@@ -5,6 +5,7 @@ import {
   Pressable,
   ActivityIndicator,
   TouchableWithoutFeedback,
+  Image,
 } from "react-native";
 import VocaInputField from "../index/VocaInputField";
 import Toast from "react-native-toast-message";
@@ -28,6 +29,7 @@ export default function ExploreAddBookcaseModal({
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
 
   const pickImage = async () => {
     setLoading(true);
@@ -160,9 +162,32 @@ export default function ExploreAddBookcaseModal({
               </Fragment>
             )}
           </View>
-          {loading && (
-            <View style={{ marginTop: 10, alignItems: "center" }}>
-              <ActivityIndicator size="small" color="#2988F6" />
+          {image && (
+            <View style={styles.imageContainer}>
+              {imageLoading && (
+                <View
+                  style={[
+                    styles.imageLoadingContainer,
+                    imageLoading && { display: "none" },
+                  ]}
+                >
+                  <ActivityIndicator size="small" color="#2988F6" />
+                </View>
+              )}
+              <Image
+                source={{ uri: image }}
+                style={styles.selectedImage}
+                resizeMode="cover"
+                onLoadStart={() => setImageLoading(true)}
+                onLoad={() => {
+                  console.log("Image loaded successfully");
+                  setImageLoading(false);
+                }}
+                onError={(error) => {
+                  console.log("Image loading error:", error);
+                  setImageLoading(false);
+                }}
+              />
             </View>
           )}
           <View style={styles.buttonContainer}>
@@ -247,5 +272,23 @@ const styles = StyleSheet.create({
     color: "#2988F6",
     fontSize: 18,
     fontFamily: "Pretendard-Regular",
+  },
+  imageContainer: {
+    width: "100%",
+    height: 150,
+    borderRadius: 8,
+    overflow: "hidden",
+    marginTop: 10,
+    backgroundColor: "#f0f0f0",
+  },
+  selectedImage: {
+    width: "100%",
+    height: "100%",
+  },
+  imageLoadingContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
   },
 });

@@ -5,6 +5,7 @@ import {
   Pressable,
   ActivityIndicator,
   TouchableWithoutFeedback,
+  Image,
 } from "react-native";
 import VocaInputField from "../index/VocaInputField";
 import Toast from "react-native-toast-message";
@@ -31,8 +32,10 @@ export default function EditBookcaseModal({
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
 
   useEffect(() => {
+    console.log("bookcase changed", bookcase);
     setName(bookcase.name);
     setDescription(bookcase.description);
     setImage(bookcase.image);
@@ -67,7 +70,18 @@ export default function EditBookcaseModal({
       formData.append("name", name);
       formData.append("description", description);
 
-      console.log("formData", formData);
+      if (image) {
+        const filename = image.split("/").pop() || `photo.jpg`;
+        const match = /\.(\w+)$/.exec(filename ?? "");
+        const ext = match ? match[1] : "jpg";
+        const type = `image/${ext}`;
+
+        formData.append("image", {
+          uri: image,
+          type,
+          name: filename,
+        } as any);
+      }
 
       const response = await fetch(
         `${API_SERVER_ADDRESS}/word/wordbooks/${bookcase.id}/`,
@@ -141,7 +155,7 @@ export default function EditBookcaseModal({
               <Fragment>
                 <Pressable onPress={pickImage}>
                   <Text style={styles.photoTextLink}>
-                    {t("modal.addBookcase.here")}
+                    {t("modal.editBookcase.here")}
                   </Text>
                 </Pressable>
                 <Text style={styles.photoText}>to add Bookcase Photo</Text>
@@ -149,19 +163,45 @@ export default function EditBookcaseModal({
             ) : (
               <Fragment>
                 <Text style={styles.photoText}>
-                  {t("modal.addBookcase.click")}
+                  {t("modal.editBookcase.click")}
                 </Text>
                 <Pressable onPress={pickImage}>
                   <Text style={styles.photoTextLink}>
-                    {t("modal.addBookcase.here")}
+                    {t("modal.editBookcase.here")}
                   </Text>
                 </Pressable>
                 <Text style={styles.photoText}>
-                  {t("modal.addBookcase.toAddBookcasePhoto")}
+                  {t("modal.editBookcase.toChangeBookcasePhoto")}
                 </Text>
               </Fragment>
             )}
           </View>
+          {image && (
+            <View style={styles.imageContainer}>
+              {imageLoading && (
+                <View
+                  style={[
+                    styles.imageLoadingContainer,
+                    imageLoading && { display: "none" },
+                  ]}
+                >
+                  <ActivityIndicator size="small" color="#2988F6" />
+                </View>
+              )}
+              <Image
+                source={{ uri: image }}
+                style={styles.selectedImage}
+                resizeMode="cover"
+                onLoadStart={() => setImageLoading(true)}
+                onLoad={() => {
+                  setImageLoading(false);
+                }}
+                onError={(error) => {
+                  setImageLoading(false);
+                }}
+              />
+            </View>
+          )}
           {loading && (
             <View style={{ marginTop: 10, alignItems: "center" }}>
               <ActivityIndicator size="small" color="#2988F6" />
@@ -249,5 +289,27 @@ const styles = StyleSheet.create({
     color: "#2988F6",
     fontSize: 18,
     fontFamily: "Pretendard-Regular",
+  },
+  imageContainer: {
+    width: "100%",
+    height: 150,
+    borderRadius: 8,
+    overflow: "hidden",
+    marginTop: 10,
+    backgroundColor: "#f0f0f0",
+  },
+  selectedImage: {
+    width: "100%",
+    height: "100%",
+  },
+  imageLoadingContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
   },
 });

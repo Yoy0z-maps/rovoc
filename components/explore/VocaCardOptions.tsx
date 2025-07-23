@@ -5,12 +5,12 @@ import { useTranslation } from "react-i18next";
 import { Pressable, View, Text, StyleSheet } from "react-native";
 
 export default function VocaCardOptions({
-  setShowEditBookcaseModal,
+  onEditPress,
   setShowOptions,
   bookcase,
   triggerBookcases,
 }: {
-  setShowEditBookcaseModal: (value: boolean) => void;
+  onEditPress: (bookcase: Wordbook) => void;
   setShowOptions: (value: boolean) => void;
   bookcase: Wordbook;
   triggerBookcases: () => void;
@@ -23,7 +23,7 @@ export default function VocaCardOptions({
   };
 
   const handleEditBookcase = () => {
-    setShowEditBookcaseModal(true);
+    onEditPress(bookcase);
   };
 
   return (
