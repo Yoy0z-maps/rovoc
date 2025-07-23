@@ -6,50 +6,91 @@ import {
   Image,
   Pressable,
   Animated,
+  TouchableOpacity,
 } from "react-native";
-import { useState, useEffect, useRef } from "react";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import useAnimatedImportant from "@/hooks/useAnimatedImportant";
+import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import { useState } from "react";
 
 export default function VocaItem({ word }: { word: Word }) {
   const { isImportant, scaleAnim, importantAnimation } = useAnimatedImportant({
     word,
   });
 
+  const [containerHeight, setContainerHeight] = useState<number | undefined>(
+    undefined
+  );
+
+  const renderAction = () => {
+    return (
+      <View style={[styles.actionContainer, { height: containerHeight }]}>
+        <TouchableOpacity
+          style={[
+            {
+              backgroundColor: "#ffab00",
+            },
+            styles.actionItem,
+          ]}
+        >
+          <FontAwesome5 name="edit" size={16} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            {
+              backgroundColor: "#ff1744",
+            },
+            styles.actionItem,
+          ]}
+        >
+          <FontAwesome5 name="trash" size={16} color="white" />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
-    <View key={word.id} style={styles.container}>
-      <Text style={styles.text}>{word.text}</Text>
-      {word.meanings.map((meaning, index) => (
-        <View style={styles.meaningContainer} key={index}>
-          <View style={styles.meaningIndexContainer}>
-            <Text style={styles.meaningIndexText}>{index + 1}</Text>
-          </View>
-          <Text style={styles.meaningsItemText}>({meaning.part || "N/A"})</Text>
-          <Text style={styles.meaningsItemText}>
-            {meaning.definition || "N/A"}
-          </Text>
-          <Text style={styles.meaningsItemText}>
-            : {word.meanings[0]?.example || "N/A"}
-          </Text>
-        </View>
-      ))}
-      <Pressable
-        onPress={() => importantAnimation(word.id)}
-        style={styles.importantButton}
+    <Swipeable renderRightActions={renderAction}>
+      <View
+        key={word.id}
+        style={styles.container}
+        onLayout={(e) => setContainerHeight(e.nativeEvent.layout.height)}
       >
-        <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-          <FontAwesome
-            name="star"
-            size={20}
-            color={isImportant ? "gold" : "#dcdcdc"}
-          />
-        </Animated.View>
-      </Pressable>
-      <Image
-        source={require("@/assets/images/rovoca-rmbg.png")}
-        style={styles.image}
-      />
-    </View>
+        <Text style={styles.text}>{word.text}</Text>
+        {word.meanings.map((meaning, index) => (
+          <View style={styles.meaningContainer} key={index}>
+            <View style={styles.meaningIndexContainer}>
+              <Text style={styles.meaningIndexText}>{index + 1}</Text>
+            </View>
+            <Text style={styles.meaningsItemText}>
+              ({meaning.part || "N/A"})
+            </Text>
+            <Text style={styles.meaningsItemText}>
+              {meaning.definition || "N/A"}
+            </Text>
+            <Text style={styles.meaningsItemText}>
+              : {word.meanings[0]?.example || "N/A"}
+            </Text>
+          </View>
+        ))}
+        <Pressable
+          onPress={() => importantAnimation(word.id)}
+          style={styles.importantButton}
+        >
+          <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+            <FontAwesome
+              name="star"
+              size={20}
+              color={isImportant ? "gold" : "#dcdcdc"}
+            />
+          </Animated.View>
+        </Pressable>
+        <Image
+          source={require("@/assets/images/rovoca-rmbg.png")}
+          style={styles.image}
+        />
+      </View>
+    </Swipeable>
   );
 }
 
@@ -104,5 +145,15 @@ const styles = StyleSheet.create({
     top: 10,
     right: 14,
     zIndex: 10,
+  },
+  actionContainer: {
+    flexDirection: "row",
+  },
+  actionItem: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    width: 40,
   },
 });

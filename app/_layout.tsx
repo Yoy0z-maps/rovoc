@@ -21,6 +21,7 @@ import { jwtDecode } from "jwt-decode";
 import { getAccessToken, refreshToken } from "@/utils/token";
 import ToastSuccess from "@/components/toast/ToastSuccess";
 import ToastError from "@/components/toast/ToastError";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const toastConfig = {
   ToastSuccess: ({ text1, text2 }: { text1?: string; text2?: string }) => (
@@ -65,22 +66,24 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(mainTabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="webview" />
-        <Stack.Screen name="profile" options={{ headerShown: false }} />
-        <Stack.Screen name="notice" options={{ headerShown: false }} />
-        <Stack.Screen name="auth" options={{ headerShown: false }} />
-        <Stack.Screen name="quiz" options={{ headerShown: false }} />
-        <Stack.Screen name="hangman" options={{ headerShown: false }} />
-        <Stack.Screen name="sentence" options={{ headerShown: false }} />
-        <Stack.Screen name="[bookcase]" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <Toast config={toastConfig} />
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <GestureHandlerRootView>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(mainTabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="webview" />
+          <Stack.Screen name="profile" options={{ headerShown: false }} />
+          <Stack.Screen name="notice" options={{ headerShown: false }} />
+          <Stack.Screen name="auth" options={{ headerShown: false }} />
+          <Stack.Screen name="quiz" options={{ headerShown: false }} />
+          <Stack.Screen name="hangman" options={{ headerShown: false }} />
+          <Stack.Screen name="sentence" options={{ headerShown: false }} />
+          <Stack.Screen name="[bookcase]" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <Toast config={toastConfig} />
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }

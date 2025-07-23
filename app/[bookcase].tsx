@@ -73,6 +73,7 @@ export default function BookcasScreen() {
           progress={0}
         />
       </Animated.View>
+
       <Animated.FlatList
         data={words}
         keyExtractor={(item) => item.id.toString()}
