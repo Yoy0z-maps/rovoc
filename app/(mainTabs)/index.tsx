@@ -16,6 +16,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import BookcaseModal from "@/components/index/BookcaseModal";
 import { Wordbook } from "@/types/wordbooks";
 import { useBookcases } from "@/hooks/useBookcase";
+import { fetchRecentWords } from "@/utils/word";
+import { getAccessToken } from "@/utils/token";
 
 export default function HomeScreen() {
   const [showBookcaseModal, setShowBookcaseModal] = useState(false);
@@ -27,6 +29,10 @@ export default function HomeScreen() {
   useFocusEffect(
     React.useCallback(() => {
       refetch();
+      (async () => {
+        const accessToken = await getAccessToken();
+        fetchRecentWords(accessToken!);
+      })();
     }, [refetch])
   );
 

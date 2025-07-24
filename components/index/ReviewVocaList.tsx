@@ -1,23 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 import ReviewVocaItem from "./ReviewVocaItem";
 import { Word } from "@/types/word";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function ReviewVocaList() {
   const { t } = useTranslation();
   const [recentWords, setRecentWords] = useState<Word[]>([]);
 
-  useEffect(() => {
-    const fetchRecentWords = async () => {
-      const words = await AsyncStorage.getItem("recentWords");
-      if (words) {
-        setRecentWords(JSON.parse(words));
-      }
-    };
-    fetchRecentWords();
-  }, []);
+  const fetchRecentWords = async () => {
+    const words = await AsyncStorage.getItem("recentWords");
+    if (words) {
+      setRecentWords(JSON.parse(words));
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchRecentWords();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
