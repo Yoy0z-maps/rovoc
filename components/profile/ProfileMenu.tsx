@@ -10,6 +10,7 @@ import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { deleteUser } from "@/utils/user";
 import { deleteToken, getAccessToken } from "@/utils/token";
+import { changeLanguage } from "i18next";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -67,7 +68,7 @@ export default function ProfileMenu() {
           icon={<Ionicons name="language-outline" size={24} color="black" />}
           label={t("profile.menu.language")}
           onPress={() => {
-            i18n.changeLanguage(i18n.language === "ko" ? "en" : "ko");
+            changeLanguage(i18n.language === "ko" ? "en" : "ko");
           }}
         />
         <ProfileMenuBottomItem

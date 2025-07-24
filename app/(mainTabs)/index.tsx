@@ -37,7 +37,9 @@ export default function HomeScreen() {
   );
 
   useEffect(() => {
-    setTargetBookcase(bookcases[0]);
+    if (bookcases.length > 0) {
+      setTargetBookcase(bookcases[0]);
+    }
   }, [bookcases]);
 
   return (
@@ -54,7 +56,9 @@ export default function HomeScreen() {
             setShowBookcaseModal={setShowBookcaseModal}
           />
           <ReviewVocaContainer />
-          {!loading && <BookcaseContainer bookcases={bookcases} />}
+          {!loading && bookcases.length > 0 && (
+            <BookcaseContainer bookcases={bookcases} />
+          )}
         </ScrollView>
         <Modal
           transparent={true}

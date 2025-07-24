@@ -1,7 +1,7 @@
-import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import * as Localization from "expo-localization";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import i18n from "i18next";
 
 import en from "./locales/en.json";
 import ko from "./locales/ko.json";
@@ -13,23 +13,30 @@ const resources = {
   ch: { translation: ch },
 };
 
-const detectLanguage = async () => {
-  const storedLanguage = await AsyncStorage.getItem("language");
-  if (storedLanguage) return storedLanguage;
+const initI18n = async () => {
+  let savedLanguage = await AsyncStorage.getItem('i18next');
 
-  return Localization.locale.split("-")[0] || "en";
-};
+  if (!savedLanguage) {
+    savedLanguage = Localization.getLocales()?.[0]?.languageCode ?? 'en';
+  }
 
-// i18n 초기화
-detectLanguage().then((language) => {
-  i18next.use(initReactI18next).init({
+  i18n.use(initReactI18next).init({
+    compatibilityJSON: "v4",
     resources,
-    lng: language, // 초기 언어
-    fallbackLng: "en", // 언어 리소스 없을 경우 영어로
+    lng: savedLanguage as string,
+    fallbackLng: "en",
     interpolation: {
-      escapeValue: false, // XSS 방지
+      escapeValue: false,
     },
   });
-});
+};
 
-export default i18next;
+// 언어 변경 함수 추가
+export const changeLanguage = async (language: string) => {
+  await AsyncStorage.setItem('i18next', language);
+  await i18n.changeLanguage(language);
+  // 언어 변경 후 앱 전체에 리렌더링을 트리거하기 위한 이벤트 발생
+  i18n.emit('languageChanged');
+};
+
+export default initI18n;

@@ -22,6 +22,8 @@ import { getAccessToken, refreshToken } from "@/utils/token";
 import ToastSuccess from "@/components/toast/ToastSuccess";
 import ToastError from "@/components/toast/ToastError";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useTranslation } from "react-i18next";
+import initI18n from "./i18n/i18n";
 
 const toastConfig = {
   ToastSuccess: ({ text1, text2 }: { text1?: string; text2?: string }) => (
@@ -42,6 +44,10 @@ initializeKakaoSDK(key || "");
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  useEffect(() => {
+    initI18n();
+  }, []);
+
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
