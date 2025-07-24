@@ -12,8 +12,18 @@ import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import useAnimatedImportant from "@/hooks/useAnimatedImportant";
 import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { useState } from "react";
+import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
+import { getAccessToken } from "@/utils/token";
 
-export default function VocaItem({ word }: { word: Word }) {
+export default function VocaItem({
+  word,
+  setShowVocaEditModal,
+  refetch,
+}: {
+  word: Word;
+  setShowVocaEditModal: (value: boolean) => void;
+  refetch: () => void;
+}) {
   const { isImportant, scaleAnim, importantAnimation } = useAnimatedImportant({
     word,
   });
@@ -22,10 +32,27 @@ export default function VocaItem({ word }: { word: Word }) {
     undefined
   );
 
+  const handleEdit = () => {
+    setShowVocaEditModal(true);
+  };
+
+  const handleDelete = async () => {
+    const accessToken = await getAccessToken();
+    const res = await fetch(`${API_SERVER_ADDRESS}/word/words/${word.id}/`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    refetch();
+  };
+
   const renderAction = () => {
     return (
       <View style={[styles.actionContainer, { height: containerHeight }]}>
         <TouchableOpacity
+          onPress={handleEdit}
           style={[
             {
               backgroundColor: "#ffab00",
@@ -36,6 +63,7 @@ export default function VocaItem({ word }: { word: Word }) {
           <FontAwesome5 name="edit" size={16} color="white" />
         </TouchableOpacity>
         <TouchableOpacity
+          onPress={handleDelete}
           style={[
             {
               backgroundColor: "#ff1744",

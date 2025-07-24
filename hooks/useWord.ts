@@ -59,6 +59,14 @@ export default function useWord(params: {
     }
   }, [date]);
 
+  const refetch = useCallback(() => {
+    if (bookcaseId) {
+      fetchWordsByBookcaseId();
+    } else if (date) {
+      fetchWordsByDate();
+    }
+  }, [bookcaseId, date]);
+
   useEffect(() => {
     if (bookcaseId) {
       fetchWordsByBookcaseId();
@@ -67,5 +75,5 @@ export default function useWord(params: {
     }
   }, [bookcaseId, date]);
 
-  return { words, loading, fetchWordsByBookcaseId, fetchWordsByDate };
+  return { words, loading, fetchWordsByBookcaseId, fetchWordsByDate, refetch };
 }

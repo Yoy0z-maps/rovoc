@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   Animated,
   RefreshControl,
+  Modal,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
@@ -12,10 +13,13 @@ import BookcaseHeader from "@/components/bookcase/BookcaseHeader";
 import LottieView from "lottie-react-native";
 import VocaItem from "@/components/bookcase/VocaItem";
 import useWord from "@/hooks/useWord";
+import VocaEditModal from "@/components/bookcase/VocaEditModal";
 
 export default function BookcasScreen() {
+  const [showVocaEditModal, setShowVocaEditModal] = useState(false);
+
   const { bookcase, bookcase_name } = useLocalSearchParams();
-  const { words, loading } = useWord({
+  const { words, loading, refetch } = useWord({
     bookcaseId: bookcase as unknown as string,
   });
 
@@ -77,7 +81,13 @@ export default function BookcasScreen() {
       <Animated.FlatList
         data={words}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <VocaItem word={item} />}
+        renderItem={({ item }) => (
+          <VocaItem
+            word={item}
+            setShowVocaEditModal={setShowVocaEditModal}
+            refetch={refetch}
+          />
+        )}
         scrollEventThrottle={4}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -91,6 +101,10 @@ export default function BookcasScreen() {
           />
         }
         contentContainerStyle={{ paddingVertical: 30, paddingHorizontal: 24 }} // 상단 여유 공간 확보
+      />
+      <VocaEditModal
+        showVocaEditModal={showVocaEditModal}
+        setShowVocaEditModal={setShowVocaEditModal}
       />
     </SafeAreaView>
   );
