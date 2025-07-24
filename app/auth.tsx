@@ -1,7 +1,6 @@
 import { View, Pressable, Platform } from "react-native";
 
 import Logo from "@/components/auth/Logo";
-import { useTranslation } from "react-i18next";
 
 import { router } from "expo-router";
 import { useState } from "react";

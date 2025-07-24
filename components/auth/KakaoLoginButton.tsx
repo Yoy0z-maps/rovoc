@@ -16,16 +16,19 @@ export default function KakaoLoginButton() {
     try {
       const kakao_res = await login();
       console.log(kakao_res);
-      const rovoca_res = await fetch(API_SERVER_ADDRESS, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          provider: "kakao",
-          result: kakao_res,
-        }),
-      });
+      const rovoca_res = await fetch(
+        `${API_SERVER_ADDRESS}/users/auth/social-login/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            provider: "kakao",
+            result: kakao_res,
+          }),
+        }
+      );
       console.log(rovoca_res);
       const user_json = await rovoca_res.json();
       await setUser(user_json);

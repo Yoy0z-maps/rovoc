@@ -1,6 +1,6 @@
 import { ScrollView, View, Modal, ActivityIndicator } from "react-native";
 import BookcaseCard from "@/components/explore/BookcaseCard";
-import { Fragment, useState } from "react";
+import { Fragment, useCallback, useState } from "react";
 import ExploreHeader from "@/components/explore/ExploreHeader";
 import ExploreAddBookcaseModal from "@/components/explore/ExploreAddBookcaseModal";
 import SearchHistory from "@/components/explore/search/SearchHistory";
@@ -10,6 +10,7 @@ import { useBookcases } from "@/hooks/useBookcase";
 import ExploreFilterBottomSheet from "@/components/explore/ExploreFilterBottomSheet";
 import EditBookcaseModal from "@/components/explore/EditBookcaseModal";
 import { Wordbook } from "@/types/wordbooks";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function ExploreScreen() {
   const [searchWord, setSearchWord] = useState("");
@@ -26,6 +27,12 @@ export default function ExploreScreen() {
   });
 
   const { bookcases, loading, refetch } = useBookcases(filterState);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   function onEditPress(bookcase: Wordbook) {
     setSelectedBookcase(bookcase);
