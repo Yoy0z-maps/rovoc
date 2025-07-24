@@ -7,6 +7,5 @@ export interface Word {
     part: string;
   }[];
   created_at: string;
-  is_learned: boolean;
   is_important: boolean;
 }

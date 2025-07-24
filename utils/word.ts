@@ -14,6 +14,7 @@ export const fetchRecentWords = async (accessToken: string) => {
     },
   });
   const data: Word[] = await response.json();
+  console.log(data);
 
   try {
     await AsyncStorage.setItem("recentWords", JSON.stringify(data));

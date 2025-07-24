@@ -4,7 +4,6 @@ import {
   SafeAreaView,
   Animated,
   RefreshControl,
-  Modal,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
@@ -14,9 +13,16 @@ import LottieView from "lottie-react-native";
 import VocaItem from "@/components/bookcase/VocaItem";
 import useWord from "@/hooks/useWord";
 import VocaEditModal from "@/components/bookcase/VocaEditModal";
+import { Word } from "@/types/word";
 
 export default function BookcasScreen() {
   const [showVocaEditModal, setShowVocaEditModal] = useState(false);
+  const [selectedVoca, setSelectedVoca] = useState<Word | null>(null);
+
+  const onEditPress = (voca: Word) => {
+    setSelectedVoca(voca);
+    setShowVocaEditModal(true);
+  };
 
   const { bookcase, bookcase_name } = useLocalSearchParams();
   const { words, loading, refetch } = useWord({
@@ -57,7 +63,10 @@ export default function BookcasScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <BookcaseHeader bookcase_name={bookcase_name as string} />
+      <BookcaseHeader
+        bookcase_name={bookcase_name as string}
+        setShowVocaEditModal={setShowVocaEditModal}
+      />
       <Animated.View
         style={{
           position: "absolute",
@@ -82,11 +91,7 @@ export default function BookcasScreen() {
         data={words}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <VocaItem
-            word={item}
-            setShowVocaEditModal={setShowVocaEditModal}
-            refetch={refetch}
-          />
+          <VocaItem word={item} refetch={refetch} onEditPress={onEditPress} />
         )}
         scrollEventThrottle={4}
         onScroll={Animated.event(
@@ -103,6 +108,7 @@ export default function BookcasScreen() {
         contentContainerStyle={{ paddingVertical: 30, paddingHorizontal: 24 }} // 상단 여유 공간 확보
       />
       <VocaEditModal
+        voca={selectedVoca}
         showVocaEditModal={showVocaEditModal}
         setShowVocaEditModal={setShowVocaEditModal}
       />

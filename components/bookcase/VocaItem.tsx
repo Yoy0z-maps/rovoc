@@ -16,12 +16,12 @@ import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { getAccessToken } from "@/utils/token";
 
 export default function VocaItem({
+  onEditPress,
   word,
-  setShowVocaEditModal,
   refetch,
 }: {
+  onEditPress: (voca: Word) => void;
   word: Word;
-  setShowVocaEditModal: (value: boolean) => void;
   refetch: () => void;
 }) {
   const { isImportant, scaleAnim, importantAnimation } = useAnimatedImportant({
@@ -31,10 +31,6 @@ export default function VocaItem({
   const [containerHeight, setContainerHeight] = useState<number | undefined>(
     undefined
   );
-
-  const handleEdit = () => {
-    setShowVocaEditModal(true);
-  };
 
   const handleDelete = async () => {
     const accessToken = await getAccessToken();
@@ -52,7 +48,7 @@ export default function VocaItem({
     return (
       <View style={[styles.actionContainer, { height: containerHeight }]}>
         <TouchableOpacity
-          onPress={handleEdit}
+          onPress={() => onEditPress(word)}
           style={[
             {
               backgroundColor: "#ffab00",

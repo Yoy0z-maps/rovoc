@@ -1,10 +1,12 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 
 export default function BookcaseHeader({
+  setShowVocaEditModal,
   bookcase_name,
 }: {
+  setShowVocaEditModal: (value: boolean) => void;
   bookcase_name: string;
 }) {
   const router = useRouter();
@@ -15,7 +17,9 @@ export default function BookcaseHeader({
         <Ionicons name="arrow-back" size={24} color="black" />
       </Pressable>
       <Text style={styles.title}>{bookcase_name}</Text>
-      <View style={{ width: 24 }} />
+      <Pressable onPress={() => setShowVocaEditModal(true)}>
+        <Feather name="plus" size={24} color="black" />
+      </Pressable>
     </View>
   );
 }
