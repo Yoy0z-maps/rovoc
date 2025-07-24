@@ -12,7 +12,7 @@ export async function setUser(user: AuthResponse) {
 }
 
 export async function deleteUser(token: string) {
-  const response = await fetch(`${API_SERVER_ADDRESS}/users/delete`, {
+  const response = await fetch(`${API_SERVER_ADDRESS}/users/user/delete/`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
