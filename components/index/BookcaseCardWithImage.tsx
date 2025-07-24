@@ -1,4 +1,5 @@
 import { Wordbook } from "@/types/wordbooks";
+import { router } from "expo-router";
 import { View, StyleSheet, Image, Text, Pressable } from "react-native";
 
 export default function BookcaseCarWithImage({
@@ -7,7 +8,18 @@ export default function BookcaseCarWithImage({
   bookcase: Wordbook;
 }) {
   return (
-    <Pressable style={styles.container}>
+    <Pressable
+      onPress={() => {
+        router.push({
+          pathname: "/[bookcase]",
+          params: {
+            bookcase: bookcase.id,
+            bookcase_name: bookcase.name,
+          },
+        });
+      }}
+      style={styles.container}
+    >
       {bookcase.image ? (
         <Image source={{ uri: bookcase.image }} style={styles.image} />
       ) : (
