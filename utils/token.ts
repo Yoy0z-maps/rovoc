@@ -38,3 +38,8 @@ export async function refreshToken() {
   }
   return "";
 }
+
+// sign out
+export async function deleteToken() {
+  await SecureStore.deleteItemAsync("user");
+}
