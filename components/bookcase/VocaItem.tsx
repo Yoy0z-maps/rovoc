@@ -82,18 +82,20 @@ export default function VocaItem({
       >
         <Text style={styles.text}>{word.text}</Text>
         {word.meanings.map((meaning, index) => (
-          <View style={styles.meaningContainer} key={index}>
-            <View style={styles.meaningIndexContainer}>
-              <Text style={styles.meaningIndexText}>{index + 1}</Text>
+          <View>
+            <View style={styles.meaningContainer} key={index}>
+              <View style={styles.meaningIndexContainer}>
+                <Text style={styles.meaningIndexText}>{index + 1}</Text>
+              </View>
+              <Text style={styles.meaningsItemText}>
+                ({meaning.part || "N/A"})
+              </Text>
+              <Text style={styles.meaningsItemText}>
+                {meaning.definition || "N/A"} :{" "}
+              </Text>
             </View>
-            <Text style={styles.meaningsItemText}>
-              ({meaning.part || "N/A"})
-            </Text>
-            <Text style={styles.meaningsItemText}>
-              {meaning.definition || "N/A"}
-            </Text>
-            <Text style={styles.meaningsItemText}>
-              : {word.meanings[0]?.example || "N/A"}
+            <Text style={styles.meaningsItemTextExample}>
+              {word.meanings[0]?.example || "N/A"}
             </Text>
           </View>
         ))}
@@ -154,6 +156,11 @@ const styles = StyleSheet.create({
   },
   meaningsItemText: {
     fontSize: 14,
+    color: "#767676",
+  },
+  meaningsItemTextExample: {
+    marginTop: 2,
+    fontSize: 13,
     color: "#767676",
   },
   image: {
