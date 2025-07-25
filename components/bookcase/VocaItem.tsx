@@ -74,9 +74,8 @@ export default function VocaItem({
   };
 
   return (
-    <Swipeable renderRightActions={renderAction}>
+    <Swipeable key={word.id} renderRightActions={renderAction}>
       <View
-        key={word.id}
         style={styles.container}
         onLayout={(e) => setContainerHeight(e.nativeEvent.layout.height)}
       >
