@@ -108,6 +108,8 @@ export default function BookcasScreen() {
         contentContainerStyle={{ paddingVertical: 30, paddingHorizontal: 24 }} // 상단 여유 공간 확보
       />
       <VocaEditModal
+        refetch={refetch}
+        bookcaseId={bookcase as unknown as string}
         voca={selectedVoca}
         showVocaEditModal={showVocaEditModal}
         setShowVocaEditModal={setShowVocaEditModal}

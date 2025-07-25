@@ -55,8 +55,6 @@ export default function AddVocaContainer({
       },
     });
 
-    console.log(response);
-
     if (response.ok) {
       Toast.show({
         type: "ToastSuccess",

@@ -47,6 +47,10 @@
       "sortByOldest": "오래된 순",
       "showOnlyStarred": "즐겨찾기만 보기",
       "sortByAlphabet": "알파벳 순"
+    },
+    "vocaEditModal": {
+      "add": "추가",
+      "edit": "수정"
     }
   },
   "game": {

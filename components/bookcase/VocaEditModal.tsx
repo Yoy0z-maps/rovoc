@@ -5,17 +5,24 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
-import SubmitButton from "../index/SubmitButton";
 import PartOfSpeechOptions from "../index/PartOfSpeechOptions";
 import VocaInputField from "../index/VocaInputField";
 import { useEffect, useState } from "react";
 import { Word } from "@/types/word";
+import VocaModalSubmitButton from "../index/VocaModalSubmitButton";
+import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
+import { useTranslation } from "react-i18next";
+import { getAccessToken } from "@/utils/token";
 
 export default function VocaEditModal({
+  refetch,
+  bookcaseId,
   voca,
   showVocaEditModal,
   setShowVocaEditModal,
 }: {
+  refetch: () => void;
+  bookcaseId: string;
   voca: Word | null;
   showVocaEditModal: boolean;
   setShowVocaEditModal: (value: boolean) => void;
@@ -50,7 +57,72 @@ export default function VocaEditModal({
     description: "",
   });
 
-  const handleSubmit = async () => {};
+  const { t } = useTranslation();
+
+  const textAdd = t("[bookcase].vocaEditModal.add");
+  const textEdit = t("[bookcase].vocaEditModal.edit");
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    const token = await getAccessToken();
+    const result = await fetch(`${API_SERVER_ADDRESS}/word/words/`, {
+      method: "POST",
+      body: JSON.stringify({
+        wordbook: bookcaseId,
+        text: word,
+        meanings: [
+          {
+            part: vocalModal.partOfSpeech,
+            definition: vocalModal.meaning,
+            example: vocalModal.description,
+          },
+        ],
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (result.ok) {
+      refetch();
+    }
+    setIsLoading(false);
+    setShowVocaEditModal(false);
+  };
+
+  const handleEdit = async () => {
+    console.log("edit");
+    setIsLoading(true);
+    const token = await getAccessToken();
+    const result = await fetch(
+      `${API_SERVER_ADDRESS}/word/words/${voca!.id}/`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          text: word,
+          meanings: [
+            {
+              part: vocalModal.partOfSpeech,
+              definition: vocalModal.meaning,
+              example: vocalModal.description,
+            },
+          ],
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(result);
+    if (result.ok) {
+      refetch();
+    }
+    setIsLoading(false);
+    setShowVocaEditModal(false);
+  };
 
   return (
     <Modal
@@ -92,7 +164,11 @@ export default function VocaEditModal({
                   setVocalModal({ ...vocalModal, description: text })
                 }
               />
-              <SubmitButton onPress={handleSubmit} />
+              <VocaModalSubmitButton
+                isLoading={isLoading}
+                onPress={voca ? handleEdit : handleSubmit}
+                text={voca ? textEdit : textAdd}
+              />
             </View>
           </View>
         </View>

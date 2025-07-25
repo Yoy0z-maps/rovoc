@@ -47,6 +47,10 @@
       "sortByOldest": "Sort by oldest",
       "showOnlyStarred": "Show only starred items",
       "sortByAlphabet": "Sort by alphabet"
+    },
+    "vocaEditModal": {
+      "add": "ADD",
+      "edit": "EDIT"
     }
   },
   "game": {
