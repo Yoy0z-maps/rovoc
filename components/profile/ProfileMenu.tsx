@@ -45,7 +45,7 @@ export default function ProfileMenu() {
             router.push({
               pathname: "/webview",
               params: {
-                url: encodeURIComponent("https://buymeacoffe.com/yoy0zmaps"),
+                url: encodeURIComponent("https://buymeacoffee.com/yoy0zmaps"),
               },
             });
           }}

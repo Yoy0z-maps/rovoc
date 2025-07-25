@@ -6,6 +6,7 @@ import { BlurView } from "expo-blur";
 
 export default function ReviewVocaItem({ word }: { word: Word }) {
   const [isShow, setIsShow] = useState(false);
+  const [textLayout, setTextLayout] = useState({ width: 0, height: 0 });
 
   const { t } = useTranslation();
 
@@ -18,14 +19,28 @@ export default function ReviewVocaItem({ word }: { word: Word }) {
         </Text>
       ) : (
         <View>
-          <BlurView
-            experimentalBlurMethod="dimezisBlurView"
-            intensity={10}
-            style={styles.blurContainer}
-          />
-          <Text style={styles.vocabularyMeaning}>
+          <Text
+            style={styles.vocabularyMeaning}
+            onLayout={(event) => {
+              const { width, height } = event.nativeEvent.layout;
+              setTextLayout({ width, height });
+            }}
+          >
             {word.meanings[0].definition}
           </Text>
+          {textLayout.width > 0 && (
+            <BlurView
+              experimentalBlurMethod="dimezisBlurView"
+              intensity={10}
+              style={[
+                styles.blurContainer,
+                {
+                  width: textLayout.width,
+                  height: textLayout.height,
+                },
+              ]}
+            />
+          )}
         </View>
       )}
       <Pressable
@@ -68,12 +83,9 @@ const styles = StyleSheet.create({
     color: "#2988F6",
   },
   blurContainer: {
-    textAlign: "center",
-    justifyContent: "center",
     position: "absolute",
-    padding: 2,
-    width: 50,
-    height: 30,
+    top: 0,
+    left: 0,
     zIndex: 1000,
     backgroundColor: "rgba(255, 255, 255, 0.5)",
   },
