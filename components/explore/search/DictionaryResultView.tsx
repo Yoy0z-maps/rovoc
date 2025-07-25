@@ -44,7 +44,7 @@ export default function DictionaryResultView({
                     definition.definition
                   }`}</Text>
                 </View>
-                <Text>{definition.example}</Text>
+                <Text style={styles.exampleText}>{definition.example}</Text>
               </View>
             ))}
           </View>
@@ -98,5 +98,11 @@ const styles = StyleSheet.create({
   },
   definition: {
     fontSize: 14,
+  },
+  exampleText: {
+    marginTop: 4,
+    marginRight: 24,
+    fontSize: 14,
+    color: "#777",
   },
 });
