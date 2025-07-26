@@ -7,6 +7,17 @@ export async function getUser() {
   return user;
 }
 
+export async function getUserData({ token }: { token: string }) {
+  const response = await fetch(`${API_SERVER_ADDRESS}/users/user/me/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.json();
+}
+
 export async function setUser(user: AuthResponse) {
   await SecureStore.setItemAsync("user", JSON.stringify(user));
 }

@@ -4,21 +4,44 @@ import UserStatus from "@/components/profile/UserStatus";
 import ProfileMenu from "@/components/profile/ProfileMenu";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { useEffect, useState } from "react";
-import { getUser } from "@/utils/user";
-import { AuthResponse } from "@/types/user";
+import { getUserData } from "@/utils/user";
+import { getAccessToken } from "@/utils/token";
+import { User } from "@/types/user";
+import LottieView from "lottie-react-native";
 
 export default function ProfileScreen() {
-  const [user, setUser] = useState<AuthResponse | null>(null);
+  const [user, setUser] = useState<User>();
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user_data = await getUser();
-      if (user_data) {
-        setUser(JSON.parse(user_data));
+      const token = await getAccessToken();
+      if (token) {
+        const user_data = await getUserData({ token });
+        setUser(user_data);
       }
     };
     fetchUser();
   }, []);
+
+  if (!user) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LottieView
+          source={require("@/assets/lottie/Loading.json")}
+          autoPlay
+          loop
+          style={{ width: 220, height: 200 }}
+        />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -28,7 +51,12 @@ export default function ProfileScreen() {
         profileName="러시아 아랴양"
         profileId="@alya2024"
       />
-      <UserStatus />
+      <UserStatus
+        level={0}
+        streak={user.streak}
+        word_count={user.word_count}
+        wordbook_count={user.wordbook_count}
+      />
       <View style={styles.backgroundView}></View>
       <ProfileMenu />
     </SafeAreaView>

@@ -1,32 +1,38 @@
 import { View, StyleSheet, Text } from "react-native";
 
 interface UserStatusProps {
-  countBookcase: number;
-  countVocabulary: number;
-  countLevel: number;
+  level: number;
+  streak: number;
+  word_count: number;
+  wordbook_count: number;
 }
 
-export default function UserStatus() {
+export default function UserStatus({
+  level,
+  streak,
+  word_count,
+  wordbook_count,
+}: UserStatusProps) {
   return (
     <View style={styles.profileStatContainer}>
       <View style={styles.profileStatItem}>
         <Text style={styles.profileStatTitle}>레벨</Text>
-        <Text style={styles.profileStatValue}>17</Text>
+        <Text style={styles.profileStatValue}>{level}</Text>
       </View>
       <View style={styles.profileStatDivider}></View>
       <View style={styles.profileStatItem}>
         <Text style={styles.profileStatTitle}>출석</Text>
-        <Text style={styles.profileStatValue}>310</Text>
+        <Text style={styles.profileStatValue}>{streak}</Text>
       </View>
       <View style={styles.profileStatDivider}></View>
       <View style={styles.profileStatItem}>
         <Text style={styles.profileStatTitle}>단어</Text>
-        <Text style={styles.profileStatValue}>397</Text>
+        <Text style={styles.profileStatValue}>{word_count}</Text>
       </View>
       <View style={styles.profileStatDivider}></View>
       <View style={styles.profileStatItem}>
         <Text style={styles.profileStatTitle}>책장</Text>
-        <Text style={styles.profileStatValue}>10</Text>
+        <Text style={styles.profileStatValue}>{wordbook_count}</Text>
       </View>
     </View>
   );

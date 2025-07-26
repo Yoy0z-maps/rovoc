@@ -12,6 +12,10 @@ export interface User {
   nickname: string;
   profile_image: string | null;
   created_at: string;
+  score: number;
+  streak: number;
+  word_count: number;
+  wordbook_count: number;
 }
 
 export interface Tokens {
