@@ -27,6 +27,7 @@ export default function AuthPage() {
         flex: 1,
         justifyContent: "flex-end",
         alignItems: "center",
+        backgroundColor: "#fefefe",
       }}
     >
       <LanguageSelector />

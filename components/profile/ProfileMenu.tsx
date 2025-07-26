@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { deleteUser } from "@/utils/user";
 import { deleteToken, getAccessToken } from "@/utils/token";
 import { changeLanguage } from "i18next";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -29,14 +30,26 @@ export default function ProfileMenu() {
         <ProfileMenuTopItem
           icon={<MaterialIcons name="policy" size={24} color="black" />}
           label={t("profile.menu.privacy")}
-          onPress={() => {}}
+          onPress={() => {
+            router.push({
+              pathname: "/webview",
+              params: {
+                url: encodeURIComponent(
+                  "https://yoy0z-maps.com/rovoca/privacy"
+                ),
+                title: "Privacy Policy",
+              },
+            });
+          }}
         />
         <ProfileMenuTopItem
           icon={
             <MaterialCommunityIcons name="license" size={24} color="black" />
           }
           label={t("profile.menu.license")}
-          onPress={() => {}}
+          onPress={() => {
+            router.push("/license");
+          }}
         />
         <ProfileMenuTopItem
           icon={<MaterialIcons name="coffee" size={24} color="black" />}
@@ -46,6 +59,7 @@ export default function ProfileMenu() {
               pathname: "/webview",
               params: {
                 url: encodeURIComponent("https://buymeacoffee.com/yoy0zmaps"),
+                title: "Donate",
               },
             });
           }}

@@ -77,7 +77,12 @@ export default function RootLayout() {
         <Stack>
           <Stack.Screen name="(mainTabs)" options={{ headerShown: false }} />
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="webview" />
+          <Stack.Screen
+            name="webview"
+            options={{
+              headerShown: false,
+            }}
+          />
           <Stack.Screen name="profile" options={{ headerShown: false }} />
           <Stack.Screen name="notice" options={{ headerShown: false }} />
           <Stack.Screen name="auth" options={{ headerShown: false }} />
@@ -85,6 +90,7 @@ export default function RootLayout() {
           <Stack.Screen name="hangman" options={{ headerShown: false }} />
           <Stack.Screen name="sentence" options={{ headerShown: false }} />
           <Stack.Screen name="[bookcase]" options={{ headerShown: false }} />
+          <Stack.Screen name="license" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
         <Toast config={toastConfig} />
