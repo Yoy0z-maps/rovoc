@@ -54,7 +54,18 @@ const QuizScreen = () => {
 
   const wordList = TEST_VOCABULARY;
 
-  const [quiz, setQuiz] = useState(() => createQuiz(wordList));
+  const [usedWords, setUsedWords] = useState<Set<string>>(new Set());
+  const [quiz, setQuiz] = useState(() =>
+    createQuiz(wordList, usedWords, setShowResult)
+  );
+
+  // 퀴즈가 변경될 때마다 usedWords 업데이트
+  useEffect(() => {
+    if (quiz && quiz.question !== "No more words available") {
+      setUsedWords((prev) => new Set([...prev, quiz.question]));
+    }
+  }, [quiz]);
+
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -77,19 +88,17 @@ const QuizScreen = () => {
   };
 
   const nextQuiz = () => {
-    const newQuiz = createQuiz(wordList);
-    if (!newQuiz) {
-      Alert.alert(t("game.alert.gameOver"), t("game.alert.noMoreQuiz"));
+    const newQuiz = createQuiz(wordList, usedWords, setShowResult);
+    if (!newQuiz || newQuiz.question === "No more words available") {
       return;
     }
+
     setQuiz(newQuiz);
     setSelected(null);
     setIsCorrect(null);
   };
 
   if (!quiz) {
-    router.back();
-    Alert.alert(t("game.alert.gameOver"), t("game.alert.noWords"));
     return;
   }
 
