@@ -5,12 +5,15 @@ import { View, Alert } from "react-native";
 import ResultModal from "@/components/game/ResultModal";
 import HangmanWord from "@/components/game/HangmanWord";
 import GameTitle from "@/components/game/GameTitle";
-import { Voca } from "@/types/vocab";
 import Keyboard from "@/components/game/Keyboard";
 import HangmanInfo from "@/components/game/HangmanInfo";
 import { router } from "expo-router";
 import HangmanResult from "@/components/game/HangmanResult";
 import HangmanButtonContainer from "@/components/game/HangmanButtonContainer";
+import { Word } from "@/types/word";
+import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
+import { getAccessToken } from "@/utils/token";
+import LottieView from "lottie-react-native";
 
 const shuffleArray = <T,>(arr: T[]): T[] => {
   const array = [...arr];
@@ -22,8 +25,8 @@ const shuffleArray = <T,>(arr: T[]): T[] => {
 };
 
 export default function HangmanScreen() {
-  const wordList = TEST_VOCABULARY;
-  const [shuffledWords, setShuffledWords] = useState<Voca[]>([]);
+  const [wordList, setWordList] = useState<Word[]>([]);
+  const [shuffledWords, setShuffledWords] = useState<Word[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentWord, setCurrentWord] = useState<string>("");
   const [revealed, setRevealed] = useState<string[]>([]);
@@ -31,22 +34,52 @@ export default function HangmanScreen() {
   const [wrongLetters, setWrongLetters] = useState<string[]>([]);
   const [gameOver, setGameOver] = useState(false);
   const [isWin, setIsWin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const shuffled = shuffleArray(wordList);
-    setShuffledWords(shuffled);
-    setCurrentIndex(0);
-    setGameOver(false);
-    loadNextWord(shuffled, 0);
+    const fetchData = async () => {
+      try {
+        const token = await getAccessToken();
+        const response = await fetch(`${API_SERVER_ADDRESS}/word/words/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setWordList(data.results as Word[]);
+      } catch (error) {
+        console.error("Failed to fetch words:", error);
+        setWordList([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
-  const loadNextWord = (shuffled: Voca[], index: number) => {
-    if (index >= shuffled.length) {
-      Alert.alert("게임 종료", "모든 단어를 풀었습니다!");
-      setGameOver(true);
-      router.push("/(mainTabs)/game");
+  useEffect(() => {
+    if (wordList.length > 0) {
+      const shuffled = shuffleArray(wordList);
+      setShuffledWords(shuffled);
+      setCurrentIndex(0);
+      setGameOver(false);
+      loadNextWord(shuffled, 0);
     }
-    const word = shuffled[index].name.toUpperCase();
+  }, [wordList]);
+
+  const loadNextWord = (shuffled: Word[], index: number) => {
+    if (index >= shuffled.length) {
+      setGameOver(true);
+      setShowResult(true);
+      return;
+    }
+
+    const word = shuffled[index]?.text?.toUpperCase();
+    if (!word) {
+      Alert.alert("오류", "단어를 불러올 수 없습니다.");
+      return;
+    }
+
     setCurrentWord(word);
     setRevealed(Array(word.length).fill("_"));
     setUsedLetters([]);
@@ -63,6 +96,32 @@ export default function HangmanScreen() {
 
   const [score, setScore] = useState({ correct: 0, wrong: 0 });
   const [showResult, setShowResult] = useState(false);
+
+  // 로딩 중이거나 wordList가 비어있으면 로딩 화면 표시
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LottieView
+          source={require("@/assets/lottie/Loading.json")}
+          autoPlay
+          loop
+          style={{ width: 220, height: 200 }}
+        />
+      </View>
+    );
+  }
+
+  if (wordList.length === 0) {
+    Alert.alert("단어가 없습니다.");
+    return;
+  }
 
   return (
     <View
@@ -83,7 +142,7 @@ export default function HangmanScreen() {
       />
       <HangmanInfo
         wrongLetters={wrongLetters}
-        hint={shuffledWords[currentIndex]?.meaning[0]?.definition || "..."} // shuffledWords[currentIndex]가 초기화되기 전에 접근 Undefined 처리
+        hint={shuffledWords[currentIndex]?.meanings?.[0]?.definition || "..."}
       />
       <Keyboard
         currentWord={currentWord}

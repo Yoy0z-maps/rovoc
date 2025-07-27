@@ -9,12 +9,10 @@ import {
 } from "expo-av";
 
 import { createQuiz } from "../utils/quizUtils"; // 퀴즈 로직
-import { TEST_VOCABULARY } from "@/constants/TestVoca";
 import ResultModal from "@/components/game/ResultModal";
 import GameTitle from "@/components/game/GameTitle";
 import GameButtonContainer from "@/components/game/QuizButtonContainer";
 import QuizResult from "@/components/game/QuizResult";
-import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import QuizQuestion from "@/components/game/QuizQuestion";
 import QuizSelections from "@/components/game/QuizSelections";
@@ -117,6 +115,11 @@ const QuizScreen = () => {
   };
 
   if (!quiz) {
+    return;
+  }
+
+  if (wordList.length <= 4) {
+    Alert.alert("4개 이상의 단어가 필요합니다.");
     return;
   }
 
