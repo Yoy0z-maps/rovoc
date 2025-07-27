@@ -13,12 +13,19 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   updates: {
     enabled: true,
     fallbackToCacheTimeout: 0,
+    url: "https://u.expo.dev/4b07a72d-5765-45ff-98ce-d213420a6df9",
+  },
+  runtimeVersion: {
+    policy: "appVersion",
   },
   ios: {
     supportsTablet: true,
     bundleIdentifier: "com.yoy0zmaps.rovoc",
     usesAppleSignIn: true,
     buildNumber: "3",
+    infoPlist: {
+      ITSAppUsesNonExemptEncryption: false,
+    },
   },
   android: {
     adaptiveIcon: {
