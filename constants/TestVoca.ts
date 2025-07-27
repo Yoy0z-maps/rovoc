@@ -1,10 +1,10 @@
-import { Voca } from "@/types/vocab";
+import { Word } from "@/types/word";
 
-export const TEST_VOCABULARY: Voca[] = [
+export const TEST_VOCABULARY: Word[] = [
   {
     id: "1",
-    name: "serendipity",
-    meaning: [
+    text: "serendipity",
+    meanings: [
       {
         part: "noun",
         definition: "행운의 우연한 발견",
@@ -16,8 +16,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "2",
-    name: "ephemeral",
-    meaning: [
+    text: "ephemeral",
+    meanings: [
       {
         part: "adj",
         definition: "덧없는, 일시적인",
@@ -29,8 +29,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "3",
-    name: "ubiquitous",
-    meaning: [
+    text: "ubiquitous",
+    meanings: [
       {
         part: "adj",
         definition: "어디에나 존재하는, 보편적인",
@@ -42,8 +42,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "4",
-    name: "meticulous",
-    meaning: [
+    text: "meticulous",
+    meanings: [
       {
         part: "adj",
         definition: "꼼꼼한, 세심한",
@@ -55,8 +55,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "5",
-    name: "eloquent",
-    meaning: [
+    text: "eloquent",
+    meanings: [
       {
         part: "adj",
         definition: "웅변적인, 설득력 있는",
@@ -68,8 +68,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "6",
-    name: "resilient",
-    meaning: [
+    text: "resilient",
+    meanings: [
       {
         part: "adj",
         definition: "탄력있는, 회복력 있는",
@@ -81,8 +81,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "7",
-    name: "ambiguous",
-    meaning: [
+    text: "ambiguous",
+    meanings: [
       {
         part: "adj",
         definition: "모호한, 애매한",
@@ -94,8 +94,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "8",
-    name: "pragmatic",
-    meaning: [
+    text: "pragmatic",
+    meanings: [
       {
         part: "adj",
         definition: "실용적인, 현실적인",
@@ -107,8 +107,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "9",
-    name: "tenacious",
-    meaning: [
+    text: "tenacious",
+    meanings: [
       {
         part: "adj",
         definition: "끈질긴, 고집스러운",
@@ -120,8 +120,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "10",
-    name: "verbose",
-    meaning: [
+    text: "verbose",
+    meanings: [
       {
         part: "adj",
         definition: "장황한, 말이 많은",
@@ -133,8 +133,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "11",
-    name: "diligent",
-    meaning: [
+    text: "diligent",
+    meanings: [
       {
         part: "adj",
         definition: "성실한, 부지런한",
@@ -146,8 +146,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "12",
-    name: "concise",
-    meaning: [
+    text: "concise",
+    meanings: [
       {
         part: "adj",
         definition: "간결한, 간단명료한",
@@ -159,8 +159,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "13",
-    name: "arduous",
-    meaning: [
+    text: "arduous",
+    meanings: [
       {
         part: "adj",
         definition: "힘든, 고된",
@@ -172,8 +172,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "14",
-    name: "eloquent",
-    meaning: [
+    text: "eloquent",
+    meanings: [
       {
         part: "adj",
         definition: "웅변적인, 설득력 있는",
@@ -185,8 +185,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "15",
-    name: "meticulous",
-    meaning: [
+    text: "meticulous",
+    meanings: [
       {
         part: "adj",
         definition: "꼼꼼한, 세심한",
@@ -198,8 +198,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "16",
-    name: "pernicious",
-    meaning: [
+    text: "pernicious",
+    meanings: [
       {
         part: "adj",
         definition: "유해한, 해로운",
@@ -211,8 +211,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "17",
-    name: "quintessential",
-    meaning: [
+    text: "quintessential",
+    meanings: [
       {
         part: "adj",
         definition: "전형적인, 본질적인",
@@ -224,8 +224,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "18",
-    name: "voracious",
-    meaning: [
+    text: "voracious",
+    meanings: [
       {
         part: "adj",
         definition: "탐욕스러운, 게걸스러운",
@@ -237,8 +237,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "19",
-    name: "ubiquitous",
-    meaning: [
+    text: "ubiquitous",
+    meanings: [
       {
         part: "adj",
         definition: "어디에나 존재하는, 보편적인",
@@ -250,8 +250,8 @@ export const TEST_VOCABULARY: Voca[] = [
   },
   {
     id: "20",
-    name: "fastidious",
-    meaning: [
+    text: "fastidious",
+    meanings: [
       {
         part: "adj",
         definition: "까다로운, 세심한",
