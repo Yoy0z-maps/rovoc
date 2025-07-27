@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 import { deleteUser } from "@/utils/user";
 import { deleteToken, getAccessToken } from "@/utils/token";
 import { changeLanguage } from "i18next";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;

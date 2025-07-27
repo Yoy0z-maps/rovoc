@@ -10,6 +10,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   scheme: "rovoca",
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
+  updates: {
+    fallbackToCacheTimeout: 0,
+  },
   ios: {
     supportsTablet: true,
     bundleIdentifier: "com.yoy0zmaps.rovoc",

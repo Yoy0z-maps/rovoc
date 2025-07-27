@@ -47,9 +47,9 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.container}>
       <ProfileHeader />
       <Profile
-        profileImage="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeQ1MZ8bacQWTrg8R-eRuvG5rDBBg8iB12qA&s"
-        profileName="러시아 아랴양"
-        profileId="@alya2024"
+        profileImage={user.profile_image || "@assets/images/rovoca-icon.jpg"}
+        profileName={user.nickname || "Unknown User"}
+        profileId={`@${user.social_id.toString()}`}
       />
       <UserStatus
         level={0}
