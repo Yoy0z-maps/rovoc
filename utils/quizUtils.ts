@@ -8,13 +8,13 @@ export function getRandomItems(arr: Word[], count: number): Word[] {
 export function createQuiz(
   words: Word[],
   usedWords: Set<string> = new Set(),
-  setShowResult: (show: boolean) => void
+  setShowResult?: (show: boolean) => void
 ): { question: string; options: string[]; answer: string } | null {
   // 사용되지 않은 단어들만 필터링 (문제용)
   const availableWords = words.filter(word => !usedWords.has(word.text));
 
   if (availableWords.length === 0) {
-    setShowResult(true);
+    if (setShowResult) setShowResult(true);
     return {
       question: "No more words available",
       options: [],

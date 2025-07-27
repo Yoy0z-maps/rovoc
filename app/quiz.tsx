@@ -18,6 +18,9 @@ import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import QuizQuestion from "@/components/game/QuizQuestion";
 import QuizSelections from "@/components/game/QuizSelections";
+import { Word } from "@/types/word";
+import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
+import { getAccessToken } from "@/utils/token";
 
 const QuizScreen = () => {
   const { t } = useTranslation();
@@ -52,12 +55,31 @@ const QuizScreen = () => {
       : undefined;
   }, [sound]);
 
-  const wordList = TEST_VOCABULARY;
-
+  const [wordList, setWordList] = useState<Word[]>([]);
   const [usedWords, setUsedWords] = useState<Set<string>>(new Set());
-  const [quiz, setQuiz] = useState(() =>
-    createQuiz(wordList, usedWords, setShowResult)
-  );
+  const [quiz, setQuiz] = useState<ReturnType<typeof createQuiz> | null>(null);
+  const [showResult, setShowResult] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = await getAccessToken();
+      const response = await fetch(`${API_SERVER_ADDRESS}/word/words/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      setWordList(data.results as Word[]);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (wordList.length > 0 && quiz === null) {
+      const newQuiz = createQuiz(wordList, usedWords, setShowResult);
+      setQuiz(newQuiz);
+    }
+  }, [wordList]);
 
   // 퀴즈가 변경될 때마다 usedWords 업데이트
   useEffect(() => {
@@ -70,7 +92,6 @@ const QuizScreen = () => {
   const [selected, setSelected] = useState<string | null>(null);
 
   const [score, setScore] = useState({ correct: 0, wrong: 0 });
-  const [showResult, setShowResult] = useState(false); // 모달 표시 여부
 
   const handleSelect = (option: string) => {
     if (!quiz) return;
@@ -89,10 +110,7 @@ const QuizScreen = () => {
 
   const nextQuiz = () => {
     const newQuiz = createQuiz(wordList, usedWords, setShowResult);
-    if (!newQuiz || newQuiz.question === "No more words available") {
-      return;
-    }
-
+    if (!newQuiz || newQuiz.question === "No more words available") return;
     setQuiz(newQuiz);
     setSelected(null);
     setIsCorrect(null);
