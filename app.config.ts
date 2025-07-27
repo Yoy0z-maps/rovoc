@@ -4,7 +4,7 @@ import "dotenv/config";
 export default ({ config }: ConfigContext): ExpoConfig => ({
   name: "rovoc",
   slug: "rovoc",
-  version: "1.0.2",
+  version: "1.1.0",
   orientation: "portrait",
   icon: "./assets/images/rovoca-icon.jpg",
   scheme: "rovoca",
