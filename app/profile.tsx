@@ -47,7 +47,7 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.container}>
       <ProfileHeader />
       <Profile
-        profileImage={user.profile_image || "@assets/images/rovoca-icon.jpg"}
+        profileImage={user.profile_image}
         profileName={user.nickname || "Unknown User"}
         profileId={`@${user.social_id.toString()}`}
       />

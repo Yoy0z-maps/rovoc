@@ -1,7 +1,7 @@
 import { View, Image, StyleSheet, Text } from "react-native";
 
 interface ProfileProps {
-  profileImage: string;
+  profileImage: string | null;
   profileName: string;
   profileId: string;
 }
@@ -13,15 +13,22 @@ export default function Profile({
 }: ProfileProps) {
   return (
     <View style={styles.profileContainer}>
-      <Image
-        source={{
-          uri: profileImage,
-        }}
-        style={styles.profileImage}
-      />
+      {profileImage ? (
+        <Image
+          source={{
+            uri: profileImage,
+          }}
+          style={styles.profileImage}
+        />
+      ) : (
+        <Image
+          source={require("../../assets/images/rovoca-icon.jpg")}
+          style={styles.profileImage}
+        />
+      )}
       <View style={styles.profileTextContainer}>
         <Text style={styles.profileName}>{profileName}</Text>
-        <Text style={styles.profileId}>id: {profileId}</Text>
+        <Text style={styles.profileId}>id: {profileId.slice(0, 7)}</Text>
       </View>
     </View>
   );
