@@ -11,6 +11,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
   updates: {
+    enabled: true,
     fallbackToCacheTimeout: 0,
   },
   ios: {

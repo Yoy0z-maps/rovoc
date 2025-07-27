@@ -19,6 +19,7 @@
     "production": {}
   },
   "updates": {
+    "enabled": true,
     "fallbackToCacheTimeout": 0
   }
 }
