@@ -4,7 +4,6 @@ import { SafeAreaView } from "react-native";
 import GameList from "@/components/game/GameList";
 import More from "@/components/game/More";
 import GameScreenTitle from "@/components/game/GameScreenTitle";
-import GameEnergy from "@/components/game/GameEnergy";
 import { getAccessToken } from "@/utils/token";
 
 export default function GameScreen() {
@@ -34,8 +33,7 @@ export default function GameScreen() {
         alignItems: "center",
       }}
     >
-      <GameScreenTitle />
-      <GameEnergy attempt={attempt} />
+      <GameScreenTitle attempt={attempt} />
       <GameList />
       <More />
       {/* <View style={styles.progressContainer}>
