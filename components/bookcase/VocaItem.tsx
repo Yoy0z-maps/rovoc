@@ -8,7 +8,7 @@ import {
   Animated,
   TouchableOpacity,
 } from "react-native";
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { Feather, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import useAnimatedImportant from "@/hooks/useAnimatedImportant";
 import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { useState } from "react";
@@ -102,12 +102,16 @@ export default function VocaItem({
           onPress={() => importantAnimation(word.id)}
           style={styles.importantButton}
         >
-          <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-            <FontAwesome
-              name="star"
-              size={20}
-              color={isImportant ? "gold" : "#dcdcdc"}
-            />
+          <Animated.View
+            style={{
+              transform: [{ scale: scaleAnim }],
+            }}
+          >
+            {isImportant ? (
+              <FontAwesome name="star" size={20} color="gold" />
+            ) : (
+              <Feather name="star" size={20} color="black" />
+            )}
           </Animated.View>
         </Pressable>
         <Image

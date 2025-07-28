@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Pressable, Animated } from "react-native";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { Wordbook } from "@/types/wordbooks";
 import VocaCardOptions from "./VocaCardOptions";
 import { useRouter } from "expo-router";
@@ -48,11 +48,11 @@ export default function BookcaseCard({
                 }}
               >
                 <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-                  <FontAwesome
-                    name="star"
-                    size={20}
-                    color={isImportant ? "gold" : "#dcdcdc"}
-                  />
+                  {isImportant ? (
+                    <FontAwesome name="star" size={22} color="gold" />
+                  ) : (
+                    <Feather name="star" size={22} color="black" />
+                  )}
                 </Animated.View>
               </Pressable>
               <Pressable onPress={() => setShowOptions(!showOptions)}>
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#767676",
     marginLeft: 20,
-    marginTop: 15,
+    marginTop: 10,
     marginBottom: 20,
   },
   footer: {
