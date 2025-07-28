@@ -65,7 +65,11 @@ export default function CalendarVocabulary({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{selectedDate}</Text>
+      <View style={styles.titleContainer}>
+        <View style={styles.titleLine} />
+        <Text style={styles.title}>{selectedDate}</Text>
+        <View style={styles.titleLine} />
+      </View>
       {vocaData.length > 0 ? (
         <View style={{ width: "100%", paddingHorizontal: 12 }}>
           <Animated.View
@@ -90,7 +94,14 @@ export default function CalendarVocabulary({
           <Animated.FlatList
             data={vocaData}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <VocaItem key={item.id} word={item} />}
+            renderItem={({ item }) => (
+              <VocaItem
+                key={item.id}
+                word={item}
+                onEditPress={() => {}}
+                refetch={() => {}}
+              />
+            )}
             scrollEventThrottle={4}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -132,10 +143,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
   },
+  titleContainer: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  titleLine: {
+    flex: 1,
+    height: 2.5,
+    backgroundColor: "#111",
+  },
   title: {
+    borderTopWidth: 2.5,
+    borderBottomWidth: 3.5,
+    borderLeftWidth: 2.5,
+    borderRightWidth: 3.5,
+    borderColor: "#111",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     fontFamily: "PressStart2P",
     fontSize: 16,
     color: "#111",
+    borderRadius: 10,
   },
   text: {
     fontFamily: "PressStart2P",
@@ -144,13 +174,12 @@ const styles = StyleSheet.create({
     color: "#787878",
   },
   question: {
-    marginTop: 24,
+    marginTop: 12,
     fontFamily: "PressStart2P",
     color: "#787878",
     fontSize: 24,
   },
   image: {
-    marginTop: 10,
     width: 150,
     height: 150,
   },

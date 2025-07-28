@@ -72,6 +72,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   dateContainer: {
+    borderTopWidth: 2,
+    borderBottomWidth: 3,
+    borderLeftWidth: 2,
+    borderRightWidth: 3,
+    borderColor: "#111",
     width: "100%",
     height: "100%",
     alignItems: "center",
