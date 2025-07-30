@@ -35,6 +35,9 @@ export default function CalendarViewer({
               {
                 backgroundColor: date === selectedDate ? "#2988F6" : "white",
               },
+              {
+                borderColor: date ? "black" : "white",
+              },
             ]}
           >
             <Text
@@ -76,7 +79,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 3,
     borderLeftWidth: 2,
     borderRightWidth: 3,
-    borderColor: "#111",
     width: "100%",
     height: "100%",
     alignItems: "center",
