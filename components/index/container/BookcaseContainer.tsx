@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text, ScrollView } from "react-native";
-import BookcaseCarWithImage from "@/components/index/BookcaseCardWithImage";
+import BookcaseCardWithImage from "@/components/index/BookcaseCardWithImage";
 import { Wordbook } from "@/types/wordbooks";
 
 export default function BookcaseContainer({
@@ -11,12 +11,11 @@ export default function BookcaseContainer({
     <View style={styles.vocabularyBookcaseContainer}>
       <Text style={styles.vocabularyBookcaseTitle}>My Vocab Bookcase</Text>
       <ScrollView
-        horizontal
         style={{ marginTop: 15 }}
-        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
       >
-        {bookcases.map((bookcase) => (
-          <BookcaseCarWithImage key={bookcase.id} bookcase={bookcase} />
+        {bookcases.map((bookcase, index) => (
+          <BookcaseCardWithImage key={bookcase.id} bookcase={bookcase} />
         ))}
       </ScrollView>
     </View>
@@ -34,7 +33,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     width: "100%",
     paddingHorizontal: 24,
-    paddingBottom: 0,
   },
   vocabularyBookcaseTitle: {
     fontFamily: "Pretendard-bold",
