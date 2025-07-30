@@ -88,7 +88,9 @@ export default function AddVocaContainer({
           style={styles.targetBookcaseButton}
           onPress={() => setShowBookcaseModal(!showBookcaseModal)}
         >
-          <Text style={styles.targetBookcaseText}>{targetBookcase?.name}</Text>
+          <Text style={styles.targetedBookcaseText}>
+            {targetBookcase?.name}
+          </Text>
           {showBookcaseModal ? (
             <MaterialIcons name="expand-less" size={20} color="black" />
           ) : (
@@ -147,6 +149,11 @@ const styles = StyleSheet.create({
   targetBookcaseText: {
     fontSize: 14,
     fontFamily: "Pretendard-Regular",
+    color: "#111",
+  },
+  targetedBookcaseText: {
+    fontSize: 14,
+    fontFamily: "Pretendard-Medium",
     color: "#111",
   },
   inputTitleContainer: {
