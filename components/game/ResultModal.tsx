@@ -4,6 +4,8 @@ import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 
 import { Modal } from "react-native";
 import LottieView from "lottie-react-native";
+import { getAccessToken } from "@/utils/token";
+import { updateUserScore } from "@/utils/user";
 
 interface ResultModalProps {
   game: "hangman" | "quiz";
@@ -19,6 +21,8 @@ export default function ResultModal({
   setShowResult,
 }: ResultModalProps) {
   const { t } = useTranslation();
+
+  const score_change = score.correct - score.wrong * 10;
 
   var accuracy = (score.correct / (score.correct + score.wrong)) * 100;
   if (score.correct === 0 && score.wrong === 0) {
@@ -66,7 +70,9 @@ export default function ResultModal({
             </Text>
           </View>
           <TouchableOpacity
-            onPress={() => {
+            onPress={async () => {
+              const token = await getAccessToken();
+              updateUserScore({ token: token!, score_change: score_change });
               setShowResult(false);
               router.back();
             }}

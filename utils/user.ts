@@ -33,3 +33,24 @@ export async function deleteUser(token: string) {
 }
 
 export async function patchUser() {}
+
+export async function updateUserActivity({ token }: { token: string }) {
+  const response = await fetch(`${API_SERVER_ADDRESS}/users/user/activity/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function updateUserScore({ token, score_change }: { token: string, score_change: number }) {
+  const response = await fetch(`${API_SERVER_ADDRESS}/users/user/score/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ score_change }),
+  });
+}

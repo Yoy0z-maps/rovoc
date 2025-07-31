@@ -1,14 +1,14 @@
 import { View, StyleSheet, Text } from "react-native";
 
 interface UserStatusProps {
-  level: number;
+  score: number;
   streak: number;
   word_count: number;
   wordbook_count: number;
 }
 
 export default function UserStatus({
-  level,
+  score,
   streak,
   word_count,
   wordbook_count,
@@ -16,8 +16,8 @@ export default function UserStatus({
   return (
     <View style={styles.profileStatContainer}>
       <View style={styles.profileStatItem}>
-        <Text style={styles.profileStatTitle}>레벨</Text>
-        <Text style={styles.profileStatValue}>{level}</Text>
+        <Text style={styles.profileStatTitle}>점수</Text>
+        <Text style={styles.profileStatValue}>{score}</Text>
       </View>
       <View style={styles.profileStatDivider}></View>
       <View style={styles.profileStatItem}>

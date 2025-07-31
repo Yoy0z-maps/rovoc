@@ -5,6 +5,7 @@ import { getAccessToken, refreshToken } from "@/utils/token";
 import { jwtDecode } from "jwt-decode";
 import LottieView from "lottie-react-native";
 import { fetchRecentWords } from "@/utils/word";
+import { updateUserActivity } from "@/utils/user";
 
 export default function Index() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function Index() {
   const initialize = async () => {
     const token = await getAccessToken();
     if (token) {
+      await updateUserActivity({ token });
       const accessToken = await checkToken(token);
       await fetchRecentWords(accessToken);
       router.replace("/(mainTabs)");

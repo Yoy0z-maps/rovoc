@@ -18,6 +18,7 @@ export default function ProfileScreen() {
       if (token) {
         const user_data = await getUserData({ token });
         setUser(user_data);
+        console.log(user_data);
       }
     };
     fetchUser();
@@ -52,7 +53,7 @@ export default function ProfileScreen() {
         profileId={`@${user.social_id.toString()}`}
       />
       <UserStatus
-        level={0}
+        score={user.score}
         streak={user.streak}
         word_count={user.word_count}
         wordbook_count={user.wordbook_count}
