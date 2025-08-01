@@ -26,7 +26,7 @@ export default function Index() {
 
   const initialize = async () => {
     const token = await getAccessToken();
-    const pushToken = (await Notifications.getDevicePushTokenAsync()).data;
+    const pushToken = (await Notifications.getExpoPushTokenAsync()).data;
 
     if (token) {
       await updateUserActivity({ token });
