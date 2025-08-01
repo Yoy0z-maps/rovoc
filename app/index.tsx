@@ -25,6 +25,7 @@ export default function Index() {
 
   const initialize = async () => {
     const token = await getAccessToken();
+
     if (token) {
       await updateUserActivity({ token });
       const accessToken = await checkToken(token);

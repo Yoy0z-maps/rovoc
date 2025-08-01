@@ -19,6 +19,8 @@ import { useBookcases } from "@/hooks/useBookcase";
 import { fetchRecentWords } from "@/utils/word";
 import { getAccessToken } from "@/utils/token";
 
+import * as Notifications from "expo-notifications";
+
 export default function HomeScreen() {
   const [showBookcaseModal, setShowBookcaseModal] = useState(false);
   const [targetBookcase, setTargetBookcase] = useState<Wordbook | null>(null);
@@ -41,6 +43,20 @@ export default function HomeScreen() {
       setTargetBookcase(bookcases[0]);
     }
   }, [bookcases]);
+
+  const sendNotification = async () => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "알림 제목 테스트",
+        body: "알림 내용 테스트",
+      },
+      trigger: null, // 즉시 보내려면 'trigger'에 'null'을 설정
+    });
+  };
+
+  useEffect(() => {
+    sendNotification();
+  }, []);
 
   return (
     <SafeAreaView style={styles.safeArea}>

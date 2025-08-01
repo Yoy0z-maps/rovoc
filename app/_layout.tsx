@@ -25,6 +25,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useTranslation } from "react-i18next";
 import initI18n from "./i18n/i18n";
 
+import * as Notifications from "expo-notifications";
+
 const toastConfig = {
   ToastSuccess: ({ text1, text2 }: { text1?: string; text2?: string }) => (
     <ToastSuccess text1={text1} text2={text2} />
@@ -46,6 +48,24 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   useEffect(() => {
     initI18n();
+  }, []);
+
+  // ✅ 알림 권한 설정
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== "granted") {
+        alert("알림 권한이 거부되었습니다!");
+      }
+    })();
   }, []);
 
   const colorScheme = useColorScheme();
