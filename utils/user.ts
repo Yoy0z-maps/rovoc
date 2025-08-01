@@ -68,6 +68,6 @@ export async function postUserExpoPushToken({
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify({ push_token: pushToken }),
+    body: JSON.stringify({ expo_push_token: pushToken }),
   });
 }
