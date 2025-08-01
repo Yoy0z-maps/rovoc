@@ -54,8 +54,8 @@ export default function RootLayout() {
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
+      shouldPlaySound: true,
+      shouldSetBadge: false, // 알람 갯수 표시하려면 백엔드 작업 필요
     }),
   });
 
