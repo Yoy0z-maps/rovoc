@@ -5,7 +5,8 @@ import { getAccessToken, refreshToken } from "@/utils/token";
 import { jwtDecode } from "jwt-decode";
 import LottieView from "lottie-react-native";
 import { fetchRecentWords } from "@/utils/word";
-import { updateUserActivity } from "@/utils/user";
+import { postUserExpoPushToken, updateUserActivity } from "@/utils/user";
+import * as Notifications from "expo-notifications";
 
 export default function Index() {
   const router = useRouter();
@@ -25,9 +26,11 @@ export default function Index() {
 
   const initialize = async () => {
     const token = await getAccessToken();
+    const pushToken = (await Notifications.getDevicePushTokenAsync()).data;
 
     if (token) {
       await updateUserActivity({ token });
+      await postUserExpoPushToken({ accessToken: token, pushToken: pushToken });
       const accessToken = await checkToken(token);
       await fetchRecentWords(accessToken);
       router.replace("/(mainTabs)");

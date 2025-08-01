@@ -54,3 +54,20 @@ export async function updateUserScore({ token, score_change }: { token: string, 
     body: JSON.stringify({ score_change }),
   });
 }
+
+export async function postUserExpoPushToken({
+  accessToken,
+  pushToken,
+}: {
+  accessToken: string;
+  pushToken: string;
+}) {
+  const response = await fetch(`${API_SERVER_ADDRESS}/users/user/expo-push-token/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ push_token: pushToken }),
+  });
+}
