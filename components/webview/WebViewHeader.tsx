@@ -7,7 +7,7 @@ export default function WebViewHeader({ title }: { title: string }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.spacingContainer}>
         <Pressable onPress={() => router.back()}>
-          <AntDesign name="arrowleft" size={24} color="black" />
+          <AntDesign name="arrow-left" size={24} color="black" />
         </Pressable>
         <Text style={styles.title}>{title}</Text>
         <View style={{ width: 24 }} />

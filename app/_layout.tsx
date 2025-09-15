@@ -12,7 +12,6 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import { initializeKakaoSDK } from "@react-native-kakao/core";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import Toast from "react-native-toast-message";
 
 import { getKeyHashAndroid } from "@react-native-kakao/core";
@@ -67,7 +66,6 @@ export default function RootLayout() {
     })();
   }, []);
 
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     //SourceHanSans: require("../assets/fonts/SourceHanSans.ttc"), // 中文
@@ -92,7 +90,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <ThemeProvider value={DefaultTheme}>
         <Stack>
           <Stack.Screen name="(mainTabs)" options={{ headerShown: false }} />
           <Stack.Screen name="index" options={{ headerShown: false }} />
