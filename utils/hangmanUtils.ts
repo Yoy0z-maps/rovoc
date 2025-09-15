@@ -1,11 +1,11 @@
-import { Voca } from "@/types/vocab";
+import { Word } from "@/types/word";
 
 // 타입 가정: Voca = { id: string; name: string; meaning: ... }
 
-let shuffledWords: Voca[] = [];
+let shuffledWords: Word[] = [];
 let currentIndex = 0;
 
-export function initGame(words: Voca[]) {
+export function initGame(words: Word[]) {
   shuffledWords = shuffleArray(words);
   currentIndex = 0;
   return shuffleArray;
