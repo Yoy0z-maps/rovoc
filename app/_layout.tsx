@@ -17,12 +17,9 @@ import Toast from "react-native-toast-message";
 
 import { getKeyHashAndroid } from "@react-native-kakao/core";
 
-import { jwtDecode } from "jwt-decode";
-import { getAccessToken, refreshToken } from "@/utils/token";
 import ToastSuccess from "@/components/toast/ToastSuccess";
 import ToastError from "@/components/toast/ToastError";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useTranslation } from "react-i18next";
 import initI18n from "./i18n/i18n";
 
 import * as Notifications from "expo-notifications";
@@ -41,7 +38,7 @@ const key = "0eb5e8ec68637741e8154aa38486d9f9";
 console.log("init");
 console.log(key);
 initializeKakaoSDK(key || "");
-// getKeyHashAndroid().then(console.log);
+getKeyHashAndroid();
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -56,6 +53,8 @@ export default function RootLayout() {
       shouldShowAlert: true,
       shouldPlaySound: true,
       shouldSetBadge: false, // 알람 갯수 표시하려면 백엔드 작업 필요
+      shouldShowBanner: true,
+      shouldShowList: true,
     }),
   });
 
