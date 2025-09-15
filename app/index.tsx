@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRouter } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
-import { getAccessToken, refreshToken } from "@/utils/token";
+import { deleteToken, getAccessToken, refreshToken } from "@/utils/token";
 import { jwtDecode } from "jwt-decode";
 import LottieView from "lottie-react-native";
 import { fetchRecentWords } from "@/utils/word";
@@ -14,12 +14,15 @@ export default function Index() {
   const checkToken = async (token: string) => {
     const decoded = jwtDecode(token);
     if (decoded.exp && decoded.exp < Date.now() / 1000) {
-      console.log("Token expired");
-      const newToken = await refreshToken();
-      console.log("Token refreshed");
-      return newToken;
+      try {
+        const newToken = await refreshToken();
+        return newToken;
+      } catch (error) {
+        await deleteToken();
+        router.replace("/auth");
+        return null;
+      }
     } else {
-      console.log("Token valid");
       return token;
     }
   };
@@ -32,6 +35,9 @@ export default function Index() {
       await updateUserActivity({ token });
       await postUserExpoPushToken({ accessToken: token, pushToken: pushToken });
       const accessToken = await checkToken(token);
+
+      if (!accessToken) return;
+
       await fetchRecentWords(accessToken);
       router.replace("/(mainTabs)");
     } else {

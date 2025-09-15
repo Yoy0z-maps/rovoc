@@ -44,7 +44,13 @@ export async function updateUserActivity({ token }: { token: string }) {
   });
 }
 
-export async function updateUserScore({ token, score_change }: { token: string, score_change: number }) {
+export async function updateUserScore({
+  token,
+  score_change,
+}: {
+  token: string;
+  score_change: number;
+}) {
   const response = await fetch(`${API_SERVER_ADDRESS}/users/user/score/`, {
     method: "POST",
     headers: {
@@ -62,12 +68,15 @@ export async function postUserExpoPushToken({
   accessToken: string;
   pushToken: string;
 }) {
-  const response = await fetch(`${API_SERVER_ADDRESS}/users/user/expo-push-token/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify({ expo_push_token: pushToken }),
-  });
+  const response = await fetch(
+    `${API_SERVER_ADDRESS}/users/user/expo-push-token/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ expo_push_token: pushToken }),
+    }
+  );
 }
