@@ -7,19 +7,14 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-import { HapticTab } from "@/components/HapticTab";
 import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: Colors.light.tint,
         headerShown: false,
-        tabBarButton: HapticTab,
         tabBarStyle: Platform.select({
           ios: {
             position: "absolute",
@@ -56,7 +51,7 @@ export default function TabLayout() {
           headerShown: false,
           title: "Explore",
           tabBarIcon: ({ color }) => (
-            <AntDesign name="search1" size={25} color={color} />
+            <AntDesign name="search" size={25} color={color} />
           ),
           tabBarLabel: ({ focused, color }) => (
             <Text
