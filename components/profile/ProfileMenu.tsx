@@ -22,7 +22,7 @@ export default function ProfileMenu() {
     <View style={styles.container}>
       <View style={styles.topContainer}>
         <ProfileMenuTopItem
-          icon={<AntDesign name="customerservice" size={24} color="black" />}
+          icon={<AntDesign name="customer-service" size={24} color="black" />}
           label={t("profile.menu.terms")}
           onPress={() => {}}
         />
@@ -93,7 +93,7 @@ export default function ProfileMenu() {
           }}
         />
         <ProfileMenuBottomItem
-          icon={<AntDesign name="deleteuser" size={24} color="black" />}
+          icon={<AntDesign name="user-delete" size={24} color="black" />}
           label={t("profile.menu.delete")}
           onPress={async () => {
             const token = await getAccessToken();
