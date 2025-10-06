@@ -18,7 +18,7 @@ export default function ExploreHeader({
   setSearchWord: (word: string) => void;
   isInSearch: boolean;
 }) {
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!searchWord.trim()) return;
@@ -29,7 +29,6 @@ export default function ExploreHeader({
 
     debounceTimer.current = setTimeout(() => {
       addSearchHistory(searchWord.trim());
-      console.log("searchWord", searchWord);
     }, 2000);
 
     return () => {

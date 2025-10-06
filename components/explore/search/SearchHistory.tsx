@@ -14,7 +14,6 @@ export default function SearchHistory() {
     const fetchSearchHistory = async () => {
       const history = await getSearchHistory();
       setSearchHistory(history);
-      console.log("history", history);
     };
     fetchSearchHistory();
   }, []);

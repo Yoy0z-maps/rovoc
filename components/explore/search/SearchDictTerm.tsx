@@ -9,6 +9,7 @@ import DictionaryResultView from "./DictionaryResultView";
 import MyStorageResultView from "./MyStorageResultView";
 import { Word } from "@/types/word";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
+import { getAccessToken } from "@/utils/token";
 
 export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
   const [myData, setMyData] = useState<Word[] | null>(null);
@@ -20,10 +21,20 @@ export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
     let isMounted = true;
 
     const fetchMyData = async () => {
-      // 사용자가 직접 등록한 단어 api 호출
       try {
-        // const res = await fetch(`${API_SERVER_ADDRESS}/words/search/?text=${searchWord}`)
-        // setMyData(res);
+        const token = await getAccessToken();
+        const res = await fetch(
+          `${API_SERVER_ADDRESS}/word/words/search/?text=${searchWord}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await res.json();
+        setMyData(data);
       } catch (error) {
         console.error("Error fetching data:", error);
         if (isMounted) {
@@ -92,7 +103,7 @@ export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
       {searchTarget === "dict" ? (
         <DictionaryResultView data={dictData} />
       ) : (
-        <MyStorageResultView data={myData} />
+        <MyStorageResultView data={myData} searchWord={searchWord} />
       )}
     </View>
   );
