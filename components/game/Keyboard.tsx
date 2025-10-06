@@ -1,10 +1,5 @@
-import {
-  Audio,
-  AVPlaybackSource,
-  InterruptionModeAndroid,
-  InterruptionModeIOS,
-} from "expo-av";
-import { useEffect, useState } from "react";
+import { handlePlaySound } from "@/utils/handlePlaySound";
+import { useAudioPlayer } from "expo-audio";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 
 interface KeyboardProps {
@@ -38,12 +33,16 @@ export default function Keyboard({
   setWrongLetters,
   setGameOver,
 }: KeyboardProps) {
-  const correctSound = require("../../assets/sounds/correct.mp3");
-  const incorrectSound = require("../../assets/sounds/incorrect.mp3");
+  const correctSound = require("@/assets/sounds/correct.mp3");
+  const incorrectSound = require("@/assets/sounds/incorrect.mp3");
+  const keySound = require("@/assets/sounds/key.wav");
+  const correctPlayer = useAudioPlayer(correctSound);
+  const incorrectPlayer = useAudioPlayer(incorrectSound);
+  const keyPlayer = useAudioPlayer(keySound);
 
   const handleLetterPress = (letter: string) => {
+    handlePlaySound(keyPlayer);
     if (usedLetters.includes(letter) || gameOver) return;
-
     setUsedLetters([...usedLetters, letter]);
 
     if (currentWord.includes(letter)) {
@@ -54,45 +53,18 @@ export default function Keyboard({
 
       if (!updated.includes("_")) {
         setIsWin(true);
-        playSound(correctSound);
+        handlePlaySound(correctPlayer);
         setScore({ ...score, correct: score.correct + 1 });
       }
     } else {
       setWrongLetters([...wrongLetters, letter]);
       if (wrongLetters.length + 1 >= 6) {
         setGameOver(true);
-        playSound(incorrectSound);
+        handlePlaySound(incorrectPlayer);
         setScore({ ...score, wrong: score.wrong + 1 });
       }
     }
   };
-
-  useEffect(() => {
-    Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-      staysActiveInBackground: false,
-      playsInSilentModeIOS: true,
-      shouldDuckAndroid: true,
-      interruptionModeIOS: InterruptionModeIOS.DoNotMix,
-      interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
-    });
-  }, []);
-
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-
-  async function playSound(sound: AVPlaybackSource) {
-    const { sound: soundObject } = await Audio.Sound.createAsync(sound);
-    setSound(soundObject);
-    await soundObject.playAsync();
-  }
-
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
 
   return (
     <View style={styles.keyboard}>

@@ -1,57 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { View, Alert } from "react-native";
 
-import {
-  Audio,
-  AVPlaybackSource,
-  InterruptionModeAndroid,
-  InterruptionModeIOS,
-} from "expo-av";
-
 import { createQuiz } from "../utils/quizUtils"; // 퀴즈 로직
 import ResultModal from "@/components/game/ResultModal";
 import GameTitle from "@/components/game/GameTitle";
 import GameButtonContainer from "@/components/game/QuizButtonContainer";
 import QuizResult from "@/components/game/QuizResult";
-import { useTranslation } from "react-i18next";
 import QuizQuestion from "@/components/game/QuizQuestion";
 import QuizSelections from "@/components/game/QuizSelections";
 import { Word } from "@/types/word";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { getAccessToken } from "@/utils/token";
+import { useAudioPlayer } from "expo-audio";
+import { handlePlaySound } from "@/utils/handlePlaySound";
 
 const QuizScreen = () => {
-  const { t } = useTranslation();
-
-  const correctSound = require("../assets/sounds/correct.mp3");
-  const incorrectSound = require("../assets/sounds/incorrect.mp3");
-
-  useEffect(() => {
-    Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-      staysActiveInBackground: false,
-      playsInSilentModeIOS: true,
-      shouldDuckAndroid: true,
-      interruptionModeIOS: InterruptionModeIOS.DoNotMix,
-      interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
-    });
-  }, []);
-
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-
-  async function playSound(sound: AVPlaybackSource) {
-    const { sound: soundObject } = await Audio.Sound.createAsync(sound);
-    setSound(soundObject);
-    await soundObject.playAsync();
-  }
-
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
+  const correctSound = require("@/assets/sounds/correct.mp3");
+  const incorrectSound = require("@/assets/sounds/incorrect.mp3");
+  const correctPlayer = useAudioPlayer(correctSound);
+  const incorrectPlayer = useAudioPlayer(incorrectSound);
 
   const [wordList, setWordList] = useState<Word[]>([]);
   const [usedWords, setUsedWords] = useState<Set<string>>(new Set());
@@ -96,11 +63,11 @@ const QuizScreen = () => {
     setSelected(option);
 
     if (option === quiz.answer) {
-      playSound(correctSound);
+      handlePlaySound(correctPlayer);
       setIsCorrect(true);
       setScore((prev) => ({ ...prev, correct: prev.correct + 1 }));
     } else {
-      playSound(incorrectSound);
+      handlePlaySound(incorrectPlayer);
       setIsCorrect(false);
       setScore((prev) => ({ ...prev, wrong: prev.wrong + 1 }));
     }
