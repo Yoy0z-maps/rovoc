@@ -4,7 +4,13 @@ import { Word } from "@/types/word";
 import { useState } from "react";
 import { BlurView } from "expo-blur";
 
-export default function ReviewVocaItem({ word }: { word: Word }) {
+export default function ReviewVocaItem({
+  word,
+  texts,
+}: {
+  word: Word;
+  texts: { show: string; hide: string };
+}) {
   const [isShow, setIsShow] = useState(false);
   const [textLayout, setTextLayout] = useState({ width: 0, height: 0 });
 
@@ -48,7 +54,7 @@ export default function ReviewVocaItem({ word }: { word: Word }) {
         onPress={() => setIsShow(!isShow)}
       >
         <Text style={styles.vocabularyShowButtonText}>
-          {isShow ? t("index.review.hide") : t("index.review.show")}
+          {isShow ? texts.hide : texts.show}
         </Text>
       </Pressable>
     </View>

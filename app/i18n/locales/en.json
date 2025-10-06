@@ -1,13 +1,22 @@
 {
   "index": {
-    "title": "Hello",
+    "title": "Let's start the day strong!",
+    "addVoca": {
+      "title": "Here to add new vocabulary",
+      "targetBookcase": "Target Bookcase",
+      "namePlaceholder": "Vocabulary (required)",
+      "meaningPlaceholder": "Meaning (required)",
+      "descriptionPlaceholder": "Description (optional)",
+      "add": "ADD"
+    },
     "review": {
       "title": "Vocabulary recently added",
       "subtitle": "Do you still remember?",
       "noWords": "No words added.",
       "show": "Show",
       "hide": "Hide"
-    }
+    },
+    "myVocaBookcase": "My Vocab Bookcase"
   },
   "explore": {
     "edit": "Edit",
@@ -23,7 +32,13 @@
     "kakaotalk": "Sign in with KakaoTalk",
     "wechat": "Login with WeChat",
     "apple": "Login with Apple ID",
-    "google": "Sign in with Google"
+    "google": "Sign in with Google",
+    "status": {
+      "score": "Score",
+      "streak": "Streak",
+      "word": "Word",
+      "wordbook": "Wordbook"
+    }
   },
   "notice": {
     "title": "Hello"

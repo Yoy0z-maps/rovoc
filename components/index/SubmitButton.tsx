@@ -1,11 +1,17 @@
 import { Pressable, Text, StyleSheet } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
-export default function SubmitButton({ onPress }: { onPress: () => void }) {
+export default function SubmitButton({
+  onPress,
+  text,
+}: {
+  onPress: () => void;
+  text: string;
+}) {
   return (
     <Pressable style={styles.button} onPress={onPress}>
       <FontAwesome6 name="add" size={14} color="white" />
-      <Text style={styles.buttonText}>ADD</Text>
+      <Text style={styles.buttonText}>{text}</Text>
     </Pressable>
   );
 }

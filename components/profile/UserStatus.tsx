@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { View, StyleSheet, Text } from "react-native";
 
 interface UserStatusProps {
@@ -13,25 +14,27 @@ export default function UserStatus({
   word_count,
   wordbook_count,
 }: UserStatusProps) {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.profileStatContainer}>
       <View style={styles.profileStatItem}>
-        <Text style={styles.profileStatTitle}>점수</Text>
+        <Text style={styles.profileStatTitle}>{t("auth.status.score")}</Text>
         <Text style={styles.profileStatValue}>{score}</Text>
       </View>
       <View style={styles.profileStatDivider}></View>
       <View style={styles.profileStatItem}>
-        <Text style={styles.profileStatTitle}>출석</Text>
+        <Text style={styles.profileStatTitle}>{t("auth.status.streak")}</Text>
         <Text style={styles.profileStatValue}>{streak}</Text>
       </View>
       <View style={styles.profileStatDivider}></View>
       <View style={styles.profileStatItem}>
-        <Text style={styles.profileStatTitle}>단어</Text>
+        <Text style={styles.profileStatTitle}>{t("auth.status.word")}</Text>
         <Text style={styles.profileStatValue}>{word_count}</Text>
       </View>
       <View style={styles.profileStatDivider}></View>
       <View style={styles.profileStatItem}>
-        <Text style={styles.profileStatTitle}>책장</Text>
+        <Text style={styles.profileStatTitle}>{t("auth.status.wordbook")}</Text>
         <Text style={styles.profileStatValue}>{wordbook_count}</Text>
       </View>
     </View>

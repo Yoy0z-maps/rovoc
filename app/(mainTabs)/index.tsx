@@ -20,6 +20,7 @@ import { fetchRecentWords } from "@/utils/word";
 import { getAccessToken } from "@/utils/token";
 
 import * as Notifications from "expo-notifications";
+import { useTranslation } from "react-i18next";
 
 export default function HomeScreen() {
   const [showBookcaseModal, setShowBookcaseModal] = useState(false);
@@ -44,6 +45,18 @@ export default function HomeScreen() {
     }
   }, [bookcases]);
 
+  const { t } = useTranslation();
+  const homeTitle = t("index.title");
+  const addVocaContainerText = {
+    title: t("index.addVoca.title"),
+    targetBookcase: t("index.addVoca.targetBookcase"),
+    namePlaceholder: t("index.addVoca.namePlaceholder"),
+    meaningPlaceholder: t("index.addVoca.meaningPlaceholder"),
+    descriptionPlaceholder: t("index.addVoca.descriptionPlaceholder"),
+    add: t("index.addVoca.add"),
+  };
+  const myVocaBookcaseTitle = t("index.myVocaBookcase");
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -51,15 +64,19 @@ export default function HomeScreen() {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <HomeTitle />
+          <HomeTitle title={homeTitle} />
           <AddVocaContainer
             targetBookcase={targetBookcase}
             showBookcaseModal={showBookcaseModal}
             setShowBookcaseModal={setShowBookcaseModal}
+            addVocaTitle={addVocaContainerText}
           />
           <ReviewVocaContainer />
           {!loading && bookcases.length > 0 && (
-            <BookcaseContainer bookcases={bookcases} />
+            <BookcaseContainer
+              bookcases={bookcases}
+              title={myVocaBookcaseTitle}
+            />
           )}
         </ScrollView>
         <Modal

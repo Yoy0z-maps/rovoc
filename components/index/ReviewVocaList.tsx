@@ -6,8 +6,11 @@ import ReviewVocaItem from "./ReviewVocaItem";
 import { Word } from "@/types/word";
 import { useFocusEffect } from "@react-navigation/native";
 
-export default function ReviewVocaList() {
-  const { t } = useTranslation();
+export default function ReviewVocaList({
+  texts,
+}: {
+  texts: { noWords: string; show: string; hide: string };
+}) {
   const [recentWords, setRecentWords] = useState<Word[]>([]);
 
   const fetchRecentWords = async () => {
@@ -26,9 +29,11 @@ export default function ReviewVocaList() {
   return (
     <View style={styles.container}>
       {recentWords.length > 0 ? (
-        recentWords.map((word) => <ReviewVocaItem key={word.id} word={word} />)
+        recentWords.map((word) => (
+          <ReviewVocaItem key={word.id} word={word} texts={texts} />
+        ))
       ) : (
-        <Text style={styles.noWords}>{t("index.review.noWords")}</Text>
+        <Text style={styles.noWords}>{texts.noWords}</Text>
       )}
     </View>
   );

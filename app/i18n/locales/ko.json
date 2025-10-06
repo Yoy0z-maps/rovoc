@@ -1,13 +1,22 @@
 {
   "index": {
-    "title": "안녕하세요",
+    "title": "오늘 하루 힘차게 시작해볼까요!",
+    "addVoca": {
+      "title": "여기에 새로운 단어를 추가해요",
+      "targetBookcase": "단어장",
+      "namePlaceholder": "단어 (필수)",
+      "meaningPlaceholder": "뜻 (필수)",
+      "descriptionPlaceholder": "설명 (선택)",
+      "add": "추가"
+    },
     "review": {
-      "title": "최근에 추가된 단어",
+      "title": "최근에 추가된 단어들이에요.",
       "subtitle": "아직 기억하고 있나요?",
       "noWords": "추가된 단어가 없어요.",
       "show": "보기",
       "hide": "가리기"
-    }
+    },
+    "myVocaBookcase": "내 단어장"
   },
   "explore": {
     "edit": "수정",
@@ -23,7 +32,13 @@
     "kakaotalk": "카카오톡으로 로그인",
     "wechat": "WeChat으로 로그인",
     "apple": "Apple ID로 로그인",
-    "google": "Google 계정으로 로그인"
+    "google": "Google 계정으로 로그인",
+    "status": {
+      "score": "점수",
+      "streak": "출석",
+      "word": "단어",
+      "wordbook": "단어장"
+    }
   },
   "notice": {
     "title": "안녕하세요"

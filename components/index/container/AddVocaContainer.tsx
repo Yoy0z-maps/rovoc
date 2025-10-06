@@ -13,10 +13,19 @@ export default function AddVocaContainer({
   targetBookcase,
   showBookcaseModal,
   setShowBookcaseModal,
+  addVocaTitle,
 }: {
   targetBookcase: Wordbook | null;
   showBookcaseModal: boolean;
   setShowBookcaseModal: (show: boolean) => void;
+  addVocaTitle: {
+    title: string;
+    targetBookcase: string;
+    namePlaceholder: string;
+    meaningPlaceholder: string;
+    descriptionPlaceholder: string;
+    add: string;
+  };
 }) {
   const [word, setWord] = useState("");
   const [vocalModal, setVocalModal] = useState({
@@ -79,11 +88,13 @@ export default function AddVocaContainer({
   return (
     <View style={styles.inputContainer}>
       <View style={styles.inputTitleContainer}>
-        <Text style={styles.inputTitle}>Here to add new vocabulary</Text>
+        <Text style={styles.inputTitle}>{addVocaTitle.title}</Text>
         <View style={styles.inputTitleUnderline} />
       </View>
       <View style={styles.targetBookcaseContainer}>
-        <Text style={styles.targetBookcaseText}>Target Bookcase:</Text>
+        <Text style={styles.targetBookcaseText}>
+          {addVocaTitle.targetBookcase}:
+        </Text>
         <Pressable
           style={styles.targetBookcaseButton}
           onPress={() => setShowBookcaseModal(!showBookcaseModal)}
@@ -99,7 +110,7 @@ export default function AddVocaContainer({
         </Pressable>
       </View>
       <VocaInputField
-        placeholder="Vocabulary (required)"
+        placeholder={addVocaTitle.namePlaceholder}
         value={word}
         onChangeText={(text) => setWord(text)}
       />
@@ -111,7 +122,7 @@ export default function AddVocaContainer({
           }
         />
         <TextInput
-          placeholder="Meaning (required)"
+          placeholder={addVocaTitle.meaningPlaceholder}
           value={vocalModal.meaning}
           onChangeText={(text) =>
             setVocalModal({ ...vocalModal, meaning: text })
@@ -120,14 +131,14 @@ export default function AddVocaContainer({
       </View>
       <View style={styles.submitButtonContainer}>
         <TextInput
-          placeholder="Description (optional)"
+          placeholder={addVocaTitle.descriptionPlaceholder}
           style={styles.textInput}
           value={vocalModal.description}
           onChangeText={(text) =>
             setVocalModal({ ...vocalModal, description: text })
           }
         />
-        <SubmitButton onPress={handleSubmit} />
+        <SubmitButton onPress={handleSubmit} text={addVocaTitle.add} />
       </View>
     </View>
   );
@@ -135,7 +146,7 @@ export default function AddVocaContainer({
 
 const styles = StyleSheet.create({
   inputContainer: {
-    marginTop: 20,
+    marginTop: 14,
     width: "100%",
     flexDirection: "column",
     gap: 10,
