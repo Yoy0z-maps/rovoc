@@ -7,11 +7,11 @@ import { SearchTarget } from "@/types/search_target";
 import debounce from "lodash.debounce";
 import DictionaryResultView from "./DictionaryResultView";
 import MyStorageResultView from "./MyStorageResultView";
-import { Voca } from "@/types/vocab";
+import { Word } from "@/types/word";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 
 export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
-  const [myData, setMyData] = useState<Voca[] | null>(null);
+  const [myData, setMyData] = useState<Word[] | null>(null);
   const [dictData, setDictData] = useState<DictionaryEntry | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [searchTarget, setSearchTarget] = useState<SearchTarget>("my");

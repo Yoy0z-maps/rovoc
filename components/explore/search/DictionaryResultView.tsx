@@ -15,7 +15,7 @@ export default function DictionaryResultView({
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size={"large"} color={"#2988F6"} />
-        <Text style={{ color: "#555" }}>Loading...</Text>
+        <Text style={{ color: "#555" }}>Searching...</Text>
       </View>
     );
   }
