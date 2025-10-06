@@ -18,7 +18,11 @@ const GAMES = [
     image: require("@/assets/images/quiz.png"),
     path: "quiz",
   },
-
+  {
+    title: "SHOOTING",
+    image: require("@/assets/images/shooting.png"),
+    path: "shooting",
+  },
   {
     title: "???",
     image: require("@/assets/images/comingsoon.png"),

@@ -74,6 +74,7 @@ export default function RootLayout() {
     "Pretendard-Regular": require("../assets/fonts/Pretendard-Regular.otf"),
     "Pretendard-Thin": require("../assets/fonts/Pretendard-Thin.otf"),
     PressStart2P: require("../assets/fonts/PressStart2P.ttf"),
+    NeoDunggeunmo: require("../assets/fonts/neodgm.ttf"),
   });
 
   useEffect(() => {
@@ -103,6 +104,7 @@ export default function RootLayout() {
           <Stack.Screen name="auth" options={{ headerShown: false }} />
           <Stack.Screen name="quiz" options={{ headerShown: false }} />
           <Stack.Screen name="hangman" options={{ headerShown: false }} />
+          <Stack.Screen name="shooting" options={{ headerShown: false }} />
           <Stack.Screen name="sentence" options={{ headerShown: false }} />
           <Stack.Screen name="[bookcase]" options={{ headerShown: false }} />
           <Stack.Screen name="license" options={{ headerShown: false }} />
