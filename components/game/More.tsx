@@ -6,6 +6,13 @@ export default function More() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.comingSoonContainer}>
+        <Image
+          source={require("@/assets/images/comingsoon.png")}
+          style={styles.comingSoonImage}
+        />
+        <Text style={styles.comingSoonText}>New Game will be added soon!</Text>
+      </View>
       <Image
         source={require("@/assets/images/rovoca-gray.png")}
         style={styles.image}
@@ -23,14 +30,29 @@ const styles = StyleSheet.create({
     gap: 8,
     alignItems: "center",
   },
+  comingSoonContainer: {
+    gap: 16,
+    alignItems: "center",
+    flexDirection: "column",
+  },
+  comingSoonImage: {
+    width: 50,
+    height: 50,
+  },
+  comingSoonText: {
+    fontSize: 12,
+    fontFamily: "PressStart2P",
+    color: "#111",
+    textAlign: "center",
+  },
   image: {
     marginVertical: 30,
     width: 150,
     height: 150,
   },
   text: {
-    fontSize: 14,
-    fontFamily: "Pretendard-Medium",
+    fontSize: 12,
+    fontFamily: "PressStart2P",
     color: "#767676",
     textAlign: "center",
   },

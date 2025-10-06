@@ -23,11 +23,11 @@ const GAMES = [
     image: require("@/assets/images/shooting.png"),
     path: "shooting",
   },
-  {
-    title: "???",
-    image: require("@/assets/images/comingsoon.png"),
-    path: "(mainTabs)/game",
-  },
+  // {
+  //   title: "???",
+  //   image: require("@/assets/images/comingsoon.png"),
+  //   path: "(mainTabs)/game",
+  // },
   // {
   //   title: "SENTENCE",
   //   image: require("@/assets/images/sentence.webp"),
