@@ -43,13 +43,13 @@ export default function CallendarController({
   return (
     <View style={styles.calendarHeader}>
       <Pressable onPress={handlePreviousMonth}>
-        <MaterialIcons name="arrow-back-ios-new" size={24} color="black" />
+        <Text style={styles.calendarArrowText}>◀</Text>
       </Pressable>
       <Text style={styles.calendarHeaderText}>
-        {currentYear} · {currentMonth + 1}
+        {currentYear}·{currentMonth + 1}
       </Text>
       <Pressable onPress={handleNextMonth}>
-        <MaterialIcons name="arrow-forward-ios" size={24} color="black" />
+        <Text style={styles.calendarArrowText}>▶</Text>
       </Pressable>
     </View>
   );
@@ -65,7 +65,11 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   calendarHeaderText: {
-    fontFamily: "Pretendard-Medium",
-    fontSize: 24,
+    fontFamily: "PressStart2P",
+    fontSize: 20,
+  },
+  calendarArrowText: {
+    fontFamily: "PressStart2P",
+    fontSize: 16,
   },
 });

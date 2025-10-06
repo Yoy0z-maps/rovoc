@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     gap: 10,
     color: "#787878",
+    textAlign: "center",
   },
   question: {
     marginTop: 12,

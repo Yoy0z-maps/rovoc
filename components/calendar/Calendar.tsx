@@ -63,7 +63,9 @@ export default function Calendar() {
         <CalendarVocabulary
           vocaData={words}
           isLoading={loading}
-          selectedDate={`${currentYear}-${currentMonth + 1}-${selectedDate}`}
+          selectedDate={`${currentYear}-${currentMonth + 1}-${
+            selectedDate < 10 ? `0${selectedDate}` : selectedDate
+          }`}
         />
       )}
     </View>
