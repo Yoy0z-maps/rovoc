@@ -7,7 +7,6 @@ import { useState } from "react";
 import GoogleLogin from "@/components/auth/GoogleLoginButton";
 import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import AppleLoginButton from "@/components/auth/AppleLoginButton";
-import NaverLoginButton from "@/components/auth/NaverLoginButton";
 import LanguageSelector from "@/components/auth/LanguageSelector";
 
 export default function AuthPage() {
@@ -43,7 +42,6 @@ export default function AuthPage() {
         <KakaoLoginButton />
         {deviceType === "ios" && <AppleLoginButton />}
         {deviceType === "android" && <GoogleLogin />}
-        {/* <NaverLoginButton /> */}
       </View>
     </View>
   );

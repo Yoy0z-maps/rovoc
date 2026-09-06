@@ -19,7 +19,6 @@ import { useBookcases } from "@/hooks/useBookcase";
 import { fetchRecentWords } from "@/utils/word";
 import { getAccessToken } from "@/utils/token";
 
-import * as Notifications from "expo-notifications";
 import { useTranslation } from "react-i18next";
 
 export default function HomeScreen() {
@@ -34,7 +33,9 @@ export default function HomeScreen() {
       refetch();
       (async () => {
         const accessToken = await getAccessToken();
-        fetchRecentWords(accessToken!);
+        if (accessToken) {
+          await fetchRecentWords(accessToken);
+        }
       })();
     }, [refetch])
   );

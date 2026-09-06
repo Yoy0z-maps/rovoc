@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import { initReactI18next } from "react-i18next";
 import * as Localization from "expo-localization";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -12,31 +13,40 @@ const resources = {
   ko: { translation: ko },
   ch: { translation: ch },
 };
+const normalizeLanguage = (language?: string | null) => {
+  if (language === "ko") return "ko";
+  if (language === "zh" || language === "ch") return "ch";
+  return "en";
+};
+
+const deviceLanguage = normalizeLanguage(
+  Localization.getLocales()?.[0]?.languageCode
+);
+
+void i18n.use(initReactI18next).init({
+  compatibilityJSON: "v4",
+  resources,
+  lng: deviceLanguage,
+  fallbackLng: "en",
+  initImmediate: false,
+  interpolation: {
+    escapeValue: false,
+  },
+});
 
 const initI18n = async () => {
-  let savedLanguage = await AsyncStorage.getItem('i18next');
-
-  if (!savedLanguage) {
-    savedLanguage = Localization.getLocales()?.[0]?.languageCode ?? 'en';
+  const savedLanguage = await AsyncStorage.getItem("i18next");
+  const language = normalizeLanguage(savedLanguage ?? deviceLanguage);
+  if (language !== i18n.language) {
+    await i18n.changeLanguage(language);
   }
-
-  i18n.use(initReactI18next).init({
-    compatibilityJSON: "v4",
-    resources,
-    lng: savedLanguage as string,
-    fallbackLng: "en",
-    interpolation: {
-      escapeValue: false,
-    },
-  });
 };
 
 // 언어 변경 함수 추가
 export const changeLanguage = async (language: string) => {
-  await AsyncStorage.setItem('i18next', language);
-  await i18n.changeLanguage(language);
-  // 언어 변경 후 앱 전체에 리렌더링을 트리거하기 위한 이벤트 발생
-  i18n.emit('languageChanged');
+  const normalizedLanguage = normalizeLanguage(language);
+  await AsyncStorage.setItem("i18next", normalizedLanguage);
+  await i18n.changeLanguage(normalizedLanguage);
 };
 
 export default initI18n;

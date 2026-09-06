@@ -2,7 +2,8 @@ import { Wordbook } from "@/types/wordbooks";
 import { deleteBookcase } from "@/utils/bookcase";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import { Pressable, View, Text, StyleSheet } from "react-native";
+import { Alert, Pressable, View, Text, StyleSheet } from "react-native";
+import Toast from "react-native-toast-message";
 
 export default function VocaCardOptions({
   onEditPress,
@@ -18,8 +19,16 @@ export default function VocaCardOptions({
   const { t } = useTranslation();
 
   const handleDeleteBookcase = async () => {
-    await deleteBookcase(bookcase.id);
-    triggerBookcases();
+    try {
+      await deleteBookcase(bookcase.id);
+      await triggerBookcases();
+    } catch (error) {
+      Toast.show({
+        type: "ToastError",
+        text1: "Unable to delete bookcase",
+        text2: error instanceof Error ? error.message : undefined,
+      });
+    }
   };
 
   const handleEditBookcase = () => {
@@ -40,9 +49,16 @@ export default function VocaCardOptions({
       </Pressable>
       <Pressable
         style={styles.optionButton}
-        onPress={async () => {
+        onPress={() => {
           setShowOptions(false);
-          handleDeleteBookcase();
+          Alert.alert("Delete bookcase", `Delete “${bookcase.name}”?`, [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Delete",
+              style: "destructive",
+              onPress: () => void handleDeleteBookcase(),
+            },
+          ]);
         }}
       >
         <MaterialIcons name="delete" size={20} color="tomato" />

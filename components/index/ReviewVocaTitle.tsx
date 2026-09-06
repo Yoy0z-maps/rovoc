@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import { View, Text, StyleSheet } from "react-native";
 
 export default function ReviewVocaTitle({
@@ -8,8 +7,6 @@ export default function ReviewVocaTitle({
   title: string;
   subtitle: string;
 }) {
-  const { t } = useTranslation();
-
   return (
     <View style={styles.vocabularyTitleContainer}>
       <View style={styles.underline}></View>

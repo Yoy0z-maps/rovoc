@@ -6,7 +6,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import BookcaseHeader from "@/components/bookcase/BookcaseHeader";
 import LottieView from "lottie-react-native";
@@ -39,18 +39,23 @@ export default function BookcasScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const lottieRef = useRef<LottieView>(null);
 
-  scrollY.addListener(({ value }) => {
-    const pullDistance = Math.min(Math.abs(value), 100); // 0 ~ 100
-    const progress = pullDistance / 100;
-    lottieRef.current?.play(progress);
-  });
+  useEffect(() => {
+    const listenerId = scrollY.addListener(({ value }) => {
+      const pullDistance = Math.min(Math.abs(value), 100);
+      lottieRef.current?.play(pullDistance / 100);
+    });
+    return () => scrollY.removeListener(listenerId);
+  }, [scrollY]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    lottieRef.current?.play(); // 실제 새로고침 시작
-    await new Promise((res) => setTimeout(res, 2000));
-    setRefreshing(false);
-    lottieRef.current?.reset();
+    lottieRef.current?.play();
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+      lottieRef.current?.reset();
+    }
   };
 
   if (loading) {

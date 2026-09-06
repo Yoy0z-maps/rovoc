@@ -1,54 +1,29 @@
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import { getAccessToken } from "./token";
+import { authFetch, ensureOk } from "@/lib/api";
+import { Wordbook } from "@/types/wordbooks";
 
 export async function getOneBookcase(bookcaseId: string) {
-  const token = await getAccessToken();
-  const response = await fetch(
-    `${API_SERVER_ADDRESS}/word/wordbooks/${bookcaseId}/`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await authFetch(`/word/wordbooks/${bookcaseId}/`);
+  await ensureOk(response);
+  return response.json() as Promise<Wordbook>;
 }
 
 export async function deleteBookcase(bookcaseId: string) {
-  const token = await getAccessToken();
-  const response = await fetch(
-    `${API_SERVER_ADDRESS}/word/wordbooks/${bookcaseId}/`,
-    {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await authFetch(`/word/wordbooks/${bookcaseId}/`, {
+    method: "DELETE",
+  });
+  await ensureOk(response);
 }
 
 export async function getAllBookcases() {
-  const token = await getAccessToken();
-
-  const response = await fetch(`${API_SERVER_ADDRESS}/word/wordbooks/`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  const data = await response.json();
-  return data;
+  const response = await authFetch("/word/wordbooks/");
+  await ensureOk(response);
+  return response.json() as Promise<{ results: Wordbook[] }>;
 }
 
 export async function importantBookcase(bookcaseId: string) {
-  const token = await getAccessToken();
-  const response = await fetch(
-    `${API_SERVER_ADDRESS}/word/wordbooks/${bookcaseId}/important/`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    }
+  const response = await authFetch(
+    `/word/wordbooks/${bookcaseId}/important/`,
+    { method: "POST" }
   );
+  await ensureOk(response);
 }

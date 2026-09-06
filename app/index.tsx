@@ -1,11 +1,15 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { View } from "react-native";
 import { deleteToken, getAccessToken, refreshToken } from "@/utils/token";
 import { jwtDecode } from "jwt-decode";
 import LottieView from "lottie-react-native";
 import { fetchRecentWords } from "@/utils/word";
-import { postUserExpoPushToken, updateUserActivity } from "@/utils/user";
+import {
+  getUserData,
+  postUserExpoPushToken,
+  updateUserActivity,
+} from "@/utils/user";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 
@@ -15,52 +19,78 @@ async function getPushTokenOnDevice(): Promise<string | null> {
     return null;
   }
 
-  const pushToken = (await Notifications.getExpoPushTokenAsync()).data;
-  return pushToken;
+  try {
+    return (await Notifications.getExpoPushTokenAsync()).data;
+  } catch (error) {
+    console.warn("Unable to get an Expo push token:", error);
+    return null;
+  }
+}
+
+async function getValidatedAccessToken(token: string): Promise<string | null> {
+  let candidate = token;
+  let shouldRefresh = false;
+
+  try {
+    const decoded = jwtDecode<{ exp?: number }>(token);
+    shouldRefresh = !decoded.exp || decoded.exp <= Date.now() / 1000 + 30;
+  } catch {
+    shouldRefresh = true;
+  }
+
+  try {
+    if (shouldRefresh) {
+      candidate = await refreshToken();
+    }
+    await getUserData({ token: candidate });
+    return candidate;
+  } catch {
+    if (!shouldRefresh) {
+      try {
+        candidate = await refreshToken();
+        await getUserData({ token: candidate });
+        return candidate;
+      } catch {
+        // The stored AWS session cannot be used with the new GCP signing key.
+      }
+    }
+
+    await deleteToken();
+    return null;
+  }
 }
 
 export default function Index() {
   const router = useRouter();
 
-  const checkToken = async (token: string) => {
-    const decoded = jwtDecode(token);
-    if (decoded.exp && decoded.exp < Date.now() / 1000) {
-      try {
-        const newToken = await refreshToken();
-        return newToken;
-      } catch (error) {
-        await deleteToken();
-        router.replace("/auth");
-        return null;
-      }
-    } else {
-      return token;
-    }
-  };
-
-  const initialize = async () => {
+  const initialize = useCallback(async () => {
     const token = await getAccessToken();
-    const pushToken = await getPushTokenOnDevice();
-
-    if (token) {
-      await updateUserActivity({ token });
-      await postUserExpoPushToken({
-        accessToken: token,
-        pushToken: pushToken || "",
-      });
-      const accessToken = await checkToken(token);
-      if (!accessToken) return;
-
-      await fetchRecentWords(accessToken);
-      router.replace("/(mainTabs)");
-    } else {
+    if (!token) {
       router.replace("/auth");
+      return;
     }
-  };
+
+    const accessToken = await getValidatedAccessToken(token);
+    if (!accessToken) {
+      router.replace("/auth");
+      return;
+    }
+
+    const pushToken = await getPushTokenOnDevice();
+    const startupTasks: Promise<unknown>[] = [
+      updateUserActivity({ token: accessToken }),
+      fetchRecentWords(accessToken),
+    ];
+    if (pushToken) {
+      startupTasks.push(postUserExpoPushToken({ accessToken, pushToken }));
+    }
+    await Promise.allSettled(startupTasks);
+    router.replace("/(mainTabs)");
+  }, [router]);
 
   useEffect(() => {
-    initialize();
-  }, []);
+    void initialize();
+  }, [initialize]);
 
   return (
     <View

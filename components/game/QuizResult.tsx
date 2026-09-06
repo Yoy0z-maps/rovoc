@@ -1,5 +1,4 @@
-import { Entypo } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
+import { Entypo, FontAwesome } from "@expo/vector-icons";
 import { View, StyleSheet } from "react-native";
 
 interface QuizResultProps {

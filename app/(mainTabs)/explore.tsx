@@ -31,7 +31,7 @@ export default function ExploreScreen() {
   useFocusEffect(
     useCallback(() => {
       refetch();
-    }, [])
+    }, [refetch])
   );
 
   function onEditPress(bookcase: Wordbook) {

@@ -41,10 +41,14 @@ export default function useAnimatedImportant({
       }),
     ]).start();
 
-    if (word) {
-      await importantWord(id);
-    } else if (bookcase) {
-      await importantBookcase(id);
+    try {
+      if (word) {
+        await importantWord(id);
+      } else if (bookcase) {
+        await importantBookcase(id);
+      }
+    } catch {
+      setIsImportant(!value);
     }
   };
 

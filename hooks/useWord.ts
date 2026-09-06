@@ -1,7 +1,6 @@
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
+import { authFetch, ensureOk } from "@/lib/api";
 import { Word } from "@/types/word";
-import { getAccessToken } from "@/utils/token";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function useWord(params: {
   bookcaseId?: string;
@@ -10,70 +9,83 @@ export default function useWord(params: {
   const { bookcaseId, date } = params;
   const [words, setWords] = useState<Word[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const requestId = useRef(0);
 
   const fetchWordsByBookcaseId = useCallback(async () => {
+    if (!bookcaseId) return;
+    const currentRequestId = ++requestId.current;
+    setLoading(true);
+    setError(null);
     try {
-      const accessToken = await getAccessToken();
-      const res = await fetch(
-        `${API_SERVER_ADDRESS}/word/wordbooks/id/?wordbook=${bookcaseId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      const res = await authFetch(
+        `/word/wordbooks/id/?wordbook=${encodeURIComponent(bookcaseId)}`
       );
-      const results = await res.json();
-      setWords(results.words);
-    } catch (error) {
-      setWords([]);
-      console.error(error);
+      await ensureOk(res);
+      const results = (await res.json()) as { words?: Word[] };
+      if (currentRequestId === requestId.current) {
+        setWords(Array.isArray(results.words) ? results.words : []);
+      }
+    } catch (caught) {
+      if (currentRequestId === requestId.current) {
+        setWords([]);
+        setError(
+          caught instanceof Error ? caught.message : "Unable to load words."
+        );
+      }
     } finally {
-      setLoading(false);
+      if (currentRequestId === requestId.current) setLoading(false);
     }
   }, [bookcaseId]);
 
   const fetchWordsByDate = useCallback(async () => {
+    if (!date) return;
+    const currentRequestId = ++requestId.current;
+    setLoading(true);
+    setError(null);
     try {
-      const accessToken = await getAccessToken();
-      const res = await fetch(
-        `${API_SERVER_ADDRESS}/word/words/date/?date=${date}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+      const res = await authFetch(
+        `/word/words/date/?date=${encodeURIComponent(date)}`
       );
-
-      const results = await res.json();
-
-      setWords(results);
-    } catch (error) {
-      setWords([]);
-      console.error(error);
+      await ensureOk(res);
+      const results = (await res.json()) as Word[];
+      if (currentRequestId === requestId.current) {
+        setWords(Array.isArray(results) ? results : []);
+      }
+    } catch (caught) {
+      if (currentRequestId === requestId.current) {
+        setWords([]);
+        setError(
+          caught instanceof Error ? caught.message : "Unable to load words."
+        );
+      }
     } finally {
-      setLoading(false);
+      if (currentRequestId === requestId.current) setLoading(false);
     }
   }, [date]);
 
-  const refetch = useCallback(() => {
+  const refetch = useCallback(async () => {
     if (bookcaseId) {
-      fetchWordsByBookcaseId();
+      await fetchWordsByBookcaseId();
     } else if (date) {
-      fetchWordsByDate();
+      await fetchWordsByDate();
     }
-  }, [bookcaseId, date]);
+  }, [bookcaseId, date, fetchWordsByBookcaseId, fetchWordsByDate]);
 
   useEffect(() => {
     if (bookcaseId) {
-      fetchWordsByBookcaseId();
+      void fetchWordsByBookcaseId();
     } else if (date) {
-      fetchWordsByDate();
+      void fetchWordsByDate();
     }
-  }, [bookcaseId, date]);
+  }, [bookcaseId, date, fetchWordsByBookcaseId, fetchWordsByDate]);
 
-  return { words, loading, fetchWordsByBookcaseId, fetchWordsByDate, refetch };
+  return {
+    words,
+    loading,
+    error,
+    fetchWordsByBookcaseId,
+    fetchWordsByDate,
+    refetch,
+  };
 }

@@ -12,8 +12,7 @@ import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
 import { Fragment, useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import { getAccessToken } from "@/utils/token";
+import { authFetch, ensureOk } from "@/lib/api";
 import { Wordbook } from "@/types/wordbooks";
 
 export default function EditBookcaseModal({
@@ -28,6 +27,7 @@ export default function EditBookcaseModal({
   const { t, i18n } = useTranslation();
 
   const [image, setImage] = useState<string | null>(null);
+  const [imageChanged, setImageChanged] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,10 +35,10 @@ export default function EditBookcaseModal({
   const [imageLoading, setImageLoading] = useState(false);
 
   useEffect(() => {
-    console.log("bookcase changed", bookcase);
     setName(bookcase.name);
     setDescription(bookcase.description);
     setImage(bookcase.image);
+    setImageChanged(false);
   }, [bookcase]);
 
   const pickImage = async () => {
@@ -52,6 +52,7 @@ export default function EditBookcaseModal({
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
+      setImageChanged(true);
       Toast.show({
         type: "ToastSuccess",
         text1: t("modal.addBookcase.success"),
@@ -62,15 +63,21 @@ export default function EditBookcaseModal({
   };
 
   const editBookcase = async () => {
+    if (!name.trim()) {
+      Toast.show({
+        type: "ToastError",
+        text1: t("modal.addBookcase.error"),
+        text2: t("modal.editBookcase.name"),
+      });
+      return;
+    }
     setFetchLoading(true);
     try {
-      const token = await getAccessToken();
-
       const formData = new FormData();
-      formData.append("name", name);
-      formData.append("description", description);
+      formData.append("name", name.trim());
+      formData.append("description", description.trim());
 
-      if (image) {
+      if (image && imageChanged) {
         const filename = image.split("/").pop() || `photo.jpg`;
         const match = /\.(\w+)$/.exec(filename ?? "");
         const ext = match ? match[1] : "jpg";
@@ -83,40 +90,28 @@ export default function EditBookcaseModal({
         } as any);
       }
 
-      const response = await fetch(
-        `${API_SERVER_ADDRESS}/word/wordbooks/${bookcase.id}/`,
-        {
+      const response = await authFetch(`/word/wordbooks/${bookcase.id}/`, {
           method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
           body: formData,
-        }
-      );
-      console.log("response", response);
+      });
 
-      if (response.ok) {
-        Toast.show({
-          type: "ToastSuccess",
-          text1: t("modal.addBookcase.success"),
-          text2: t("modal.addBookcase.bookcaseAdded"),
-        });
-        setShowEditBookcaseModal(false);
-        triggerBookcases();
-      } else if (response.status === 413) {
+      if (response.status === 413) {
         Toast.show({
           type: "ToastError",
           text1: t("modal.addBookcase.error"),
           text2: t("modal.addBookcase.imageSizeError"),
         });
-      } else {
-        Toast.show({
-          type: "ToastError",
-          text1: t("modal.addBookcase.error"),
-          text2: t("modal.addBookcase.bookcaseAddedFailed"),
-        });
+        return;
       }
-    } catch (error) {
+      await ensureOk(response);
+      Toast.show({
+        type: "ToastSuccess",
+        text1: t("modal.addBookcase.success"),
+        text2: t("modal.addBookcase.bookcaseAdded"),
+      });
+      setShowEditBookcaseModal(false);
+      await triggerBookcases();
+    } catch {
       Toast.show({
         type: "ToastError",
         text1: t("modal.addBookcase.error"),
@@ -137,7 +132,8 @@ export default function EditBookcaseModal({
           alignItems: "center",
         }}
       >
-        <View style={styles.container}>
+        <TouchableWithoutFeedback>
+          <View style={styles.container}>
           <Text style={styles.title}>{t("modal.editBookcase.title")}</Text>
           <VocaInputField
             placeholder={t("modal.editBookcase.name")}
@@ -179,12 +175,7 @@ export default function EditBookcaseModal({
           {image && (
             <View style={styles.imageContainer}>
               {imageLoading && (
-                <View
-                  style={[
-                    styles.imageLoadingContainer,
-                    imageLoading && { display: "none" },
-                  ]}
-                >
+                <View style={styles.imageLoadingContainer}>
                   <ActivityIndicator size="small" color="#2988F6" />
                 </View>
               )}
@@ -196,7 +187,7 @@ export default function EditBookcaseModal({
                 onLoad={() => {
                   setImageLoading(false);
                 }}
-                onError={(error) => {
+                onError={() => {
                   setImageLoading(false);
                 }}
               />
@@ -227,7 +218,8 @@ export default function EditBookcaseModal({
               </Pressable>
             )}
           </View>
-        </View>
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     </TouchableWithoutFeedback>
   );

@@ -1,8 +1,14 @@
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
-
-import { Modal } from "react-native";
+import {
+  Alert,
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Text,
+} from "react-native";
+import { useState } from "react";
 import LottieView from "lottie-react-native";
 import { getAccessToken } from "@/utils/token";
 import { updateUserScore } from "@/utils/user";
@@ -21,13 +27,11 @@ export default function ResultModal({
   setShowResult,
 }: ResultModalProps) {
   const { t } = useTranslation();
+  const [isSaving, setIsSaving] = useState(false);
 
   const score_change = score.correct - score.wrong * 10;
-
-  var accuracy = (score.correct / (score.correct + score.wrong)) * 100;
-  if (score.correct === 0 && score.wrong === 0) {
-    accuracy = 0;
-  }
+  const attempts = score.correct + score.wrong;
+  const accuracy = attempts === 0 ? 0 : (score.correct / attempts) * 100;
 
   return (
     <Modal visible={showResult} transparent animationType="slide">
@@ -70,14 +74,28 @@ export default function ResultModal({
             </Text>
           </View>
           <TouchableOpacity
+            disabled={isSaving}
             onPress={async () => {
-              const token = await getAccessToken();
-              updateUserScore({ token: token!, score_change: score_change });
-              setShowResult(false);
-              router.back();
+              setIsSaving(true);
+              try {
+                const token = await getAccessToken();
+                if (!token) throw new Error("Please sign in again.");
+                await updateUserScore({ token, score_change });
+                setShowResult(false);
+                router.back();
+              } catch (error) {
+                Alert.alert(
+                  "Unable to save score",
+                  error instanceof Error ? error.message : "Please try again."
+                );
+              } finally {
+                setIsSaving(false);
+              }
             }}
           >
-            <Text style={styles.closeButton}>{t("game.modal.close")}</Text>
+            <Text style={styles.closeButton}>
+              {isSaving ? "Saving…" : t("game.modal.close")}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

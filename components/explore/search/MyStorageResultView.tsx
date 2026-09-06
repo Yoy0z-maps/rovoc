@@ -1,20 +1,32 @@
 import VocaItem from "@/components/bookcase/VocaItem";
+import VocaEditModal from "@/components/bookcase/VocaEditModal";
 import { Word } from "@/types/word";
+import { useState } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
 
 export default function MyStorageResultView({
   data,
   searchWord,
+  refetch,
 }: {
   data: Word[] | null;
   searchWord: string;
+  refetch: () => Promise<void> | void;
 }) {
+  const [selectedVoca, setSelectedVoca] = useState<Word | null>(null);
+  const [showVocaEditModal, setShowVocaEditModal] = useState(false);
+
+  const onEditPress = (word: Word) => {
+    setSelectedVoca(word);
+    setShowVocaEditModal(true);
+  };
+
   if (data === null || data.length === 0)
     return (
       <View style={styles.container}>
         <Text style={[styles.text, { marginTop: 10 }]}>Ooops...</Text>
         <Text style={styles.text}>
-          There is no voca "{searchWord}" in your storage
+          There is no matching vocabulary in your storage: {searchWord}
         </Text>
         <Text style={styles.question}>?</Text>
         <Image
@@ -30,10 +42,17 @@ export default function MyStorageResultView({
         <VocaItem
           key={item.id}
           word={item}
-          refetch={() => {}}
-          onEditPress={() => {}}
+          refetch={refetch}
+          onEditPress={onEditPress}
         />
       ))}
+      <VocaEditModal
+        refetch={refetch}
+        bookcaseId=""
+        voca={selectedVoca}
+        showVocaEditModal={showVocaEditModal}
+        setShowVocaEditModal={setShowVocaEditModal}
+      />
     </View>
   );
 }

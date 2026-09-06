@@ -1,6 +1,19 @@
 import { useState } from "react";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { View, ActivityIndicator, StyleSheet, ScrollView, Text } from "react-native";
 import NoticeItem from "./NoticeItem";
+import { Notice } from "@/types/notice";
+
+function NoticeRow({ notice }: { notice: Notice }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <NoticeItem
+      notice={notice}
+      isExpanded={isExpanded}
+      setIsExpanded={setIsExpanded}
+    />
+  );
+}
 
 export default function NoticeViewer({ notice }: { notice: Notice[] | null }) {
   if (notice === null)
@@ -11,23 +24,13 @@ export default function NoticeViewer({ notice }: { notice: Notice[] | null }) {
     );
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {notice.length === 0 ? (
-        <View></View>
+        <Text style={styles.empty}>No notices yet.</Text>
       ) : (
-        notice.map((item) => {
-          const [isExpanded, setIsExpanded] = useState<boolean>(false);
-          return (
-            <NoticeItem
-              key={item.id.toString()}
-              notice={item}
-              isExpanded={isExpanded}
-              setIsExpanded={setIsExpanded}
-            />
-          );
-        })
+        notice.map((item) => <NoticeRow key={item.id} notice={item} />)
       )}
-    </View>
+    </ScrollView>
   );
 }
 
@@ -40,6 +43,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderColor: "#111",
     borderWidth: 2,
-    overflowY: "scroll",
   },
+  content: { flexGrow: 1 },
+  empty: { margin: 24, textAlign: "center", color: "#666" },
 });

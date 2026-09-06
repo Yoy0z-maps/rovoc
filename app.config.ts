@@ -71,9 +71,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           targetSdkVersion: 35,
           compileSdkVersion: 35,
         },
-        // ios: {
-        //   useFrameworks: "static",
-        // },
+        ios: {
+          useFrameworks: "static",
+        },
       },
     ],
     [

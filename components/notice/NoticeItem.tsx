@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import { Notice } from "@/types/notice";
 
 type NoticeItemProps = {
   notice: Notice;

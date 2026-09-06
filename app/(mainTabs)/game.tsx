@@ -1,29 +1,33 @@
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { SafeAreaView } from "react-native";
 import GameList from "@/components/game/GameList";
 import More from "@/components/game/More";
 import GameScreenTitle from "@/components/game/GameScreenTitle";
-import { getAccessToken } from "@/utils/token";
+import { useFocusEffect } from "@react-navigation/native";
+import { authFetch, ensureOk } from "@/lib/api";
 
 export default function GameScreen() {
   const [attempt, setAttempt] = useState<number>(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const token = await getAccessToken();
-      const response = await fetch(`${API_SERVER_ADDRESS}/users/game/status/`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      setAttempt(data.remaining);
-      console.log(data);
-    };
-    fetchData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+      const fetchData = async () => {
+        try {
+          const response = await authFetch("/users/game/status/");
+          await ensureOk(response);
+          const data = (await response.json()) as { remaining?: number };
+          if (active) setAttempt(Math.max(0, data.remaining ?? 0));
+        } catch {
+          if (active) setAttempt(0);
+        }
+      };
+      void fetchData();
+      return () => {
+        active = false;
+      };
+    }, [])
+  );
 
   return (
     <SafeAreaView

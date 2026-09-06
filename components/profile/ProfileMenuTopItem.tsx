@@ -1,5 +1,4 @@
 import { Pressable, Text, StyleSheet } from "react-native";
-import { IconProps } from "@expo/vector-icons/build/createIconSet";
 
 interface MenuButtonProps {
   icon: React.ReactElement;

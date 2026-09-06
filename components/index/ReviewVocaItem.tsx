@@ -1,5 +1,4 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import { useTranslation } from "react-i18next";
 import { Word } from "@/types/word";
 import { useState } from "react";
 import { BlurView } from "expo-blur";
@@ -13,8 +12,6 @@ export default function ReviewVocaItem({
 }) {
   const [isShow, setIsShow] = useState(false);
   const [textLayout, setTextLayout] = useState({ width: 0, height: 0 });
-
-  const { t } = useTranslation();
 
   return (
     <View style={styles.vocabularyItem}>

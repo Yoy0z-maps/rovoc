@@ -4,15 +4,15 @@ import {
   View,
   StyleSheet,
   TextInput,
+  Alert,
 } from "react-native";
 import PartOfSpeechOptions from "../index/PartOfSpeechOptions";
 import VocaInputField from "../index/VocaInputField";
 import { useEffect, useState } from "react";
 import { Word } from "@/types/word";
 import VocaModalSubmitButton from "../index/VocaModalSubmitButton";
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { useTranslation } from "react-i18next";
-import { getAccessToken } from "@/utils/token";
+import { authFetch, ensureOk } from "@/lib/api";
 
 export default function VocaEditModal({
   refetch,
@@ -21,7 +21,7 @@ export default function VocaEditModal({
   showVocaEditModal,
   setShowVocaEditModal,
 }: {
-  refetch: () => void;
+  refetch: () => Promise<void> | void;
   bookcaseId: string;
   voca: Word | null;
   showVocaEditModal: boolean;
@@ -31,9 +31,9 @@ export default function VocaEditModal({
     if (voca) {
       setWord(voca.text);
       setVocalModal({
-        partOfSpeech: voca.meanings[0].part,
-        meaning: voca.meanings[0].definition,
-        description: voca.meanings[0].example,
+        partOfSpeech: voca.meanings[0]?.part || "n",
+        meaning: voca.meanings[0]?.definition || "",
+        description: voca.meanings[0]?.example || "",
       });
     }
   }, [voca]);
@@ -43,7 +43,7 @@ export default function VocaEditModal({
       // 모달 닫힐 때 입력값 초기화
       setWord("");
       setVocalModal({
-        partOfSpeech: "",
+        partOfSpeech: "n",
         meaning: "",
         description: "",
       });
@@ -52,7 +52,7 @@ export default function VocaEditModal({
 
   const [word, setWord] = useState("");
   const [vocalModal, setVocalModal] = useState({
-    partOfSpeech: "",
+    partOfSpeech: "n",
     meaning: "",
     description: "",
   });
@@ -65,63 +65,72 @@ export default function VocaEditModal({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
-    setIsLoading(true);
-    const token = await getAccessToken();
-    const result = await fetch(`${API_SERVER_ADDRESS}/word/words/`, {
-      method: "POST",
-      body: JSON.stringify({
-        wordbook: bookcaseId,
-        text: word,
-        meanings: [
-          {
-            part: vocalModal.partOfSpeech,
-            definition: vocalModal.meaning,
-            example: vocalModal.description,
-          },
-        ],
-      }),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (result.ok) {
-      refetch();
+    if (!bookcaseId || !word.trim() || !vocalModal.meaning.trim()) {
+      Alert.alert("Missing information", "Vocabulary and meaning are required.");
+      return;
     }
-    setIsLoading(false);
-    setShowVocaEditModal(false);
-  };
-
-  const handleEdit = async () => {
-    console.log("edit");
     setIsLoading(true);
-    const token = await getAccessToken();
-    const result = await fetch(
-      `${API_SERVER_ADDRESS}/word/words/${voca!.id}/`,
-      {
-        method: "PATCH",
+    try {
+      const result = await authFetch("/word/words/", {
+        method: "POST",
         body: JSON.stringify({
-          text: word,
+          wordbook: bookcaseId,
+          text: word.trim(),
           meanings: [
             {
               part: vocalModal.partOfSpeech,
-              definition: vocalModal.meaning,
-              example: vocalModal.description,
+              definition: vocalModal.meaning.trim(),
+              example: vocalModal.description.trim(),
             },
           ],
         }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    console.log(result);
-    if (result.ok) {
-      refetch();
+        headers: { "Content-Type": "application/json" },
+      });
+      await ensureOk(result);
+      await refetch();
+      setShowVocaEditModal(false);
+    } catch (error) {
+      Alert.alert(
+        "Unable to add vocabulary",
+        error instanceof Error ? error.message : "Please try again."
+      );
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-    setShowVocaEditModal(false);
+  };
+
+  const handleEdit = async () => {
+    if (!voca || !word.trim() || !vocalModal.meaning.trim()) {
+      Alert.alert("Missing information", "Vocabulary and meaning are required.");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const result = await authFetch(`/word/words/${voca.id}/`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          text: word.trim(),
+          meanings: [
+            {
+              part: vocalModal.partOfSpeech,
+              definition: vocalModal.meaning.trim(),
+              example: vocalModal.description.trim(),
+            },
+          ],
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+      await ensureOk(result);
+      await refetch();
+      setShowVocaEditModal(false);
+    } catch (error) {
+      Alert.alert(
+        "Unable to edit vocabulary",
+        error instanceof Error ? error.message : "Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -133,44 +142,46 @@ export default function VocaEditModal({
     >
       <TouchableWithoutFeedback onPress={() => setShowVocaEditModal(false)}>
         <View style={styles.background}>
-          <View style={styles.container}>
-            <VocaInputField
-              placeholder="Vocabulary (required)"
-              value={word}
-              onChangeText={(text) => setWord(text)}
-            />
-            <View style={styles.partMeaningContainer}>
-              <PartOfSpeechOptions
-                vocalModal={{ partOfSpeech: vocalModal.partOfSpeech }}
-                setVocalModal={(newValue) =>
-                  setVocalModal({ ...vocalModal, ...newValue })
-                }
+          <TouchableWithoutFeedback>
+            <View style={styles.container}>
+              <VocaInputField
+                placeholder="Vocabulary (required)"
+                value={word}
+                onChangeText={(text) => setWord(text)}
               />
-              <TextInput
-                style={{ height: 50 }}
-                placeholder="Meaning (required)"
-                value={vocalModal.meaning}
-                onChangeText={(text) =>
-                  setVocalModal({ ...vocalModal, meaning: text })
-                }
-              />
+              <View style={styles.partMeaningContainer}>
+                <PartOfSpeechOptions
+                  vocalModal={{ partOfSpeech: vocalModal.partOfSpeech }}
+                  setVocalModal={(newValue) =>
+                    setVocalModal({ ...vocalModal, ...newValue })
+                  }
+                />
+                <TextInput
+                  style={{ height: 50 }}
+                  placeholder="Meaning (required)"
+                  value={vocalModal.meaning}
+                  onChangeText={(text) =>
+                    setVocalModal({ ...vocalModal, meaning: text })
+                  }
+                />
+              </View>
+              <View style={styles.submitButtonContainer}>
+                <TextInput
+                  placeholder="Description (optional)"
+                  style={styles.textInput}
+                  value={vocalModal.description}
+                  onChangeText={(text) =>
+                    setVocalModal({ ...vocalModal, description: text })
+                  }
+                />
+                <VocaModalSubmitButton
+                  isLoading={isLoading}
+                  onPress={voca ? handleEdit : handleSubmit}
+                  text={voca ? textEdit : textAdd}
+                />
+              </View>
             </View>
-            <View style={styles.submitButtonContainer}>
-              <TextInput
-                placeholder="Description (optional)"
-                style={styles.textInput}
-                value={vocalModal.description}
-                onChangeText={(text) =>
-                  setVocalModal({ ...vocalModal, description: text })
-                }
-              />
-              <VocaModalSubmitButton
-                isLoading={isLoading}
-                onPress={voca ? handleEdit : handleSubmit}
-                text={voca ? textEdit : textAdd}
-              />
-            </View>
-          </View>
+          </TouchableWithoutFeedback>
         </View>
       </TouchableWithoutFeedback>
     </Modal>

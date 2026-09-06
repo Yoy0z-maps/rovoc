@@ -12,8 +12,7 @@ import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
 import { Fragment, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import { getAccessToken } from "@/utils/token";
+import { authFetch, ensureOk } from "@/lib/api";
 
 export default function ExploreAddBookcaseModal({
   triggerBookcases,
@@ -27,12 +26,10 @@ export default function ExploreAddBookcaseModal({
   const [image, setImage] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
 
   const pickImage = async () => {
-    setLoading(true);
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: true,
@@ -48,17 +45,22 @@ export default function ExploreAddBookcaseModal({
         text2: t("modal.addBookcase.imageAdded"),
       });
     }
-    setLoading(false);
   };
 
   const addBookcase = async () => {
+    if (!name.trim()) {
+      Toast.show({
+        type: "ToastError",
+        text1: t("modal.addBookcase.error"),
+        text2: t("modal.addBookcase.name"),
+      });
+      return;
+    }
     setFetchLoading(true);
     try {
-      const token = await getAccessToken();
-
       const formData = new FormData();
-      formData.append("name", name);
-      formData.append("description", description);
+      formData.append("name", name.trim());
+      formData.append("description", description.trim());
 
       if (image) {
         const filename = image.split("/").pop() || `photo.jpg`;
@@ -73,36 +75,28 @@ export default function ExploreAddBookcaseModal({
         } as any);
       }
 
-      const response = await fetch(`${API_SERVER_ADDRESS}/word/wordbooks/`, {
+      const response = await authFetch("/word/wordbooks/", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         body: formData,
       });
 
-      if (response.ok) {
-        Toast.show({
-          type: "ToastSuccess",
-          text1: t("modal.addBookcase.success"),
-          text2: t("modal.addBookcase.bookcaseAdded"),
-        });
-        setShowAddBookcaseModal(false);
-        triggerBookcases();
-      } else if (response.status === 413) {
+      if (response.status === 413) {
         Toast.show({
           type: "ToastError",
           text1: t("modal.addBookcase.error"),
           text2: t("modal.addBookcase.imageSizeError"),
         });
-      } else {
-        Toast.show({
-          type: "ToastError",
-          text1: t("modal.addBookcase.error"),
-          text2: t("modal.addBookcase.bookcaseAddedFailed"),
-        });
+        return;
       }
-    } catch (error) {
+      await ensureOk(response);
+      Toast.show({
+        type: "ToastSuccess",
+        text1: t("modal.addBookcase.success"),
+        text2: t("modal.addBookcase.bookcaseAdded"),
+      });
+      setShowAddBookcaseModal(false);
+      await triggerBookcases();
+    } catch {
       Toast.show({
         type: "ToastError",
         text1: t("modal.addBookcase.error"),
@@ -123,7 +117,8 @@ export default function ExploreAddBookcaseModal({
           alignItems: "center",
         }}
       >
-        <View style={styles.container}>
+        <TouchableWithoutFeedback>
+          <View style={styles.container}>
           <Text style={styles.title}>{t("modal.addBookcase.title")}</Text>
           <VocaInputField
             placeholder={t("modal.addBookcase.name")}
@@ -165,12 +160,7 @@ export default function ExploreAddBookcaseModal({
           {image && (
             <View style={styles.imageContainer}>
               {imageLoading && (
-                <View
-                  style={[
-                    styles.imageLoadingContainer,
-                    imageLoading && { display: "none" },
-                  ]}
-                >
+                <View style={styles.imageLoadingContainer}>
                   <ActivityIndicator size="small" color="#2988F6" />
                 </View>
               )}
@@ -210,7 +200,8 @@ export default function ExploreAddBookcaseModal({
               </Pressable>
             )}
           </View>
-        </View>
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     </TouchableWithoutFeedback>
   );

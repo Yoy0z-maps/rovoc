@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useTranslation } from "react-i18next";
 import ReviewVocaItem from "./ReviewVocaItem";
 import { Word } from "@/types/word";
 import { useFocusEffect } from "@react-navigation/native";

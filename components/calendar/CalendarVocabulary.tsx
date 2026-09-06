@@ -9,16 +9,19 @@ import {
 } from "react-native";
 import { Word } from "@/types/word";
 import VocaItem from "../bookcase/VocaItem";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import VocaEditModal from "../bookcase/VocaEditModal";
 
 export default function CalendarVocabulary({
   vocaData,
   isLoading,
   selectedDate,
+  refetch,
 }: {
   vocaData: Word[] | [];
   isLoading: boolean;
   selectedDate: string;
+  refetch: () => Promise<void> | void;
 }) {
   const scrollY = useRef(new Animated.Value(0)).current;
   const showLottie = scrollY.interpolate({
@@ -28,20 +31,32 @@ export default function CalendarVocabulary({
   });
 
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedVoca, setSelectedVoca] = useState<Word | null>(null);
+  const [showVocaEditModal, setShowVocaEditModal] = useState(false);
   const lottieRef = useRef<LottieView>(null);
 
-  scrollY.addListener(({ value }) => {
-    const pullDistance = Math.min(Math.abs(value), 100); // 0 ~ 100
-    const progress = pullDistance / 100;
-    lottieRef.current?.play(progress);
-  });
+  useEffect(() => {
+    const listenerId = scrollY.addListener(({ value }) => {
+      const pullDistance = Math.min(Math.abs(value), 100);
+      lottieRef.current?.play(pullDistance / 100);
+    });
+    return () => scrollY.removeListener(listenerId);
+  }, [scrollY]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    lottieRef.current?.play(); // 실제 새로고침 시작
-    await new Promise((res) => setTimeout(res, 2000));
-    setRefreshing(false);
-    lottieRef.current?.reset();
+    lottieRef.current?.play();
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+      lottieRef.current?.reset();
+    }
+  };
+
+  const onEditPress = (word: Word) => {
+    setSelectedVoca(word);
+    setShowVocaEditModal(true);
   };
 
   if (isLoading)
@@ -98,8 +113,8 @@ export default function CalendarVocabulary({
               <VocaItem
                 key={item.id}
                 word={item}
-                onEditPress={() => {}}
-                refetch={() => {}}
+                onEditPress={onEditPress}
+                refetch={refetch}
               />
             )}
             scrollEventThrottle={4}
@@ -131,6 +146,13 @@ export default function CalendarVocabulary({
           />
         </View>
       )}
+      <VocaEditModal
+        refetch={refetch}
+        bookcaseId=""
+        voca={selectedVoca}
+        showVocaEditModal={showVocaEditModal}
+        setShowVocaEditModal={setShowVocaEditModal}
+      />
     </View>
   );
 }

@@ -15,19 +15,19 @@ import {
 const LICENSE_DATA = [
   {
     name: "React",
-    version: "18.3.1",
+    version: "19.1.0",
     license: "MIT",
     url: "https://github.com/facebook/react",
   },
   {
     name: "React Native",
-    version: "0.76.9",
+    version: "0.81.4",
     license: "MIT",
     url: "https://github.com/facebook/react-native",
   },
   {
     name: "Expo",
-    version: "52.0.11",
+    version: "54.0.12",
     license: "MIT",
     url: "https://github.com/expo/expo",
   },
@@ -45,13 +45,13 @@ const LICENSE_DATA = [
   },
   {
     name: "lottie-react-native",
-    version: "7.2.2",
+    version: "7.3.1",
     license: "Apache-2.0",
     url: "https://github.com/lottie-react-native/lottie-react-native",
   },
   {
     name: "react-native-webview",
-    version: "13.12.5",
+    version: "13.15.0",
     license: "MIT",
     url: "https://github.com/react-native-webview/react-native-webview",
   },
@@ -76,7 +76,7 @@ export default function OpenSourceLicenseScreen() {
       <SafeAreaView style={styles.headerContainer}>
         <View style={styles.spacingContainer}>
           <Pressable onPress={() => router.back()}>
-            <AntDesign name="arrowleft" size={24} color="black" />
+            <AntDesign name="arrow-left" size={24} color="black" />
           </Pressable>
           <Text style={styles.headerTitle}>📄 Open Source Licenses</Text>
           <View style={{ width: 24 }} />

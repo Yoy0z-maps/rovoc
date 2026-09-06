@@ -3,9 +3,6 @@ import { View, StyleSheet } from "react-native";
 import CallendarController from "./CalendarController";
 import CalendarViewer from "./CalendarViewer";
 import CalendarVocabulary from "./CalendarVocabulary";
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import { getAccessToken } from "@/utils/token";
-import { Word } from "@/types/word";
 import useWord from "@/hooks/useWord";
 
 export default function Calendar() {
@@ -36,14 +33,13 @@ export default function Calendar() {
 
   // 해당 날짜에 맞게 데이터 패칭
   useEffect(() => {
-    const selectedDateString =
-      currentMonth < 10
-        ? `${currentYear}-0${currentMonth + 1}-${selectedDate}`
-        : `${currentYear}-${currentMonth + 1}-${selectedDate}`;
+    const month = String(currentMonth + 1).padStart(2, "0");
+    const day = String(selectedDate).padStart(2, "0");
+    const selectedDateString = `${currentYear}-${month}-${day}`;
     setDate(selectedDateString);
-  }, [selectedDate, currentMonth]);
+  }, [currentYear, currentMonth, selectedDate]);
 
-  const { words, loading } = useWord({ date: date });
+  const { words, loading, refetch } = useWord({ date: date });
 
   return (
     <View style={styles.container}>
@@ -59,15 +55,12 @@ export default function Calendar() {
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
       />
-      {!loading && (
-        <CalendarVocabulary
-          vocaData={words}
-          isLoading={loading}
-          selectedDate={`${currentYear}-${currentMonth + 1}-${
-            selectedDate < 10 ? `0${selectedDate}` : selectedDate
-          }`}
-        />
-      )}
+      <CalendarVocabulary
+        vocaData={words}
+        isLoading={loading}
+        refetch={refetch}
+        selectedDate={date ?? ""}
+      />
     </View>
   );
 }

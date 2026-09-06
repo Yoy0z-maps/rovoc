@@ -2,9 +2,9 @@ import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { Text, StyleSheet, Pressable, Dimensions } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { login } from "@react-native-kakao/user";
-import { setUser } from "@/utils/user";
+import { socialLogin } from "@/utils/user";
+import { AuthProvider } from "@/types/user";
 
 const { width } = Dimensions.get("window");
 
@@ -15,26 +15,10 @@ export default function KakaoLoginButton() {
   const handleKakaoLogin = async () => {
     try {
       const kakao_res = await login();
-      console.log(kakao_res);
-      const rovoca_res = await fetch(
-        `${API_SERVER_ADDRESS}/users/auth/social-login/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            provider: "kakao",
-            result: kakao_res,
-          }),
-        }
-      );
-      console.log(rovoca_res);
-      const user_json = await rovoca_res.json();
-      await setUser(user_json);
-      router.push("/(mainTabs)");
+      await socialLogin(AuthProvider.KAKAO, kakao_res);
+      router.replace("/(mainTabs)");
     } catch (error) {
-      console.log(error);
+      console.error("Kakao login failed:", error);
     }
   };
 

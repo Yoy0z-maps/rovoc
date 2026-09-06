@@ -7,13 +7,14 @@ import {
   Pressable,
   Animated,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Feather, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import useAnimatedImportant from "@/hooks/useAnimatedImportant";
 import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { useState } from "react";
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import { getAccessToken } from "@/utils/token";
+import { authFetch, ensureOk } from "@/lib/api";
+import Toast from "react-native-toast-message";
 
 export default function VocaItem({
   onEditPress,
@@ -22,7 +23,7 @@ export default function VocaItem({
 }: {
   onEditPress: (voca: Word) => void;
   word: Word;
-  refetch: () => void;
+  refetch: () => Promise<void> | void;
 }) {
   const { isImportant, scaleAnim, importantAnimation } = useAnimatedImportant({
     word,
@@ -33,15 +34,26 @@ export default function VocaItem({
   );
 
   const handleDelete = async () => {
-    const accessToken = await getAccessToken();
-    const res = await fetch(`${API_SERVER_ADDRESS}/word/words/${word.id}/`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    refetch();
+    try {
+      const response = await authFetch(`/word/words/${word.id}/`, {
+        method: "DELETE",
+      });
+      await ensureOk(response);
+      await refetch();
+    } catch (error) {
+      Toast.show({
+        type: "ToastError",
+        text1: "Unable to delete vocabulary",
+        text2: error instanceof Error ? error.message : undefined,
+      });
+    }
+  };
+
+  const confirmDelete = () => {
+    Alert.alert("Delete vocabulary", `Delete “${word.text}”?`, [
+      { text: "Cancel", style: "cancel" },
+      { text: "Delete", style: "destructive", onPress: () => void handleDelete() },
+    ]);
   };
 
   const renderAction = () => {
@@ -59,7 +71,7 @@ export default function VocaItem({
           <FontAwesome5 name="edit" size={16} color="white" />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={handleDelete}
+          onPress={confirmDelete}
           style={[
             {
               backgroundColor: "#ff1744",
@@ -81,8 +93,8 @@ export default function VocaItem({
       >
         <Text style={styles.text}>{word.text}</Text>
         {word.meanings.map((meaning, index) => (
-          <View>
-            <View style={styles.meaningContainer} key={index}>
+          <View key={`${word.id}-${index}`}>
+            <View style={styles.meaningContainer}>
               <View style={styles.meaningIndexContainer}>
                 <Text style={styles.meaningIndexText}>{index + 1}</Text>
               </View>
@@ -94,7 +106,7 @@ export default function VocaItem({
               </Text>
             </View>
             <Text style={styles.meaningsItemTextExample}>
-              {word.meanings[0]?.example || "N/A"}
+              {meaning.example || "N/A"}
             </Text>
           </View>
         ))}

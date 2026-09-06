@@ -1,6 +1,6 @@
 import { View, Text, Pressable, StyleSheet, Modal } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 type PartOfSpeech =
   | "n"
@@ -31,13 +31,6 @@ export default function PartOfSpeechOptions({
   setVocalModal: (vocalModal: { partOfSpeech: string }) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-
-  // useEffect로 기본값 설정 이동
-  useEffect(() => {
-    if (!vocalModal.partOfSpeech) {
-      setVocalModal({ ...vocalModal, partOfSpeech: "n" });
-    }
-  }, []); // 컴포넌트 마운트 시 한 번만 실행
 
   const selectedOption = partOfSpeechOptions.find(
     (option) => option.value === vocalModal.partOfSpeech

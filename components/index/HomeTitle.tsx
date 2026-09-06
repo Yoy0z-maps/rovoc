@@ -1,7 +1,6 @@
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import { useRouter } from "expo-router";
-import { useTranslation } from "react-i18next";
 
 export default function HomeTitle({ title }: { title: string }) {
   const router = useRouter();

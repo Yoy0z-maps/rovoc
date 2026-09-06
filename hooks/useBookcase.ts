@@ -10,18 +10,23 @@ export function useBookcases(filterState?: {
 }) {
   const [bookcases, setBookcases] = useState<Wordbook[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchBookcases = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const res = await getAllBookcases();
-      let results = res.results;
+      let results = Array.isArray(res.results) ? res.results : [];
 
       if (filterState) {
         results = filterBookcases(results, filterState);
       }
 
       setBookcases(results);
+    } catch (caught) {
+      setBookcases([]);
+      setError(caught instanceof Error ? caught.message : "Unable to load bookcases.");
     } finally {
       setLoading(false);
     }
@@ -31,5 +36,5 @@ export function useBookcases(filterState?: {
     fetchBookcases();
   }, [fetchBookcases]);
 
-  return { bookcases, loading, refetch: fetchBookcases };
+  return { bookcases, loading, error, refetch: fetchBookcases };
 }

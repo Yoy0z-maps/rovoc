@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -14,11 +10,10 @@ import "react-native-reanimated";
 import { initializeKakaoSDK } from "@react-native-kakao/core";
 import Toast from "react-native-toast-message";
 
-import { getKeyHashAndroid } from "@react-native-kakao/core";
-
 import ToastSuccess from "@/components/toast/ToastSuccess";
 import ToastError from "@/components/toast/ToastError";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Platform } from "react-native";
 import initI18n from "./i18n/i18n";
 
 import * as Notifications from "expo-notifications";
@@ -34,26 +29,30 @@ const toastConfig = {
 };
 
 const key = "0eb5e8ec68637741e8154aa38486d9f9";
-initializeKakaoSDK(key || "");
-getKeyHashAndroid();
+if (Platform.OS !== "web") {
+  void initializeKakaoSDK(key).catch((error) => {
+    console.error("Unable to initialize the Kakao SDK:", error);
+  });
+}
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+void SplashScreen.preventAutoHideAsync().catch(() => undefined);
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 export default function RootLayout() {
   useEffect(() => {
-    initI18n();
+    void initI18n().catch((error) => {
+      console.error("Unable to restore the saved language:", error);
+    });
   }, []);
-
-  // ✅ 알림 권한 설정
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: false, // 알람 갯수 표시하려면 백엔드 작업 필요
-      shouldShowBanner: true,
-      shouldShowList: true,
-    }),
-  });
 
   useEffect(() => {
     (async () => {
@@ -88,7 +87,7 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={DefaultTheme}>
         <Stack>
           <Stack.Screen name="(mainTabs)" options={{ headerShown: false }} />

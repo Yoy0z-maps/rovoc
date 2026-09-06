@@ -1,6 +1,5 @@
 import { View, StyleSheet, Text, Pressable } from "react-native";
 
-import { MaterialIcons } from "@expo/vector-icons";
 import { Dispatch, SetStateAction } from "react";
 
 type CalendarControllerProps = {

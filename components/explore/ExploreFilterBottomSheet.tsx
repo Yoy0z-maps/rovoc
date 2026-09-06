@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import ExploreFilterItem from "./ExploreFilterItem";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
 
 const width = Dimensions.get("window").width;
 

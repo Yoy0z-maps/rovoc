@@ -6,8 +6,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Toast from "react-native-toast-message";
 import { Wordbook } from "@/types/wordbooks";
 import PartOfSpeechOptions from "../PartOfSpeechOptions";
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import { getAccessToken } from "@/utils/token";
+import { authFetch, ensureOk } from "@/lib/api";
 
 export default function AddVocaContainer({
   targetBookcase,
@@ -29,7 +28,7 @@ export default function AddVocaContainer({
 }) {
   const [word, setWord] = useState("");
   const [vocalModal, setVocalModal] = useState({
-    partOfSpeech: "",
+    partOfSpeech: "n",
     meaning: "",
     description: "",
   });
@@ -43,28 +42,32 @@ export default function AddVocaContainer({
       });
       return;
     }
-    const token = await getAccessToken();
+    if (!word.trim() || !vocalModal.meaning.trim()) {
+      Toast.show({
+        type: "ToastError",
+        text1: "Error",
+        text2: "Vocabulary and meaning are required",
+      });
+      return;
+    }
 
-    const response = await fetch(`${API_SERVER_ADDRESS}/word/words/`, {
-      method: "POST",
-      body: JSON.stringify({
-        wordbook: targetBookcase.id,
-        text: word,
-        meanings: [
-          {
-            part: vocalModal.partOfSpeech,
-            definition: vocalModal.meaning,
-            example: vocalModal.description || "",
-          },
-        ],
-      }),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.ok) {
+    try {
+      const response = await authFetch("/word/words/", {
+        method: "POST",
+        body: JSON.stringify({
+          wordbook: targetBookcase.id,
+          text: word.trim(),
+          meanings: [
+            {
+              part: vocalModal.partOfSpeech,
+              definition: vocalModal.meaning.trim(),
+              example: vocalModal.description.trim(),
+            },
+          ],
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+      await ensureOk(response);
       Toast.show({
         type: "ToastSuccess",
         text1: "Success",
@@ -72,15 +75,15 @@ export default function AddVocaContainer({
       });
       setWord("");
       setVocalModal({
-        partOfSpeech: "",
+        partOfSpeech: "n",
         meaning: "",
         description: "",
       });
-    } else {
+    } catch (error) {
       Toast.show({
         type: "ToastError",
         text1: "Error",
-        text2: "Failed to add vocabulary",
+        text2: error instanceof Error ? error.message : "Failed to add vocabulary",
       });
     }
   };

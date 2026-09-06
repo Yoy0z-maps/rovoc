@@ -1,19 +1,17 @@
 import { HangmanDrawing } from "@/components/game/HangmanDrawing";
-import { TEST_VOCABULARY } from "@/constants/TestVoca";
 import React, { useEffect, useState } from "react";
-import { View, Alert } from "react-native";
+import { View, Button, Text } from "react-native";
 import ResultModal from "@/components/game/ResultModal";
 import HangmanWord from "@/components/game/HangmanWord";
 import GameTitle from "@/components/game/GameTitle";
 import Keyboard from "@/components/game/Keyboard";
 import HangmanInfo from "@/components/game/HangmanInfo";
-import { router } from "expo-router";
 import HangmanResult from "@/components/game/HangmanResult";
 import HangmanButtonContainer from "@/components/game/HangmanButtonContainer";
 import { Word } from "@/types/word";
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import { getAccessToken } from "@/utils/token";
 import LottieView from "lottie-react-native";
+import { authFetch, ensureOk } from "@/lib/api";
+import { router } from "expo-router";
 
 const shuffleArray = <T,>(arr: T[]): T[] => {
   const array = [...arr];
@@ -35,26 +33,25 @@ export default function HangmanScreen() {
   const [gameOver, setGameOver] = useState(false);
   const [isWin, setIsWin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = await getAccessToken();
-        const response = await fetch(`${API_SERVER_ADDRESS}/word/words/`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        setWordList(data.results as Word[]);
-      } catch (error) {
-        console.error("Failed to fetch words:", error);
+        const response = await authFetch("/word/words/");
+        await ensureOk(response);
+        const data = (await response.json()) as { results?: Word[] };
+        setWordList(
+          (data.results ?? []).filter((word) => /[a-z]/i.test(word.text ?? ""))
+        );
+      } catch (caught) {
         setWordList([]);
+        setError(caught instanceof Error ? caught.message : "Unable to load words.");
       } finally {
         setIsLoading(false);
       }
     };
-    fetchData();
+    void fetchData();
   }, []);
 
   useEffect(() => {
@@ -76,12 +73,14 @@ export default function HangmanScreen() {
 
     const word = shuffled[index]?.text?.toUpperCase();
     if (!word) {
-      Alert.alert("오류", "단어를 불러올 수 없습니다.");
+      setError("단어를 불러올 수 없습니다.");
       return;
     }
 
     setCurrentWord(word);
-    setRevealed(Array(word.length).fill("_"));
+    setRevealed(
+      Array.from(word, (character) => (/[A-Z]/.test(character) ? "_" : character))
+    );
     setUsedLetters([]);
     setWrongLetters([]);
   };
@@ -118,9 +117,13 @@ export default function HangmanScreen() {
     );
   }
 
-  if (wordList.length === 0) {
-    Alert.alert("단어가 없습니다.");
-    return;
+  if (error || wordList.length === 0) {
+    return (
+      <View style={styles.messageContainer}>
+        <Text style={styles.messageText}>{error ?? "플레이할 단어가 없습니다."}</Text>
+        <Button title="Back" onPress={router.back} />
+      </View>
+    );
   }
 
   return (
@@ -172,3 +175,14 @@ export default function HangmanScreen() {
     </View>
   );
 }
+
+const styles = {
+  messageContainer: {
+    flex: 1,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    padding: 24,
+    gap: 16,
+  },
+  messageText: { textAlign: "center" as const, color: "#555" },
+};

@@ -9,13 +9,15 @@ import {
   StyleSheet,
   Button,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { useAudioPlayer } from "expo-audio";
 import { handlePlaySound } from "@/utils/handlePlaySound";
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { getAccessToken } from "@/utils/token";
 import type { Word } from "@/types/word";
 import OnScreenKeyboard from "@/components/game/ShootingKeyboard";
+import { authFetch, ensureOk } from "@/lib/api";
+import { updateUserScore } from "@/utils/user";
 
 type WordEnt = {
   id: string;
@@ -96,34 +98,38 @@ export default function CannonTypingGame() {
   // --------- 단어 로딩 ----------
   const [isLoading, setIsLoading] = useState(true);
   const [wordList, setWordList] = useState<Word[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = await getAccessToken();
-        const r = await fetch(`${API_SERVER_ADDRESS}/word/words/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await r.json();
+        const r = await authFetch("/word/words/");
+        await ensureOk(r);
+        const data = (await r.json()) as { results?: Word[] };
         setWordList((data?.results ?? []) as Word[]);
-      } catch (error) {
-        console.error("Failed to fetch words:", error);
+      } catch (caught) {
         setWordList([]);
+        setLoadError(caught instanceof Error ? caught.message : "Unable to load words.");
       } finally {
         setIsLoading(false);
       }
     };
-    fetchData();
+    void fetchData();
   }, []);
 
   // --------- 게임 엔티티 ----------
   const [words, setWords] = useState<WordEnt[]>([]);
+  const hadActiveWords = useRef(false);
+  const scoreSubmitted = useRef(false);
+  const [completed, setCompleted] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const spawnInitialWords = React.useCallback((source: Word[]) => {
     const candidates = (source || []).filter((w) =>
       (w.meanings || []).some((m) => m?.definition?.trim())
     );
     if (candidates.length === 0) {
+      hadActiveWords.current = false;
       setWords([]);
       return;
     }
@@ -148,6 +154,8 @@ export default function CannonTypingGame() {
         height: 0,
       };
     });
+    hadActiveWords.current = initial.length > 0;
+    setCompleted(false);
     setWords(initial);
   }, []);
 
@@ -164,6 +172,14 @@ export default function CannonTypingGame() {
   const [typed, setTyped] = useState("");
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
+
+  useEffect(() => {
+    if (!isLoading && hadActiveWords.current && words.length === 0) {
+      hadActiveWords.current = false;
+      setCompleted(true);
+      setGameOver(true);
+    }
+  }, [isLoading, words.length]);
 
   // 동적 레이아웃 계산
   const inputBottom = kbHeight + KB_MARGIN; // ✅ 입력창은 키보드 위
@@ -296,7 +312,16 @@ export default function CannonTypingGame() {
 
       setTyped("");
     })();
-  }, [typed, gameOver, words, cannon.x, cannon.y]);
+  }, [
+    typed,
+    gameOver,
+    words,
+    cannon.x,
+    cannon.y,
+    muzzleOffset.x,
+    muzzleOffset.y,
+    player,
+  ]);
 
   // 단어 실제 크기 측정
   const onMeasure = (id: string, width: number, height: number) => {
@@ -310,6 +335,8 @@ export default function CannonTypingGame() {
     setScore(0);
     setTyped("");
     setGameOver(false);
+    setCompleted(false);
+    scoreSubmitted.current = false;
     setBullet({
       x: 0,
       y: 0,
@@ -325,6 +352,29 @@ export default function CannonTypingGame() {
     // 커스텀 키보드만 쓰므로 굳이 포커스 필요 없음. (원하면 유지)
   };
 
+  const saveAndExit = async () => {
+    if (scoreSubmitted.current) {
+      router.back();
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const token = await getAccessToken();
+      if (!token) throw new Error("Please sign in again.");
+      await updateUserScore({ token, score_change: score });
+      scoreSubmitted.current = true;
+      router.back();
+    } catch (error) {
+      Alert.alert(
+        "Unable to save score",
+        error instanceof Error ? error.message : "Please try again."
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <View
@@ -338,7 +388,11 @@ export default function CannonTypingGame() {
       </View>
     );
   }
-  if (words.length === 0) {
+  const hasPlayableWords = wordList.some((word) =>
+    word.meanings?.some((meaning) => meaning.definition?.trim())
+  );
+
+  if (loadError || !hasPlayableWords) {
     return (
       <View
         style={[
@@ -346,7 +400,9 @@ export default function CannonTypingGame() {
           { alignItems: "center", justifyContent: "center" },
         ]}
       >
-        <Text style={styles.pressFont}>NO WORDS WITH DEFINITIONS</Text>
+        <Text style={styles.pressFont}>
+          {loadError ?? "NO WORDS WITH DEFINITIONS"}
+        </Text>
         <Button title="Back" onPress={router.back} />
       </View>
     );
@@ -448,10 +504,16 @@ export default function CannonTypingGame() {
 
       {gameOver && (
         <View style={styles.overlay}>
-          <Text style={[styles.overText, styles.pressFont]}>GAME OVER</Text>
+          <Text style={[styles.overText, styles.pressFont]}>
+            {completed ? "COMPLETE" : "GAME OVER"}
+          </Text>
           <View style={styles.buttonContainer}>
             <Button title="Restart" onPress={restartGame} />
-            <Button title="Back" onPress={router.back} />
+            <Button
+              title={isSaving ? "Saving…" : "Back"}
+              disabled={isSaving}
+              onPress={() => void saveAndExit()}
+            />
           </View>
         </View>
       )}

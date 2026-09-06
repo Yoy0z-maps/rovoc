@@ -1,15 +1,19 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Pressable, Image, Text, StyleSheet, Dimensions } from "react-native";
 import { useTranslation } from "react-i18next";
-import { setUser } from "@/utils/user";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { socialLogin } from "@/utils/user";
+import {
+  GoogleSignin,
+  isSuccessResponse,
+} from "@react-native-google-signin/google-signin";
+import { AuthProvider } from "@/types/user";
+import { useRouter } from "expo-router";
 
 const { width } = Dimensions.get("window");
 
 export default function GoogleLogin() {
   const { t } = useTranslation();
-  const [userInfo, setUserInfo] = useState(null);
-
+  const router = useRouter();
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
@@ -21,29 +25,21 @@ export default function GoogleLogin() {
   }, []);
 
   const handleGoogleLogin = useCallback(async () => {
-    console.log("handleGoogleLogin");
     try {
-      // Google Play Services 확인 (Android)
       await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      console.log(userInfo);
-    } catch (error) {
-      console.log("Google Sign In error:", error);
-    }
-  }, []);
-
-  async function fetchUserInfo(token: string) {
-    try {
-      const res = await fetch("https://www.googleapis.com/userinfo/v2/me", {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await GoogleSignin.signIn();
+      if (!isSuccessResponse(response)) return;
+      if (!response.data.idToken) {
+        throw new Error("Google did not return an ID token.");
+      }
+      await socialLogin(AuthProvider.GOOGLE, {
+        idToken: response.data.idToken,
       });
-      const user = await res.json();
-      setUserInfo(user);
-      await setUser(user);
+      router.replace("/(mainTabs)");
     } catch (error) {
-      console.error("Failed to fetch user info:", error);
+      console.error("Google login failed:", error);
     }
-  }
+  }, [router]);
 
   return (
     <Pressable style={styles.container} onPress={handleGoogleLogin}>

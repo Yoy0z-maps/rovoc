@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Alert } from "react-native";
+import { ActivityIndicator, Button, Text, View } from "react-native";
 
 import { createQuiz } from "../utils/quizUtils"; // 퀴즈 로직
 import ResultModal from "@/components/game/ResultModal";
@@ -9,10 +9,10 @@ import QuizResult from "@/components/game/QuizResult";
 import QuizQuestion from "@/components/game/QuizQuestion";
 import QuizSelections from "@/components/game/QuizSelections";
 import { Word } from "@/types/word";
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import { getAccessToken } from "@/utils/token";
 import { useAudioPlayer } from "expo-audio";
 import { handlePlaySound } from "@/utils/handlePlaySound";
+import { authFetch, ensureOk } from "@/lib/api";
+import { router } from "expo-router";
 
 const QuizScreen = () => {
   const correctSound = require("@/assets/sounds/correct.mp3");
@@ -24,19 +24,28 @@ const QuizScreen = () => {
   const [usedWords, setUsedWords] = useState<Set<string>>(new Set());
   const [quiz, setQuiz] = useState<ReturnType<typeof createQuiz> | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = await getAccessToken();
-      const response = await fetch(`${API_SERVER_ADDRESS}/word/words/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      setWordList(data.results as Word[]);
+      try {
+        const response = await authFetch("/word/words/");
+        await ensureOk(response);
+        const data = (await response.json()) as { results?: Word[] };
+        const playableWords = (data.results ?? []).filter(
+          (word) =>
+            word.text?.trim() &&
+            word.meanings?.some((meaning) => meaning.definition?.trim())
+        );
+        setWordList(playableWords);
+      } catch (caught) {
+        setError(caught instanceof Error ? caught.message : "Unable to load words.");
+      } finally {
+        setIsLoading(false);
+      }
     };
-    fetchData();
+    void fetchData();
   }, []);
 
   useEffect(() => {
@@ -44,7 +53,7 @@ const QuizScreen = () => {
       const newQuiz = createQuiz(wordList, usedWords, setShowResult);
       setQuiz(newQuiz);
     }
-  }, [wordList]);
+  }, [quiz, usedWords, wordList]);
 
   // 퀴즈가 변경될 때마다 usedWords 업데이트
   useEffect(() => {
@@ -59,7 +68,7 @@ const QuizScreen = () => {
   const [score, setScore] = useState({ correct: 0, wrong: 0 });
 
   const handleSelect = (option: string) => {
-    if (!quiz) return;
+    if (!quiz || selected !== null) return;
     setSelected(option);
 
     if (option === quiz.answer) {
@@ -81,13 +90,23 @@ const QuizScreen = () => {
     setIsCorrect(null);
   };
 
-  if (!quiz) {
-    return;
+  if (isLoading) {
+    return (
+      <View style={styles.messageContainer}>
+        <ActivityIndicator size="large" color="#2988F6" />
+      </View>
+    );
   }
 
-  if (wordList.length <= 4) {
-    Alert.alert("4개 이상의 단어가 필요합니다.");
-    return;
+  if (error || wordList.length < 4 || !quiz) {
+    return (
+      <View style={styles.messageContainer}>
+        <Text style={styles.messageText}>
+          {error ?? "퀴즈를 시작하려면 뜻이 있는 단어가 4개 이상 필요합니다."}
+        </Text>
+        <Button title="Back" onPress={router.back} />
+      </View>
+    );
   }
 
   return (
@@ -122,3 +141,14 @@ const QuizScreen = () => {
 };
 
 export default QuizScreen;
+
+const styles = {
+  messageContainer: {
+    flex: 1,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    padding: 24,
+    gap: 16,
+  },
+  messageText: { textAlign: "center" as const, color: "#555" },
+};

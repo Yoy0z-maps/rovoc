@@ -1,8 +1,8 @@
 import { Dimensions } from "react-native";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { router } from "expo-router";
-import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
-import { setUser } from "@/utils/user";
+import { socialLogin } from "@/utils/user";
+import { AuthProvider } from "@/types/user";
 
 const { width } = Dimensions.get("window");
 
@@ -15,33 +15,17 @@ export default function AppleLoginButton() {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
-      const rovoca_res = await fetch(
-        `${API_SERVER_ADDRESS}/users/auth/social-login/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            provider: "apple",
-            result: credential,
-          }),
-        }
-      );
-
-      const user_json = await rovoca_res.json();
-
-      await setUser(user_json);
-      router.push("/(mainTabs)");
-      // signed in
+      await socialLogin(AuthProvider.APPLE, credential);
+      router.replace("/(mainTabs)");
     } catch (error) {
       if (
         error instanceof Error &&
-        (error as any).code === "ERR_REQUEST_CANCELED"
+        "code" in error &&
+        error.code === "ERR_REQUEST_CANCELED"
       ) {
-        // handle that the user canceled the sign-in flow
+        return;
       } else {
-        // handle other errors
+        console.error("Apple login failed:", error);
       }
     }
   };
