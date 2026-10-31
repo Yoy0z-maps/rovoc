@@ -1,9 +1,8 @@
 import { Animated } from "react-native";
-import { useState, useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Word } from "@/types/word";
 import { Wordbook } from "@/types/wordbooks";
-import { importantBookcase } from "@/utils/bookcase";
-import { importantWord } from "@/utils/word";
+import { toggleWordbookImportant, toggleWordImportant } from "@/store/library";
 
 export default function useAnimatedImportant({
   word,
@@ -12,20 +11,10 @@ export default function useAnimatedImportant({
   word?: Word;
   bookcase?: Wordbook;
 }) {
-  const [isImportant, setIsImportant] = useState(false);
+  const isImportant = word?.is_important ?? bookcase?.is_important ?? false;
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
-  useEffect(() => {
-    if (word) {
-      setIsImportant(word.is_important);
-    } else if (bookcase) {
-      setIsImportant(bookcase.is_important);
-    }
-  }, [word, bookcase]);
-
-  const importantAnimation = async (id: string) => {
-    const value = !isImportant;
-    setIsImportant(value);
+  const importantAnimation = (id: string) => {
     Animated.sequence([
       // 1. 크게 만들기
       Animated.timing(scaleAnim, {
@@ -41,15 +30,9 @@ export default function useAnimatedImportant({
       }),
     ]).start();
 
-    try {
-      if (word) {
-        await importantWord(id);
-      } else if (bookcase) {
-        await importantBookcase(id);
-      }
-    } catch {
-      setIsImportant(!value);
-    }
+    // 기기에 바로 저장되므로 실패해서 되돌릴 일이 없다
+    if (word) toggleWordImportant(id);
+    else if (bookcase) toggleWordbookImportant(id);
   };
 
   return {

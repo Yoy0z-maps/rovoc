@@ -12,44 +12,20 @@ import { useEffect, useState } from "react";
 import { Word } from "@/types/word";
 import VocaModalSubmitButton from "../index/VocaModalSubmitButton";
 import { useTranslation } from "react-i18next";
-import { authFetch, ensureOk } from "@/lib/api";
+import { createWord, editWord } from "@/store/library";
+import { recordStudy } from "@/lib/activity";
 
 export default function VocaEditModal({
-  refetch,
   bookcaseId,
   voca,
   showVocaEditModal,
   setShowVocaEditModal,
 }: {
-  refetch: () => Promise<void> | void;
   bookcaseId: string;
   voca: Word | null;
   showVocaEditModal: boolean;
   setShowVocaEditModal: (value: boolean) => void;
 }) {
-  useEffect(() => {
-    if (voca) {
-      setWord(voca.text);
-      setVocalModal({
-        partOfSpeech: voca.meanings[0]?.part || "n",
-        meaning: voca.meanings[0]?.definition || "",
-        description: voca.meanings[0]?.example || "",
-      });
-    }
-  }, [voca]);
-
-  useEffect(() => {
-    if (!showVocaEditModal) {
-      // 모달 닫힐 때 입력값 초기화
-      setWord("");
-      setVocalModal({
-        partOfSpeech: "n",
-        meaning: "",
-        description: "",
-      });
-    }
-  }, [showVocaEditModal]);
-
   const [word, setWord] = useState("");
   const [vocalModal, setVocalModal] = useState({
     partOfSpeech: "n",
@@ -57,80 +33,51 @@ export default function VocaEditModal({
     description: "",
   });
 
+  // 모달이 열릴 때마다 수정할 단어로 입력란을 채운다 (추가 모드면 빈 값)
+  // 같은 단어를 닫았다가 다시 열어도 입력란이 비어 보이지 않도록 열릴 때 기준으로 초기화한다
+  useEffect(() => {
+    if (!showVocaEditModal) return;
+    const meaning = voca?.meanings[0];
+    setWord(voca?.text ?? "");
+    setVocalModal({
+      partOfSpeech: meaning?.part || "n",
+      meaning: meaning?.definition || "",
+      description: meaning?.example || "",
+    });
+  }, [showVocaEditModal, voca]);
+
   const { t } = useTranslation();
 
   const textAdd = t("[bookcase].vocaEditModal.add");
   const textEdit = t("[bookcase].vocaEditModal.edit");
 
-  const [isLoading, setIsLoading] = useState(false);
+  const editedMeaning = () => ({
+    part: vocalModal.partOfSpeech,
+    definition: vocalModal.meaning.trim(),
+    example: vocalModal.description.trim(),
+  });
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!bookcaseId || !word.trim() || !vocalModal.meaning.trim()) {
       Alert.alert("Missing information", "Vocabulary and meaning are required.");
       return;
     }
-    setIsLoading(true);
-    try {
-      const result = await authFetch("/word/words/", {
-        method: "POST",
-        body: JSON.stringify({
-          wordbook: bookcaseId,
-          text: word.trim(),
-          meanings: [
-            {
-              part: vocalModal.partOfSpeech,
-              definition: vocalModal.meaning.trim(),
-              example: vocalModal.description.trim(),
-            },
-          ],
-        }),
-        headers: { "Content-Type": "application/json" },
-      });
-      await ensureOk(result);
-      await refetch();
-      setShowVocaEditModal(false);
-    } catch (error) {
-      Alert.alert(
-        "Unable to add vocabulary",
-        error instanceof Error ? error.message : "Please try again."
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    createWord(bookcaseId, { text: word.trim(), meanings: [editedMeaning()] });
+    recordStudy();
+    setShowVocaEditModal(false);
   };
 
-  const handleEdit = async () => {
+  const handleEdit = () => {
     if (!voca || !word.trim() || !vocalModal.meaning.trim()) {
       Alert.alert("Missing information", "Vocabulary and meaning are required.");
       return;
     }
-    setIsLoading(true);
-    try {
-      const result = await authFetch(`/word/words/${voca.id}/`, {
-        method: "PATCH",
-        body: JSON.stringify({
-          text: word.trim(),
-          meanings: [
-            {
-              part: vocalModal.partOfSpeech,
-              definition: vocalModal.meaning.trim(),
-              example: vocalModal.description.trim(),
-            },
-          ],
-        }),
-        headers: { "Content-Type": "application/json" },
-      });
-      await ensureOk(result);
-      await refetch();
-      setShowVocaEditModal(false);
-    } catch (error) {
-      Alert.alert(
-        "Unable to edit vocabulary",
-        error instanceof Error ? error.message : "Please try again."
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    editWord(voca.id, {
+      text: word.trim(),
+      // 폼은 첫 번째 뜻만 수정하므로 나머지 뜻은 그대로 보존한다
+      meanings: [editedMeaning(), ...voca.meanings.slice(1)],
+    });
+    setShowVocaEditModal(false);
   };
 
   return (
@@ -157,7 +104,7 @@ export default function VocaEditModal({
                   }
                 />
                 <TextInput
-                  style={{ height: 50 }}
+                  style={{ height: 50, flex: 1 }}
                   placeholder="Meaning (required)"
                   value={vocalModal.meaning}
                   onChangeText={(text) =>
@@ -175,7 +122,7 @@ export default function VocaEditModal({
                   }
                 />
                 <VocaModalSubmitButton
-                  isLoading={isLoading}
+                  isLoading={false}
                   onPress={voca ? handleEdit : handleSubmit}
                   text={voca ? textEdit : textAdd}
                 />

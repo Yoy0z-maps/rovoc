@@ -1,5 +1,6 @@
 import Calendar from "@/components/calendar/Calendar";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CalendarScreen() {
   return (

@@ -1,6 +1,9 @@
 import { HangmanDrawing } from "@/components/game/HangmanDrawing";
-import React, { useEffect, useState } from "react";
-import { View, Button, Text } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { View, Button, Text, ScrollView, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
+import { useAudioPlayer } from "expo-audio";
 import ResultModal from "@/components/game/ResultModal";
 import HangmanWord from "@/components/game/HangmanWord";
 import GameTitle from "@/components/game/GameTitle";
@@ -8,96 +11,102 @@ import Keyboard from "@/components/game/Keyboard";
 import HangmanInfo from "@/components/game/HangmanInfo";
 import HangmanResult from "@/components/game/HangmanResult";
 import HangmanButtonContainer from "@/components/game/HangmanButtonContainer";
-import { Word } from "@/types/word";
 import LottieView from "lottie-react-native";
-import { authFetch, ensureOk } from "@/lib/api";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import { shuffle } from "@/utils/shuffle";
+import { handlePlaySound } from "@/utils/handlePlaySound";
+import {
+  isWordSolved,
+  maskWord,
+  MAX_WRONG_GUESSES,
+} from "@/utils/hangmanUtils";
+import { useGameAnswers, useGameWords } from "@/hooks/useGame";
+import { parseGameSource } from "@/utils/gameWords";
+import { countAnswers, quizScoreChange } from "@/utils/gameResult";
+import { hapticTap, hapticWarning } from "@/utils/haptics";
+import { isSpeechAvailable, speakWord } from "@/utils/speech";
 
-const shuffleArray = <T,>(arr: T[]): T[] => {
-  const array = [...arr];
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-};
+type RoundStatus = "playing" | "won" | "lost";
 
 export default function HangmanScreen() {
-  const [wordList, setWordList] = useState<Word[]>([]);
-  const [shuffledWords, setShuffledWords] = useState<Word[]>([]);
+  const { t } = useTranslation();
+  const { source } = useLocalSearchParams<{ source?: string }>();
+  const correctPlayer = useAudioPlayer(require("@/assets/sounds/correct.mp3"));
+  const incorrectPlayer = useAudioPlayer(
+    require("@/assets/sounds/incorrect.mp3")
+  );
+
+  const words = useGameWords("hangman", parseGameSource(source));
+  // 단어는 게임을 시작할 때 고정되므로 한 번만 섞인다
+  const shuffledWords = useMemo(() => (words ? shuffle(words) : []), [words]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentWord, setCurrentWord] = useState<string>("");
-  const [revealed, setRevealed] = useState<string[]>([]);
   const [usedLetters, setUsedLetters] = useState<string[]>([]);
-  const [wrongLetters, setWrongLetters] = useState<string[]>([]);
-  const [gameOver, setGameOver] = useState(false);
-  const [isWin, setIsWin] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<RoundStatus>("playing");
+  const [showResult, setShowResult] = useState(false);
+  const { answers, record, finish } = useGameAnswers();
 
+  const { correct, wrong } = countAnswers(answers);
+  const scoreChange = quizScoreChange(correct, wrong);
+
+  // 결과를 보여주는 순간 점수를 반영한다
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await authFetch("/word/words/");
-        await ensureOk(response);
-        const data = (await response.json()) as { results?: Word[] };
-        setWordList(
-          (data.results ?? []).filter((word) => /[a-z]/i.test(word.text ?? ""))
-        );
-      } catch (caught) {
-        setWordList([]);
-        setError(caught instanceof Error ? caught.message : "Unable to load words.");
-      } finally {
-        setIsLoading(false);
+    if (showResult) finish(scoreChange);
+  }, [showResult, scoreChange, finish]);
+
+  const current = shuffledWords[currentIndex];
+  const currentWord = current?.text?.toUpperCase() ?? "";
+  const revealed = maskWord(currentWord, usedLetters);
+  const wrongLetters = usedLetters.filter(
+    (letter) => !currentWord.includes(letter)
+  );
+  const hint = current?.meanings?.find((meaning) =>
+    meaning.definition?.trim()
+  )?.definition;
+
+  const loseRound = () => {
+    setStatus("lost");
+    handlePlaySound(incorrectPlayer);
+    if (current) record(current, false);
+  };
+
+  const handleLetterPress = (letter: string) => {
+    if (status !== "playing" || usedLetters.includes(letter)) return;
+    const nextUsedLetters = [...usedLetters, letter];
+    setUsedLetters(nextUsedLetters);
+
+    if (currentWord.includes(letter)) {
+      if (isWordSolved(currentWord, nextUsedLetters)) {
+        setStatus("won");
+        handlePlaySound(correctPlayer);
+        if (current) record(current, true);
+      } else {
+        hapticTap();
       }
-    };
-    void fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (wordList.length > 0) {
-      const shuffled = shuffleArray(wordList);
-      setShuffledWords(shuffled);
-      setCurrentIndex(0);
-      setGameOver(false);
-      loadNextWord(shuffled, 0);
+    } else if (wrongLetters.length + 1 >= MAX_WRONG_GUESSES) {
+      loseRound();
+    } else {
+      hapticWarning();
     }
-  }, [wordList]);
-
-  const loadNextWord = (shuffled: Word[], index: number) => {
-    if (index >= shuffled.length) {
-      setGameOver(true);
-      setShowResult(true);
-      return;
-    }
-
-    const word = shuffled[index]?.text?.toUpperCase();
-    if (!word) {
-      setError("단어를 불러올 수 없습니다.");
-      return;
-    }
-
-    setCurrentWord(word);
-    setRevealed(
-      Array.from(word, (character) => (/[A-Z]/.test(character) ? "_" : character))
-    );
-    setUsedLetters([]);
-    setWrongLetters([]);
   };
 
   const handleNext = () => {
+    // 풀던 도중에 넘기면 오답으로 처리하고 정답을 보여준다 (넘기기로 감점을 피하지 못하게)
+    if (status === "playing") {
+      loseRound();
+      return;
+    }
+
     const nextIndex = currentIndex + 1;
+    if (nextIndex >= shuffledWords.length) {
+      setShowResult(true);
+      return;
+    }
     setCurrentIndex(nextIndex);
-    setIsWin(false);
-    setGameOver(false);
-    loadNextWord(shuffledWords, nextIndex);
+    setUsedLetters([]);
+    setStatus("playing");
   };
 
-  const [score, setScore] = useState({ correct: 0, wrong: 0 });
-  const [showResult, setShowResult] = useState(false);
-
-  // 로딩 중이거나 wordList가 비어있으면 로딩 화면 표시
-  if (isLoading) {
+  if (!words) {
     return (
       <View
         style={{
@@ -117,72 +126,72 @@ export default function HangmanScreen() {
     );
   }
 
-  if (error || wordList.length === 0) {
+  if (shuffledWords.length === 0) {
     return (
       <View style={styles.messageContainer}>
-        <Text style={styles.messageText}>{error ?? "플레이할 단어가 없습니다."}</Text>
+        <Text style={styles.messageText}>{t("game.alert.noWords")}</Text>
         <Button title="Back" onPress={router.back} />
       </View>
     );
   }
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        padding: 20,
-        justifyContent: "center",
-      }}
-    >
-      <GameTitle title="Hangman" />
-      <HangmanDrawing wrongCount={wrongLetters.length} />
-      <HangmanWord revealed={revealed} />
-      <HangmanResult
-        isWin={isWin}
-        gameOver={gameOver}
-        currentWord={currentWord}
-      />
-      <HangmanInfo
-        wrongLetters={wrongLetters}
-        hint={shuffledWords[currentIndex]?.meanings?.[0]?.definition || "..."}
-      />
-      <Keyboard
-        currentWord={currentWord}
-        usedLetters={usedLetters}
-        revealed={revealed}
-        gameOver={gameOver}
-        isWin={isWin}
-        wrongLetters={wrongLetters}
-        score={score}
-        setUsedLetters={setUsedLetters}
-        setRevealed={setRevealed}
-        setIsWin={setIsWin}
-        setScore={setScore}
-        setWrongLetters={setWrongLetters}
-        setGameOver={setGameOver}
-      />
-      <HangmanButtonContainer
-        handleNext={handleNext}
-        setShowResult={setShowResult}
-      />
+    <SafeAreaView style={styles.safeArea}>
+      {/* 작은 화면에서는 키보드와 버튼이 잘리지 않도록 스크롤 허용 */}
+      <ScrollView contentContainerStyle={styles.content}>
+        <GameTitle title="Hangman" />
+        <HangmanDrawing wrongCount={wrongLetters.length} />
+        <HangmanWord revealed={revealed} />
+        <HangmanResult
+          isWin={status === "won"}
+          gameOver={status === "lost"}
+          currentWord={currentWord}
+          onSpeak={
+            status !== "playing" && isSpeechAvailable()
+              ? () => speakWord(current?.text ?? "")
+              : undefined
+          }
+        />
+        <HangmanInfo wrongLetters={wrongLetters} hint={hint || "..."} />
+        <Keyboard
+          usedLetters={usedLetters}
+          wrongLetters={wrongLetters}
+          disabled={status !== "playing"}
+          onPressLetter={handleLetterPress}
+        />
+        <HangmanButtonContainer
+          handleNext={handleNext}
+          setShowResult={setShowResult}
+        />
+      </ScrollView>
       <ResultModal
         game="hangman"
-        showResult={showResult}
-        score={score}
-        setShowResult={setShowResult}
+        visible={showResult}
+        scoreChange={scoreChange}
+        answers={answers}
+        onClose={() => {
+          setShowResult(false);
+          router.back();
+        }}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
-const styles = {
+const styles = StyleSheet.create({
+  safeArea: { flex: 1 },
+  content: {
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
   messageContainer: {
     flex: 1,
-    alignItems: "center" as const,
-    justifyContent: "center" as const,
+    alignItems: "center",
+    justifyContent: "center",
     padding: 24,
     gap: 16,
   },
-  messageText: { textAlign: "center" as const, color: "#555" },
-};
+  messageText: { textAlign: "center", color: "#555" },
+});

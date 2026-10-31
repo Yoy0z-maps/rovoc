@@ -1,12 +1,13 @@
 import {
   View,
   ActivityIndicator,
-  SafeAreaView,
   Animated,
   RefreshControl,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
+import { countWordbookView } from "@/store/library";
 
 import BookcaseHeader from "@/components/bookcase/BookcaseHeader";
 import LottieView from "lottie-react-native";
@@ -24,10 +25,20 @@ export default function BookcasScreen() {
     setShowVocaEditModal(true);
   };
 
+  // 이전에 수정한 단어가 남아 있으면 추가가 아니라 그 단어를 덮어쓰게 되므로 비우고 연다
+  const onAddPress = () => {
+    setSelectedVoca(null);
+    setShowVocaEditModal(true);
+  };
+
   const { bookcase, bookcase_name } = useLocalSearchParams();
   const { words, loading, refetch } = useWord({
     bookcaseId: bookcase as unknown as string,
   });
+
+  useEffect(() => {
+    if (typeof bookcase === "string") countWordbookView(bookcase);
+  }, [bookcase]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const showLottie = scrollY.interpolate({
@@ -70,7 +81,7 @@ export default function BookcasScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <BookcaseHeader
         bookcase_name={bookcase_name as string}
-        setShowVocaEditModal={setShowVocaEditModal}
+        onAddPress={onAddPress}
       />
       <Animated.View
         style={{
@@ -96,7 +107,7 @@ export default function BookcasScreen() {
         data={words}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <VocaItem word={item} refetch={refetch} onEditPress={onEditPress} />
+          <VocaItem word={item} onEditPress={onEditPress} />
         )}
         scrollEventThrottle={4}
         onScroll={Animated.event(
@@ -113,7 +124,6 @@ export default function BookcasScreen() {
         contentContainerStyle={{ paddingVertical: 30, paddingHorizontal: 24 }} // 상단 여유 공간 확보
       />
       <VocaEditModal
-        refetch={refetch}
         bookcaseId={bookcase as unknown as string}
         voca={selectedVoca}
         showVocaEditModal={showVocaEditModal}

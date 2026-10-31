@@ -40,6 +40,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     "expo-router",
+    "./plugins/withPodsDeploymentTarget",
     [
       "expo-splash-screen",
       {

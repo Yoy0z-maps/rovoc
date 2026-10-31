@@ -11,7 +11,7 @@ interface OnScreenKeyboardProps {
   onClear?: () => void;
 }
 
-export default function OnScreenKeyboard({
+function OnScreenKeyboard({
   disabled,
   onPressLetter,
   onBackspace,
@@ -97,6 +97,9 @@ export default function OnScreenKeyboard({
     </View>
   );
 }
+
+// 슈팅 화면은 매 프레임 다시 그려지므로, props가 그대로면 키보드는 다시 그리지 않는다
+export default React.memo(OnScreenKeyboard);
 
 const GAP = 6;
 

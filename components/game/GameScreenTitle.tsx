@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { View, Text, StyleSheet } from "react-native";
 import GameLifeView from "./GameLifeView";
 
-export default function GameScreenTitle({ attempt }: { attempt: number }) {
+export default function GameScreenTitle() {
   const { t } = useTranslation();
 
   return (
@@ -10,7 +10,7 @@ export default function GameScreenTitle({ attempt }: { attempt: number }) {
       <View style={styles.titleContainer}>
         <Text style={styles.title}>{t("game.title")}</Text>
         <View style={styles.line} />
-        <GameLifeView attempt={attempt} />
+        <GameLifeView />
       </View>
       <Text style={styles.subtitle}>{t("game.subtitle")}</Text>
     </View>

@@ -3,68 +3,20 @@ import { useAudioPlayer } from "expo-audio";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 
 interface KeyboardProps {
-  currentWord: string;
   usedLetters: string[];
-  revealed: string[];
-  gameOver: boolean;
-  isWin: boolean;
   wrongLetters: string[];
-  score: { correct: number; wrong: number };
-  setUsedLetters: (letters: string[]) => void;
-  setRevealed: (letters: string[]) => void;
-  setIsWin: (isWin: boolean) => void;
-  setScore: (score: { correct: number; wrong: number }) => void;
-  setWrongLetters: (letters: string[]) => void;
-  setGameOver: (gameOver: boolean) => void;
+  disabled: boolean;
+  onPressLetter: (letter: string) => void;
 }
 
 export default function Keyboard({
-  score,
-  currentWord,
   usedLetters,
-  gameOver,
-  isWin,
-  revealed,
   wrongLetters,
-  setUsedLetters,
-  setRevealed,
-  setIsWin,
-  setScore,
-  setWrongLetters,
-  setGameOver,
+  disabled,
+  onPressLetter,
 }: KeyboardProps) {
-  const correctSound = require("@/assets/sounds/correct.mp3");
-  const incorrectSound = require("@/assets/sounds/incorrect.mp3");
   const keySound = require("@/assets/sounds/key.wav");
-  const correctPlayer = useAudioPlayer(correctSound);
-  const incorrectPlayer = useAudioPlayer(incorrectSound);
   const keyPlayer = useAudioPlayer(keySound);
-
-  const handleLetterPress = (letter: string) => {
-    handlePlaySound(keyPlayer);
-    if (usedLetters.includes(letter) || gameOver) return;
-    setUsedLetters([...usedLetters, letter]);
-
-    if (currentWord.includes(letter)) {
-      const updated = currentWord
-        .split("")
-        .map((ch, i) => (ch === letter ? letter : revealed[i]));
-      setRevealed(updated);
-
-      if (!updated.includes("_")) {
-        setIsWin(true);
-        handlePlaySound(correctPlayer);
-        setScore({ ...score, correct: score.correct + 1 });
-      }
-    } else {
-      setWrongLetters([...wrongLetters, letter]);
-      if (wrongLetters.length + 1 >= 6) {
-        setGameOver(true);
-        handlePlaySound(incorrectPlayer);
-        setScore({ ...score, wrong: score.wrong + 1 });
-      }
-    }
-  };
 
   return (
     <View style={styles.keyboard}>
@@ -78,8 +30,11 @@ export default function Keyboard({
               styles.keyUsedCorrect,
             wrongLetters.includes(letter) && styles.keyUsedWrong,
           ]}
-          onPress={() => handleLetterPress(letter)}
-          disabled={usedLetters.includes(letter) || gameOver || isWin}
+          onPress={() => {
+            handlePlaySound(keyPlayer);
+            onPressLetter(letter);
+          }}
+          disabled={usedLetters.includes(letter) || disabled}
         >
           <Text
             style={[

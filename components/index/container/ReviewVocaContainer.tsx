@@ -12,6 +12,8 @@ export default function ReviewVocaContainer() {
     noWords: t("index.review.noWords"),
     show: t("index.review.show"),
     hide: t("index.review.hide"),
+    know: t("index.review.know"),
+    dontKnow: t("index.review.dontKnow"),
   };
 
   return (

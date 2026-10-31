@@ -6,14 +6,16 @@ import {
   GoogleSignin,
   isSuccessResponse,
 } from "@react-native-google-signin/google-signin";
-import { AuthProvider } from "@/types/user";
-import { useRouter } from "expo-router";
+import { AuthProvider, AuthResponse } from "@/types/user";
 
 const { width } = Dimensions.get("window");
 
-export default function GoogleLogin() {
+export default function GoogleLogin({
+  onLoggedIn,
+}: {
+  onLoggedIn: (auth: AuthResponse) => void;
+}) {
   const { t } = useTranslation();
-  const router = useRouter();
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
@@ -32,14 +34,15 @@ export default function GoogleLogin() {
       if (!response.data.idToken) {
         throw new Error("Google did not return an ID token.");
       }
-      await socialLogin(AuthProvider.GOOGLE, {
-        idToken: response.data.idToken,
-      });
-      router.replace("/(mainTabs)");
+      onLoggedIn(
+        await socialLogin(AuthProvider.GOOGLE, {
+          idToken: response.data.idToken,
+        })
+      );
     } catch (error) {
       console.error("Google login failed:", error);
     }
-  }, [router]);
+  }, [onLoggedIn]);
 
   return (
     <Pressable style={styles.container} onPress={handleGoogleLogin}>

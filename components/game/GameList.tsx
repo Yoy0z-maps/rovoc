@@ -1,27 +1,28 @@
 import * as React from "react";
 import { Dimensions, View } from "react-native";
 import GameItems from "./GameItems";
+import type { GameId } from "@/utils/gameWords";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, {
   ICarouselInstance,
   Pagination,
 } from "react-native-reanimated-carousel";
 
-const GAMES = [
+const GAMES: { title: string; image: number; game: GameId }[] = [
   {
     title: "HANGMAN",
     image: require("@/assets/images/hangman.png"),
-    path: "hangman",
+    game: "hangman",
   },
   {
     title: "QUIZ",
     image: require("@/assets/images/quiz.png"),
-    path: "quiz",
+    game: "quiz",
   },
   {
     title: "SHOOTING",
     image: require("@/assets/images/shooting.png"),
-    path: "shooting",
+    game: "shooting",
   },
   // {
   //   title: "???",
@@ -35,7 +36,11 @@ const GAMES = [
   // },
 ];
 
-export default function GameList() {
+export default function GameList({
+  onPlay,
+}: {
+  onPlay: (game: GameId) => void;
+}) {
   const progress = useSharedValue<number>(0);
 
   const ref = React.useRef<ICarouselInstance>(null);
@@ -76,7 +81,11 @@ export default function GameList() {
         mode="parallax"
         onProgressChange={progress}
         renderItem={({ item }) => (
-          <GameItems title={item.title} image={item.image} path={item.path} />
+          <GameItems
+            title={item.title}
+            image={item.image}
+            onPlay={() => onPlay(item.game)}
+          />
         )}
       />
       <Pagination.Basic<{ color: string }>

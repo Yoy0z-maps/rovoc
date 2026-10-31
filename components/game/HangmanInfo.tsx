@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome from "@expo/vector-icons/build/FontAwesome";
+import { MAX_WRONG_GUESSES } from "@/utils/hangmanUtils";
 
 export default function HangmanInfo({
   wrongLetters,
@@ -11,7 +12,7 @@ export default function HangmanInfo({
   hint?: string;
 }) {
   const { t } = useTranslation();
-  const remainingLives = 6 - wrongLetters.length;
+  const remainingLives = Math.max(0, MAX_WRONG_GUESSES - wrongLetters.length);
 
   return (
     <View style={styles.infoContainer}>

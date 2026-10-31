@@ -1,23 +1,20 @@
 import {
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   Modal,
   TouchableWithoutFeedback,
   View,
   Platform,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import HomeTitle from "@/components/index/HomeTitle";
 import AddVocaContainer from "@/components/index/container/AddVocaContainer";
 import ReviewVocaContainer from "@/components/index/container/ReviewVocaContainer";
 import BookcaseContainer from "@/components/index/container/BookcaseContainer";
 import React, { useEffect, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
 import BookcaseModal from "@/components/index/BookcaseModal";
 import { Wordbook } from "@/types/wordbooks";
 import { useBookcases } from "@/hooks/useBookcase";
-import { fetchRecentWords } from "@/utils/word";
-import { getAccessToken } from "@/utils/token";
 
 import { useTranslation } from "react-i18next";
 
@@ -25,25 +22,17 @@ export default function HomeScreen() {
   const [showBookcaseModal, setShowBookcaseModal] = useState(false);
   const [targetBookcase, setTargetBookcase] = useState<Wordbook | null>(null);
 
-  const { bookcases, loading, refetch } = useBookcases();
+  // 기기에 저장된 단어장을 바로 보여준다 (변경되면 자동으로 다시 그려짐)
+  const { bookcases, loading } = useBookcases();
 
-  // 화면이 포커스 될 때마다 (useEffect는 마운트/언마운트 될 때만 실행되므로 뒤돌아가면 실행되지 않음)
-  useFocusEffect(
-    React.useCallback(() => {
-      refetch();
-      (async () => {
-        const accessToken = await getAccessToken();
-        if (accessToken) {
-          await fetchRecentWords(accessToken);
-        }
-      })();
-    }, [refetch])
-  );
-
+  // 단어장 목록이 바뀌어도 사용자가 고른 단어장이 남아 있으면 그대로 유지한다
   useEffect(() => {
-    if (bookcases.length > 0) {
-      setTargetBookcase(bookcases[0]);
-    }
+    setTargetBookcase(
+      (current) =>
+        bookcases.find((bookcase) => bookcase.id === current?.id) ??
+        bookcases[0] ??
+        null
+    );
   }, [bookcases]);
 
   const { t } = useTranslation();

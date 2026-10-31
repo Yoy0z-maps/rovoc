@@ -12,16 +12,15 @@ import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
 import { Fragment, useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { authFetch, ensureOk } from "@/lib/api";
 import { Wordbook } from "@/types/wordbooks";
+import { editWordbook } from "@/store/library";
+import { saveWordbookImage } from "@/utils/wordbookImage";
 
 export default function EditBookcaseModal({
   bookcase,
-  triggerBookcases,
   setShowEditBookcaseModal,
 }: {
   bookcase: Wordbook;
-  triggerBookcases: () => void;
   setShowEditBookcaseModal: (value: boolean) => void;
 }) {
   const { t, i18n } = useTranslation();
@@ -31,7 +30,6 @@ export default function EditBookcaseModal({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
-  const [fetchLoading, setFetchLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
 
   useEffect(() => {
@@ -62,7 +60,7 @@ export default function EditBookcaseModal({
     setLoading(false);
   };
 
-  const editBookcase = async () => {
+  const editBookcase = () => {
     if (!name.trim()) {
       Toast.show({
         type: "ToastError",
@@ -71,54 +69,25 @@ export default function EditBookcaseModal({
       });
       return;
     }
-    setFetchLoading(true);
     try {
-      const formData = new FormData();
-      formData.append("name", name.trim());
-      formData.append("description", description.trim());
-
-      if (image && imageChanged) {
-        const filename = image.split("/").pop() || `photo.jpg`;
-        const match = /\.(\w+)$/.exec(filename ?? "");
-        const ext = match ? match[1] : "jpg";
-        const type = `image/${ext}`;
-
-        formData.append("image", {
-          uri: image,
-          type,
-          name: filename,
-        } as any);
-      }
-
-      const response = await authFetch(`/word/wordbooks/${bookcase.id}/`, {
-          method: "PATCH",
-          body: formData,
+      editWordbook(bookcase.id, {
+        name: name.trim(),
+        description: description.trim(),
+        // 새로 고른 사진만 앱 폴더로 복사한다
+        ...(image && imageChanged ? { imageFile: saveWordbookImage(image) } : {}),
       });
-
-      if (response.status === 413) {
-        Toast.show({
-          type: "ToastError",
-          text1: t("modal.addBookcase.error"),
-          text2: t("modal.addBookcase.imageSizeError"),
-        });
-        return;
-      }
-      await ensureOk(response);
       Toast.show({
         type: "ToastSuccess",
         text1: t("modal.addBookcase.success"),
         text2: t("modal.addBookcase.bookcaseAdded"),
       });
       setShowEditBookcaseModal(false);
-      await triggerBookcases();
     } catch {
       Toast.show({
         type: "ToastError",
         text1: t("modal.addBookcase.error"),
         text2: t("modal.addBookcase.bookcaseAddedFailed"),
       });
-    } finally {
-      setFetchLoading(false);
     }
   };
 
@@ -208,15 +177,11 @@ export default function EditBookcaseModal({
                 {t("modal.addBookcase.cancel")}
               </Text>
             </Pressable>
-            {fetchLoading ? (
-              <ActivityIndicator size="small" color="#2988F6" />
-            ) : (
-              <Pressable onPress={editBookcase}>
-                <Text style={styles.addButtonText}>
-                  {t("modal.addBookcase.add")}
-                </Text>
-              </Pressable>
-            )}
+            <Pressable onPress={editBookcase}>
+              <Text style={styles.addButtonText}>
+                {t("modal.editBookcase.save")}
+              </Text>
+            </Pressable>
           </View>
           </View>
         </TouchableWithoutFeedback>

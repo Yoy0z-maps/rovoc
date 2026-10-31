@@ -2,26 +2,40 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Word } from "@/types/word";
 import { useState } from "react";
 import { BlurView } from "expo-blur";
+import * as Haptics from "expo-haptics";
+import { recordAnswer } from "@/store/library";
+import { recordStudy } from "@/lib/activity";
 
 export default function ReviewVocaItem({
   word,
   texts,
 }: {
   word: Word;
-  texts: { show: string; hide: string };
+  texts: { show: string; hide: string; know: string; dontKnow: string };
 }) {
   const [isShow, setIsShow] = useState(false);
   const [textLayout, setTextLayout] = useState({ width: 0, height: 0 });
+
+  const handleAnswer = (correct: boolean) => {
+    void Haptics.notificationAsync(
+      correct
+        ? Haptics.NotificationFeedbackType.Success
+        : Haptics.NotificationFeedbackType.Warning
+    );
+    recordAnswer(word.id, correct);
+    recordStudy();
+    setIsShow(false);
+  };
 
   return (
     <View style={styles.vocabularyItem}>
       <Text style={styles.vocabularyWord}>{word.text}</Text>
       {isShow ? (
         <Text style={styles.vocabularyMeaning}>
-          {word.meanings[0].definition}
+          {word.meanings[0]?.definition}
         </Text>
       ) : (
-        <View>
+        <View style={{ flexShrink: 1 }}>
           <Text
             style={styles.vocabularyMeaning}
             onLayout={(event) => {
@@ -29,7 +43,7 @@ export default function ReviewVocaItem({
               setTextLayout({ width, height });
             }}
           >
-            {word.meanings[0].definition}
+            {word.meanings[0]?.definition}
           </Text>
           {textLayout.width > 0 && (
             <BlurView
@@ -46,14 +60,32 @@ export default function ReviewVocaItem({
           )}
         </View>
       )}
-      <Pressable
-        style={styles.vocabularyShowButton}
-        onPress={() => setIsShow(!isShow)}
-      >
-        <Text style={styles.vocabularyShowButtonText}>
-          {isShow ? texts.hide : texts.show}
-        </Text>
-      </Pressable>
+      {isShow ? (
+        // 뜻을 확인한 뒤 스스로 채점하면 다음 복습일이 정해진다
+        <View style={styles.answerButtons}>
+          <Pressable
+            style={styles.vocabularyShowButton}
+            onPress={() => handleAnswer(false)}
+          >
+            <Text style={[styles.vocabularyShowButtonText, styles.dontKnowText]}>
+              {texts.dontKnow}
+            </Text>
+          </Pressable>
+          <Pressable
+            style={styles.vocabularyShowButton}
+            onPress={() => handleAnswer(true)}
+          >
+            <Text style={styles.vocabularyShowButtonText}>{texts.know}</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <Pressable
+          style={styles.vocabularyShowButton}
+          onPress={() => setIsShow(true)}
+        >
+          <Text style={styles.vocabularyShowButtonText}>{texts.show}</Text>
+        </Pressable>
+      )}
     </View>
   );
 }
@@ -67,14 +99,21 @@ const styles = StyleSheet.create({
   },
   vocabularyWord: {
     fontSize: 18,
-    fontFamily: "Pretendard-Semibold",
+    fontFamily: "Pretendard-SemiBold",
     color: "#111",
     width: "30%",
   },
   vocabularyMeaning: {
+    flexShrink: 1,
     fontSize: 14,
     fontFamily: "Pretendard-Regular",
     color: "#767676",
+  },
+  answerButtons: {
+    flexDirection: "row",
+  },
+  dontKnowText: {
+    color: "#F05650",
   },
   vocabularyShowButton: {
     paddingHorizontal: 10,

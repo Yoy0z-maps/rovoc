@@ -3,13 +3,15 @@ import { View, Image, StyleSheet, Text } from "react-native";
 interface ProfileProps {
   profileImage: string | null;
   profileName: string;
-  profileId: string;
+  profileId?: string | null;
+  description?: string; // 아이디 대신 보여줄 안내 (게스트일 때)
 }
 
 export default function Profile({
   profileImage,
   profileName,
   profileId,
+  description,
 }: ProfileProps) {
   return (
     <View style={styles.profileContainer}>
@@ -28,7 +30,11 @@ export default function Profile({
       )}
       <View style={styles.profileTextContainer}>
         <Text style={styles.profileName}>{profileName}</Text>
-        <Text style={styles.profileId}>id: {profileId.slice(0, 7)}</Text>
+        {profileId ? (
+          <Text style={styles.profileId}>id: {profileId.slice(0, 7)}</Text>
+        ) : (
+          !!description && <Text style={styles.profileId}>{description}</Text>
+        )}
       </View>
     </View>
   );

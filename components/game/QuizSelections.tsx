@@ -1,10 +1,5 @@
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-
-type Quiz = {
-  question: string;
-  options: string[];
-  answer: string;
-};
+import { Quiz } from "@/utils/quizUtils";
 
 interface QuizSelectionsProps {
   quiz: Quiz;
@@ -19,9 +14,9 @@ export default function QuizSelections({
 }: QuizSelectionsProps) {
   return (
     <View style={styles.optionsContainer}>
-      {quiz.options.map((option, index) => (
+      {quiz.options.map((option) => (
         <TouchableOpacity
-          key={index}
+          key={option}
           style={[
             styles.optionButton,
             selected === option &&
@@ -48,7 +43,7 @@ export default function QuizSelections({
 const styles = StyleSheet.create({
   optionsContainer: {
     width: "100%",
-    marginTop: 60,
+    marginTop: 40,
   },
   optionButton: {
     padding: 15,

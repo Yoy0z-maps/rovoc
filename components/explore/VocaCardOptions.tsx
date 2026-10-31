@@ -1,35 +1,21 @@
 import { Wordbook } from "@/types/wordbooks";
-import { deleteBookcase } from "@/utils/bookcase";
+import { deleteWordbook } from "@/store/library";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { Alert, Pressable, View, Text, StyleSheet } from "react-native";
-import Toast from "react-native-toast-message";
 
 export default function VocaCardOptions({
   onEditPress,
   setShowOptions,
   bookcase,
-  triggerBookcases,
 }: {
   onEditPress: (bookcase: Wordbook) => void;
   setShowOptions: (value: boolean) => void;
   bookcase: Wordbook;
-  triggerBookcases: () => void;
 }) {
   const { t } = useTranslation();
 
-  const handleDeleteBookcase = async () => {
-    try {
-      await deleteBookcase(bookcase.id);
-      await triggerBookcases();
-    } catch (error) {
-      Toast.show({
-        type: "ToastError",
-        text1: "Unable to delete bookcase",
-        text2: error instanceof Error ? error.message : undefined,
-      });
-    }
-  };
+  const handleDeleteBookcase = () => deleteWordbook(bookcase.id);
 
   const handleEditBookcase = () => {
     onEditPress(bookcase);
@@ -56,7 +42,7 @@ export default function VocaCardOptions({
             {
               text: "Delete",
               style: "destructive",
-              onPress: () => void handleDeleteBookcase(),
+              onPress: handleDeleteBookcase,
             },
           ]);
         }}

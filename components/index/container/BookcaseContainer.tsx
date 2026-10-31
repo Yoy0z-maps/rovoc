@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   vocabularyBookcaseTitle: {
-    fontFamily: "Pretendard-bold",
+    fontFamily: "Pretendard-Bold",
     fontSize: 24,
   },
 });

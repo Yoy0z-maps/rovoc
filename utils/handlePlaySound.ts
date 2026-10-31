@@ -7,7 +7,7 @@ export const handlePlaySound = async (player: AudioPlayer) => {
     }
     await player.seekTo(0);
     await player.play();
-  } catch (e) {
+  } catch {
     try {
       await player.play();
     } catch {}

@@ -1,12 +1,15 @@
 import { Dimensions } from "react-native";
 import * as AppleAuthentication from "expo-apple-authentication";
-import { router } from "expo-router";
 import { socialLogin } from "@/utils/user";
-import { AuthProvider } from "@/types/user";
+import { AuthProvider, AuthResponse } from "@/types/user";
 
 const { width } = Dimensions.get("window");
 
-export default function AppleLoginButton() {
+export default function AppleLoginButton({
+  onLoggedIn,
+}: {
+  onLoggedIn: (auth: AuthResponse) => void;
+}) {
   const handleAppleLogin = async () => {
     try {
       const credential = await AppleAuthentication.signInAsync({
@@ -15,8 +18,7 @@ export default function AppleLoginButton() {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
-      await socialLogin(AuthProvider.APPLE, credential);
-      router.replace("/(mainTabs)");
+      onLoggedIn(await socialLogin(AuthProvider.APPLE, credential));
     } catch (error) {
       if (
         error instanceof Error &&

@@ -3,10 +3,10 @@ import { useRouter } from "expo-router";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 
 export default function BookcaseHeader({
-  setShowVocaEditModal,
+  onAddPress,
   bookcase_name,
 }: {
-  setShowVocaEditModal: (value: boolean) => void;
+  onAddPress: () => void;
   bookcase_name: string;
 }) {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function BookcaseHeader({
         <Ionicons name="arrow-back" size={24} color="black" />
       </Pressable>
       <Text style={styles.title}>{bookcase_name}</Text>
-      <Pressable onPress={() => setShowVocaEditModal(true)}>
+      <Pressable onPress={onAddPress}>
         <Feather name="plus" size={24} color="black" />
       </Pressable>
     </View>

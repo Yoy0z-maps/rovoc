@@ -114,7 +114,6 @@ export default function CalendarVocabulary({
                 key={item.id}
                 word={item}
                 onEditPress={onEditPress}
-                refetch={refetch}
               />
             )}
             scrollEventThrottle={4}
@@ -147,7 +146,6 @@ export default function CalendarVocabulary({
         </View>
       )}
       <VocaEditModal
-        refetch={refetch}
         bookcaseId=""
         voca={selectedVoca}
         showVocaEditModal={showVocaEditModal}

@@ -1,4 +1,14 @@
-import { View, StyleSheet, Text, Dimensions, Image, Alert } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  Alert,
+  AppState,
+  Linking,
+  Switch,
+} from "react-native";
 
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -6,20 +16,39 @@ import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIc
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ProfileMenuTopItem from "./ProfileMenuTopItem";
 import ProfileMenuBottomItem from "./ProfileMenuBottomItem";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { deleteUser } from "@/utils/user";
-import { deleteToken, getAccessToken } from "@/utils/token";
-import { changeLanguage } from "@/app/i18n/i18n";
+import { changeLanguage } from "@/i18n/i18n";
 import Constants from "expo-constants";
 import * as StoreReview from "expo-store-review";
-
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
+import Toast from "react-native-toast-message";
+import { deleteAccount, logout } from "@/lib/session";
+import {
+  isNotificationPermissionGranted,
+  setStudyReminderEnabled,
+} from "@/lib/reminder";
+import { useLibrary } from "@/store/library";
 
 export default function ProfileMenu() {
   const { t, i18n } = useTranslation();
   const version = Constants.expoConfig?.version ?? "1.2.0";
+  const loggedIn = useLibrary((state) => state.loggedIn);
+  const reminderEnabled = useLibrary((state) => state.settings.reminderEnabled);
+  const reminderHour = useLibrary((state) => state.settings.reminderHour);
+  const [permissionGranted, setPermissionGranted] = useState(false);
+  const reminderOn = reminderEnabled && permissionGranted;
+
+  // 설정 앱에서 알림 권한을 바꾸고 돌아올 수 있으므로, 화면에 올 때마다 다시 확인한다
+  const checkPermission = useCallback(() => {
+    void isNotificationPermissionGranted().then(setPermissionGranted);
+  }, []);
+  useFocusEffect(checkPermission);
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") checkPermission();
+    });
+    return () => subscription.remove();
+  }, [checkPermission]);
 
   const openWebPage = (url: string) => {
     router.push({
@@ -40,39 +69,74 @@ export default function ProfileMenu() {
     }
   };
 
-  const confirmDeleteUser = () => {
-    Alert.alert(
-      "Delete account",
-      "This permanently deletes your account and cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
+  const toggleReminder = async (enabled: boolean) => {
+    const result = await setStudyReminderEnabled(enabled);
+    if (result === "enabled") setPermissionGranted(true);
+    if (result === "denied") {
+      Alert.alert(t("profile.menu.reminder"), t("profile.reminderDenied"), [
+        { text: t("profile.logoutConfirm.cancel"), style: "cancel" },
         {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => {
-            void (async () => {
-              try {
-                const token = await getAccessToken();
-                if (!token) throw new Error("Please sign in again.");
-                await deleteUser(token);
-                await deleteToken();
-                router.replace("/auth");
-              } catch (error) {
-                Alert.alert(
-                  "Unable to delete account",
-                  error instanceof Error ? error.message : "Please try again."
-                );
-              }
-            })();
-          },
+          text: t("profile.openSettings"),
+          onPress: () => void Linking.openSettings(),
         },
-      ]
-    );
+      ]);
+    }
+  };
+
+  const confirmLogout = () => {
+    Alert.alert(t("profile.logoutConfirm.title"), t("profile.logoutConfirm.message"), [
+      { text: t("profile.logoutConfirm.cancel"), style: "cancel" },
+      {
+        text: t("profile.logoutConfirm.confirm"),
+        style: "destructive",
+        onPress: () => void logout(),
+      },
+    ]);
+  };
+
+  const confirmDeleteUser = () => {
+    Alert.alert(t("profile.deleteConfirm.title"), t("profile.deleteConfirm.message"), [
+      { text: t("profile.deleteConfirm.cancel"), style: "cancel" },
+      {
+        text: t("profile.deleteConfirm.confirm"),
+        style: "destructive",
+        onPress: () => {
+          void (async () => {
+            try {
+              await deleteAccount();
+              Toast.show({ type: "ToastSuccess", text1: t("profile.deleteConfirm.done") });
+            } catch (error) {
+              Alert.alert(
+                t("profile.deleteConfirm.failed"),
+                error instanceof Error ? error.message : "Please try again."
+              );
+            }
+          })();
+        },
+      },
+    ]);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.topContainer}>
+        {/* 학습 알림 (로그인 없이 기기에서 예약) */}
+        <View style={styles.reminderRow}>
+          <Ionicons name="notifications-outline" size={24} color="black" />
+          <View style={styles.reminderTextContainer}>
+            <Text style={styles.reminderLabel}>{t("profile.menu.reminder")}</Text>
+            <Text style={styles.reminderDescription}>
+              {reminderOn
+                ? t("profile.reminderOn", { hour: reminderHour })
+                : t("profile.reminderOff")}
+            </Text>
+          </View>
+          <Switch
+            value={reminderOn}
+            onValueChange={(value) => void toggleReminder(value)}
+            trackColor={{ true: "#2988F6" }}
+          />
+        </View>
         <ProfileMenuTopItem
           icon={<AntDesign name="customer-service" size={24} color="black" />}
           label={t("profile.menu.terms")}
@@ -118,19 +182,26 @@ export default function ProfileMenu() {
             void changeLanguage(i18n.language === "ko" ? "en" : "ko");
           }}
         />
-        <ProfileMenuBottomItem
-          icon={<MaterialIcons name="logout" size={24} color="black" />}
-          label={t("profile.menu.logout")}
-          onPress={async () => {
-            await deleteToken();
-            router.replace("/auth");
-          }}
-        />
-        <ProfileMenuBottomItem
-          icon={<AntDesign name="user-delete" size={24} color="black" />}
-          label={t("profile.menu.delete")}
-          onPress={confirmDeleteUser}
-        />
+        {loggedIn ? (
+          <>
+            <ProfileMenuBottomItem
+              icon={<MaterialIcons name="logout" size={24} color="black" />}
+              label={t("profile.menu.logout")}
+              onPress={confirmLogout}
+            />
+            <ProfileMenuBottomItem
+              icon={<AntDesign name="user-delete" size={24} color="black" />}
+              label={t("profile.menu.delete")}
+              onPress={confirmDeleteUser}
+            />
+          </>
+        ) : (
+          <ProfileMenuBottomItem
+            icon={<MaterialIcons name="login" size={24} color="black" />}
+            label={t("profile.menu.loginShort")}
+            onPress={() => router.push("/auth")}
+          />
+        )}
       </View>
     </View>
   );
@@ -138,10 +209,7 @@ export default function ProfileMenu() {
 
 const styles = StyleSheet.create({
   container: {
-    left: 24,
-    position: "absolute",
-    width: screenWidth - 48,
-    bottom: 40,
+    gap: 10,
   },
   topContainer: {
     flexDirection: "column",
@@ -149,30 +217,40 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 12,
     backgroundColor: "#fff",
-    marginBottom: 10,
-    height: screenHeight * 0.45,
+  },
+  reminderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 20,
+  },
+  reminderTextContainer: { flex: 1, gap: 2 },
+  reminderLabel: { fontSize: 18, fontFamily: "Pretendard-Regular" },
+  reminderDescription: {
+    fontSize: 13,
+    fontFamily: "Pretendard-Regular",
+    color: "#767676",
   },
   bottomContainer: {
     alignContent: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     flexDirection: "row",
-    padding: 24,
+    padding: 20,
     borderRadius: 12,
     backgroundColor: "#fff",
     borderWidth: 2,
-    height: screenHeight * 0.1,
   },
   versionText: {
     fontSize: 12,
     fontFamily: "Pretendard-Regular",
     textAlign: "center",
-    marginTop: "auto",
+    marginTop: 12,
     color: "#777",
   },
   rovocaImage: {
-    marginTop: 15,
-    width: 100,
-    height: 100,
+    marginTop: 5,
+    width: 80,
+    height: 80,
     alignSelf: "center",
   },
 });

@@ -1,5 +1,6 @@
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { getAccessToken, refreshToken } from "@/utils/token";
+import { ApiError } from "./errors";
 
 let refreshPromise: Promise<string> | null = null;
 
@@ -65,6 +66,8 @@ export async function getApiError(response: Response) {
 }
 
 export async function ensureOk(response: Response) {
-  if (!response.ok) throw new Error(await getApiError(response));
+  if (!response.ok) {
+    throw new ApiError(await getApiError(response), response.status);
+  }
   return response;
 }

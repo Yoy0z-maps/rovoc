@@ -2,7 +2,7 @@ import { Pressable } from "react-native";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { changeLanguage } from "@/app/i18n/i18n";
+import { changeLanguage } from "@/i18n/i18n";
 
 export default function LanguageSelector() {
   // i18n

@@ -2,106 +2,74 @@ import Profile from "@/components/profile/Profile";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import UserStatus from "@/components/profile/UserStatus";
 import ProfileMenu from "@/components/profile/ProfileMenu";
-import { Button, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { useCallback, useEffect, useState } from "react";
-import { getUserData } from "@/utils/user";
-import { getAccessToken } from "@/utils/token";
-import { User } from "@/types/user";
-import LottieView from "lottie-react-native";
+import SyncCard from "@/components/profile/SyncCard";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
+import { useStudyStats } from "@/hooks/useLibrary";
+import { useLibrary } from "@/store/library";
 
+// 로그인하지 않아도 기기에 저장된 학습 기록을 보여준다
 export default function ProfileScreen() {
-  const [user, setUser] = useState<User>();
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchUser = useCallback(async () => {
-    setError(null);
-    try {
-      const token = await getAccessToken();
-      if (!token) throw new Error("Please sign in again.");
-      const userData = await getUserData({ token });
-      setUser(userData);
-    } catch (caught) {
-      setError(
-        caught instanceof Error ? caught.message : "Unable to load profile."
-      );
-    }
-  }, []);
-
-  useEffect(() => {
-    void fetchUser();
-  }, [fetchUser]);
-
-  if (error) {
-    return (
-      <View style={styles.messageContainer}>
-        <Text style={styles.messageText}>{error}</Text>
-        <Button title="Retry" onPress={() => void fetchUser()} />
-      </View>
-    );
-  }
-
-  if (!user) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <LottieView
-          source={require("@/assets/lottie/Loading.json")}
-          autoPlay
-          loop
-          style={{ width: 220, height: 200 }}
-        />
-      </View>
-    );
-  }
+  const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
+  const loggedIn = useLibrary((state) => state.loggedIn);
+  const account = useLibrary((state) => state.sync.account);
+  const stats = useStudyStats();
+  const signedInAccount = loggedIn ? account : null;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <ProfileHeader />
       <Profile
-        profileImage={user.profile_image}
-        profileName={user.nickname || "Unknown User"}
-        profileId={`@${user.social_id.toString()}`}
+        profileImage={signedInAccount?.profile_image ?? null}
+        profileName={
+          loggedIn
+            ? signedInAccount?.nickname || t("profile.signedIn")
+            : t("profile.guest")
+        }
+        profileId={signedInAccount ? `@${signedInAccount.social_id}` : null}
+        description={loggedIn ? undefined : t("profile.guestDescription")}
       />
       <UserStatus
-        score={user.score}
-        streak={user.streak}
-        word_count={user.word_count}
-        wordbook_count={user.wordbook_count}
+        score={stats.score}
+        streak={stats.streak}
+        word_count={stats.wordCount}
+        wordbook_count={stats.wordbookCount}
       />
-      <View style={styles.backgroundView}></View>
-      <ProfileMenu />
+      <View style={styles.sheet}>
+        <ScrollView
+          contentContainerStyle={[
+            styles.sheetContent,
+            { paddingBottom: insets.bottom + 24 },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          <SyncCard />
+          <ProfileMenu />
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    position: "relative",
     flex: 1,
     backgroundColor: "#2988F6",
   },
-  backgroundView: {
-    position: "absolute",
-    bottom: 0,
-    backgroundColor: "#f5f5f5",
-    borderRadius: 12,
-    width: "100%",
-    height: "65%",
-    borderWidth: 2,
-  },
-  messageContainer: {
+  sheet: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-    gap: 16,
-    backgroundColor: "#fff",
+    marginTop: 30,
+    backgroundColor: "#f5f5f5",
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    borderWidth: 2,
+    borderBottomWidth: 0,
+    overflow: "hidden",
   },
-  messageText: { color: "#555", textAlign: "center" },
+  sheetContent: {
+    padding: 24,
+    gap: 10,
+  },
 });

@@ -1,20 +1,24 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { useTranslation } from "react-i18next";
+import { View, Text, StyleSheet } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useStudyStats } from "@/hooks/useLibrary";
 
-export default function GameLifeView({ attempt }: { attempt: number }) {
+// 연속 학습일 (오늘 학습하면 불꽃이 켜진다)
+export default function GameLifeView() {
+  const { t } = useTranslation();
+  const { streak, studiedToday } = useStudyStats();
+
   return (
     <View style={styles.container}>
-      <Image
-        source={
-          attempt === 0
-            ? require("@/assets/images/battery_empty.png")
-            : require("@/assets/images/battery_full.png")
-        }
-        style={{ width: 25, height: 25 }}
+      <MaterialCommunityIcons
+        name="fire"
+        size={22}
+        color={studiedToday ? "#FF8A3D" : "#BDBDBD"}
       />
       <Text
-        style={[styles.text, { color: attempt === 0 ? "#767676" : "#2988F6" }]}
+        style={[styles.text, { color: studiedToday ? "#2988F6" : "#767676" }]}
       >
-        {attempt}
+        {t("game.streak", { count: streak })}
       </Text>
     </View>
   );
@@ -33,10 +37,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: 12,
+    gap: 6,
   },
   text: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Pretendard-Bold",
   },
 });

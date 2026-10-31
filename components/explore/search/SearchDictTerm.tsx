@@ -1,50 +1,43 @@
 import { DictionaryEntry } from "@/types/free_dictinoary_api";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, View, Text, StyleSheet } from "react-native";
 
 import SearchTargetSelector from "./SearchTargetSelector";
 import { SearchTarget } from "@/types/search_target";
-import debounce from "lodash.debounce";
 import DictionaryResultView from "./DictionaryResultView";
 import MyStorageResultView from "./MyStorageResultView";
-import { Word } from "@/types/word";
-import { authFetch, ensureOk } from "@/lib/api";
+import { useActiveWords } from "@/hooks/useLibrary";
 
 export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
-  const [myData, setMyData] = useState<Word[] | null>(null);
   const [dictData, setDictData] = useState<DictionaryEntry | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [searchTarget, setSearchTarget] = useState<SearchTarget>("my");
-  const [refreshKey, setRefreshKey] = useState(0);
+  const words = useActiveWords();
+
+  // 내 단어는 기기에 저장되어 있으므로 바로 검색한다 (단어 또는 뜻에 포함)
+  const myData = useMemo(() => {
+    const query = searchWord.trim().toLowerCase();
+    if (!query) return [];
+    return words.filter(
+      (word) =>
+        word.text.toLowerCase().includes(query) ||
+        word.meanings.some((meaning) =>
+          meaning.definition.toLowerCase().includes(query)
+        )
+    );
+  }, [words, searchWord]);
 
   useEffect(() => {
+    if (searchTarget !== "dict") {
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
     let isMounted = true;
     const abortController = new AbortController();
     setLoading(true);
-
-    const fetchMyData = async () => {
-      try {
-        const res = await authFetch(
-          `/word/words/search/?text=${encodeURIComponent(searchWord)}`,
-          { signal: abortController.signal }
-        );
-        await ensureOk(res);
-        const data = (await res.json()) as Word[];
-        if (isMounted) {
-          setMyData(Array.isArray(data) ? data : []);
-          setError(null);
-        }
-      } catch {
-        if (abortController.signal.aborted) return;
-        if (isMounted) {
-          setError("데이터를 가져오는 중 오류가 발생했습니다.");
-          setMyData(null);
-        }
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
 
     const fetchDictData = async () => {
       if (searchWord.length < 1) {
@@ -84,22 +77,15 @@ export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
       }
     };
 
-    const debounced = debounce(() => {
-      if (searchTarget === "dict") {
-        fetchDictData();
-      } else {
-        fetchMyData();
-      }
-    }, 300);
-
-    debounced();
+    // 입력이 멈춘 뒤 300ms 후에 검색
+    const timer = setTimeout(() => void fetchDictData(), 300);
 
     return () => {
       isMounted = false;
       abortController.abort();
-      debounced.cancel();
+      clearTimeout(timer);
     };
-  }, [searchWord, searchTarget, refreshKey]);
+  }, [searchWord, searchTarget]);
 
   return (
     <View style={styles.container}>
@@ -114,11 +100,7 @@ export default function SearchDictTerm({ searchWord }: { searchWord: string }) {
       ) : searchTarget === "dict" ? (
         <DictionaryResultView data={dictData} />
       ) : (
-        <MyStorageResultView
-          data={myData}
-          searchWord={searchWord}
-          refetch={() => setRefreshKey((current) => current + 1)}
-        />
+        <MyStorageResultView data={myData} searchWord={searchWord} />
       )}
     </View>
   );

@@ -1,90 +1,43 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import { View } from "react-native";
-import { deleteToken, getAccessToken, refreshToken } from "@/utils/token";
-import { jwtDecode } from "jwt-decode";
+import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import LottieView from "lottie-react-native";
-import { fetchRecentWords } from "@/utils/word";
-import {
-  getUserData,
-  postUserExpoPushToken,
-  updateUserActivity,
-} from "@/utils/user";
-import * as Notifications from "expo-notifications";
-import * as Device from "expo-device";
+import { getAccessToken } from "@/utils/token";
+import { hydrateLibrary, setLoggedIn, useLibrary } from "@/store/library";
+import { syncNow } from "@/lib/sync";
+import { registerPushToken } from "@/lib/session";
+import { refreshStudyReminders } from "@/lib/reminder";
 
-async function getPushTokenOnDevice(): Promise<string | null> {
-  if (!Device.isDevice) {
-    console.log("[EXPO-NOTIFICATIONS] skip: not a real device");
-    return null;
-  }
-
-  try {
-    return (await Notifications.getExpoPushTokenAsync()).data;
-  } catch (error) {
-    console.warn("Unable to get an Expo push token:", error);
-    return null;
-  }
-}
-
-async function getValidatedAccessToken(token: string): Promise<string | null> {
-  let candidate = token;
-  let shouldRefresh = false;
-
-  try {
-    const decoded = jwtDecode<{ exp?: number }>(token);
-    shouldRefresh = !decoded.exp || decoded.exp <= Date.now() / 1000 + 30;
-  } catch {
-    shouldRefresh = true;
-  }
-
-  try {
-    if (shouldRefresh) {
-      candidate = await refreshToken();
-    }
-    await getUserData({ token: candidate });
-    return candidate;
-  } catch {
-    if (!shouldRefresh) {
-      try {
-        candidate = await refreshToken();
-        await getUserData({ token: candidate });
-        return candidate;
-      } catch {
-        // The stored AWS session cannot be used with the new GCP signing key.
-      }
-    }
-
-    await deleteToken();
-    return null;
-  }
-}
+// 업데이트 후 처음 실행할 때 서버 데이터를 기다리는 최대 시간 (넘으면 백그라운드에서 계속 받는다)
+const FIRST_IMPORT_TIMEOUT_MS = 20000;
 
 export default function Index() {
   const router = useRouter();
+  const { t } = useTranslation();
+  const [importing, setImporting] = useState(false);
 
   const initialize = useCallback(async () => {
+    await hydrateLibrary();
+    void refreshStudyReminders();
+
+    // 로그인하지 않아도 바로 사용할 수 있다. 로그인 상태면 클라우드와 동기화한다
     const token = await getAccessToken();
-    if (!token) {
-      router.replace("/auth");
-      return;
+    setLoggedIn(!!token);
+    if (token) {
+      if (!useLibrary.getState().sync.lastSyncedAt) {
+        // 이전 버전(서버에만 저장)에서 업데이트한 사용자는 처음 한 번 서버 데이터를 기기로 가져온다
+        setImporting(true);
+        await Promise.race([
+          syncNow(),
+          new Promise((resolve) => setTimeout(resolve, FIRST_IMPORT_TIMEOUT_MS)),
+        ]);
+      } else {
+        void syncNow();
+      }
+      void registerPushToken();
     }
 
-    const accessToken = await getValidatedAccessToken(token);
-    if (!accessToken) {
-      router.replace("/auth");
-      return;
-    }
-
-    const pushToken = await getPushTokenOnDevice();
-    const startupTasks: Promise<unknown>[] = [
-      updateUserActivity({ token: accessToken }),
-      fetchRecentWords(accessToken),
-    ];
-    if (pushToken) {
-      startupTasks.push(postUserExpoPushToken({ accessToken, pushToken }));
-    }
-    await Promise.allSettled(startupTasks);
     router.replace("/(mainTabs)");
   }, [router]);
 
@@ -107,6 +60,11 @@ export default function Index() {
         loop
         style={{ width: 220, height: 200 }}
       />
+      {importing && (
+        <Text style={{ color: "#767676", fontFamily: "Pretendard-Regular" }}>
+          {t("startup.importing")}
+        </Text>
+      )}
     </View>
   );
 }

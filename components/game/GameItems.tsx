@@ -1,4 +1,3 @@
-import { router } from "expo-router";
 import {
   Pressable,
   View,
@@ -11,18 +10,15 @@ import {
 type GameItemsProps = {
   title: string;
   image: ImageSourcePropType;
-  path: string;
+  onPlay: () => void;
 };
 
-export default function GameItems({ title, image, path }: GameItemsProps) {
+export default function GameItems({ title, image, onPlay }: GameItemsProps) {
   return (
     <View style={styles.gameContainer}>
       <Text style={styles.gameTitle}>{title}</Text>
       <Image source={image} style={styles.gameImage} />
-      <Pressable
-        onPress={() => router.push(`/${path}`)}
-        style={styles.gameButton}
-      >
+      <Pressable onPress={onPlay} style={styles.gameButton}>
         <Text style={styles.gameButtonText}>PLAY</Text>
       </Pressable>
     </View>

@@ -10,11 +10,13 @@
       "add": "ADD"
     },
     "review": {
-      "title": "Vocabulary recently added",
-      "subtitle": "Do you still remember?",
-      "noWords": "No words added.",
+      "title": "Words to review today.",
+      "subtitle": "Do you still remember them?",
+      "noWords": "Nothing to review today.",
       "show": "Show",
-      "hide": "Hide"
+      "hide": "Hide",
+      "know": "Know",
+      "dontKnow": "Don't know"
     },
     "myVocaBookcase": "My Vocab Bookcase"
   },
@@ -38,6 +40,17 @@
       "streak": "Streak",
       "word": "Word",
       "wordbook": "Wordbook"
+    },
+    "title": "Back up your words",
+    "subtitle": "Log in to back up to the cloud and sync across devices.\nYou can keep using the app without logging in.",
+    "later": "Maybe later",
+    "syncing": "Syncing your words…",
+    "syncFailed": "You're logged in, but sync failed. We'll retry automatically.",
+    "switch": {
+      "title": "Different account",
+      "message": "This device was synced with another account. What should we do with the words on this device?",
+      "merge": "Merge into this account",
+      "replace": "Use this account's data"
     }
   },
   "notice": {
@@ -52,8 +65,43 @@
       "review": "Review",
       "language": "Language",
       "logout": "Logout",
-      "delete": "Withdraw"
-    }
+      "delete": "Withdraw",
+      "login": "Log in to back up",
+      "reminder": "Study reminder",
+      "sync": "Sync now",
+      "loginShort": "Sign in"
+    },
+    "guest": "Guest",
+    "guestDescription": "Your words are saved on this device",
+    "sync": {
+      "title": "Cloud backup",
+      "loggedOut": "Log in to back up your data and sync across devices.",
+      "syncing": "Syncing…",
+      "lastSynced": "Last synced: {{time}}",
+      "never": "Not synced yet",
+      "error": "Sync failed: {{error}}",
+      "failedItems": "{{count}} items couldn't be synced",
+      "done": "Synced"
+    },
+    "reminderOn": "Every day at {{hour}}:00",
+    "reminderOff": "Off",
+    "reminderDenied": "Please allow notifications in Settings.",
+    "logoutConfirm": {
+      "title": "Log out",
+      "message": "Your words stay on this device. Sync stops until you log in again.",
+      "cancel": "Cancel",
+      "confirm": "Log out"
+    },
+    "deleteConfirm": {
+      "title": "Delete account",
+      "message": "This permanently deletes your account and cloud backup. Words on this device stay.",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "failed": "Unable to delete account",
+      "done": "Your account was deleted. Words on this device are kept."
+    },
+    "signedIn": "Signed in",
+    "openSettings": "Open Settings"
   },
   "[bookcase]": {
     "filter": {
@@ -87,7 +135,31 @@
       "correct": "Correct",
       "incorrect": "Incorrect",
       "accuracy": "Accuracy",
-      "close": "Home"
+      "close": "Home",
+      "words": "Words this round",
+      "addedToWrongNote": "Added {{count}} to Wrong Answers",
+      "score": "Score",
+      "restart": "Again"
+    },
+    "comingSoon": "New Game will be added soon!",
+    "streak": "{{count}}-day streak",
+    "source": {
+      "title": "Which words?",
+      "all": "All words",
+      "wrong": "Wrong answers",
+      "important": "Starred words",
+      "count": "{{count}}",
+      "cancel": "Cancel",
+      "minWords": "You need at least {{count}} words to start"
+    },
+    "quizMode": {
+      "wordToMeaning": "Word → Meaning",
+      "meaningToWord": "Meaning → Word"
+    },
+    "listen": "Listen",
+    "shooting": {
+      "wave": "Wave",
+      "maxCombo": "Max combo"
     }
   },
   "mainTabs": {
@@ -138,5 +210,23 @@
       "bookcaseAddedFailed": "Bookcase added failed",
       "imageSizeError": "Image size is too large (10MB or less)"
     }
+  },
+  "startup": {
+    "importing": "Bringing your words to this device…"
+  },
+  "wrongNote": {
+    "title": "Wrong Answers",
+    "description": "Words you missed in games and reviews",
+    "count": "{{count}} words",
+    "empty": "No wrong answers yet. Nice work!",
+    "remove": "Got it",
+    "practice": "Practice in Quiz",
+    "wrongCount": "Missed {{count}}×"
+  },
+  "reminder": {
+    "title": "ROVOCA",
+    "body": "You haven't reviewed today. How about 5 minutes?",
+    "bodyStreak": "🔥 {{count}}-day streak! Keep it going today.",
+    "channel": "Study reminders"
   }
 }

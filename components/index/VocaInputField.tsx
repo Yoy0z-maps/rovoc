@@ -15,6 +15,7 @@ export default function VocaInputField({
       placeholder={placeholder}
       value={value}
       onChangeText={onChangeText}
+      maxLength={128}
     />
   );
 }

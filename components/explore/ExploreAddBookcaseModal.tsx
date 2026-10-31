@@ -12,13 +12,12 @@ import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
 import { Fragment, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { authFetch, ensureOk } from "@/lib/api";
+import { createWordbook } from "@/store/library";
+import { saveWordbookImage } from "@/utils/wordbookImage";
 
 export default function ExploreAddBookcaseModal({
-  triggerBookcases,
   setShowAddBookcaseModal,
 }: {
-  triggerBookcases: () => void;
   setShowAddBookcaseModal: (value: boolean) => void;
 }) {
   const { t, i18n } = useTranslation();
@@ -26,7 +25,6 @@ export default function ExploreAddBookcaseModal({
   const [image, setImage] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [fetchLoading, setFetchLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
 
   const pickImage = async () => {
@@ -47,7 +45,7 @@ export default function ExploreAddBookcaseModal({
     }
   };
 
-  const addBookcase = async () => {
+  const addBookcase = () => {
     if (!name.trim()) {
       Toast.show({
         type: "ToastError",
@@ -56,54 +54,25 @@ export default function ExploreAddBookcaseModal({
       });
       return;
     }
-    setFetchLoading(true);
     try {
-      const formData = new FormData();
-      formData.append("name", name.trim());
-      formData.append("description", description.trim());
-
-      if (image) {
-        const filename = image.split("/").pop() || `photo.jpg`;
-        const match = /\.(\w+)$/.exec(filename ?? "");
-        const ext = match ? match[1] : "jpg";
-        const type = `image/${ext}`;
-
-        formData.append("image", {
-          uri: image,
-          type,
-          name: filename,
-        } as any);
-      }
-
-      const response = await authFetch("/word/wordbooks/", {
-        method: "POST",
-        body: formData,
+      // 선택한 사진은 임시 폴더에 있으므로 앱 폴더로 복사해 둔다
+      createWordbook({
+        name: name.trim(),
+        description: description.trim(),
+        imageFile: image ? saveWordbookImage(image) : null,
       });
-
-      if (response.status === 413) {
-        Toast.show({
-          type: "ToastError",
-          text1: t("modal.addBookcase.error"),
-          text2: t("modal.addBookcase.imageSizeError"),
-        });
-        return;
-      }
-      await ensureOk(response);
       Toast.show({
         type: "ToastSuccess",
         text1: t("modal.addBookcase.success"),
         text2: t("modal.addBookcase.bookcaseAdded"),
       });
       setShowAddBookcaseModal(false);
-      await triggerBookcases();
     } catch {
       Toast.show({
         type: "ToastError",
         text1: t("modal.addBookcase.error"),
         text2: t("modal.addBookcase.bookcaseAddedFailed"),
       });
-    } finally {
-      setFetchLoading(false);
     }
   };
 
@@ -169,14 +138,8 @@ export default function ExploreAddBookcaseModal({
                 style={styles.selectedImage}
                 resizeMode="cover"
                 onLoadStart={() => setImageLoading(true)}
-                onLoad={() => {
-                  console.log("Image loaded successfully");
-                  setImageLoading(false);
-                }}
-                onError={(error) => {
-                  console.log("Image loading error:", error);
-                  setImageLoading(false);
-                }}
+                onLoad={() => setImageLoading(false)}
+                onError={() => setImageLoading(false)}
               />
             </View>
           )}
@@ -190,15 +153,11 @@ export default function ExploreAddBookcaseModal({
                 {t("modal.addBookcase.cancel")}
               </Text>
             </Pressable>
-            {fetchLoading ? (
-              <ActivityIndicator size="small" color="#2988F6" />
-            ) : (
-              <Pressable onPress={addBookcase}>
-                <Text style={styles.addButtonText}>
-                  {t("modal.addBookcase.add")}
-                </Text>
-              </Pressable>
-            )}
+            <Pressable onPress={addBookcase}>
+              <Text style={styles.addButtonText}>
+                {t("modal.addBookcase.add")}
+              </Text>
+            </Pressable>
           </View>
           </View>
         </TouchableWithoutFeedback>

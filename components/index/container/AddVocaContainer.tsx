@@ -4,9 +4,11 @@ import SubmitButton from "../SubmitButton";
 import { useState } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Toast from "react-native-toast-message";
+import { useTranslation } from "react-i18next";
 import { Wordbook } from "@/types/wordbooks";
 import PartOfSpeechOptions from "../PartOfSpeechOptions";
-import { authFetch, ensureOk } from "@/lib/api";
+import { createWord, createWordbook } from "@/store/library";
+import { recordStudy } from "@/lib/activity";
 
 export default function AddVocaContainer({
   targetBookcase,
@@ -33,15 +35,9 @@ export default function AddVocaContainer({
     description: "",
   });
 
-  const handleSubmit = async () => {
-    if (!targetBookcase) {
-      Toast.show({
-        type: "ToastError",
-        text1: "Error",
-        text2: "Please select a target bookcase",
-      });
-      return;
-    }
+  const { t } = useTranslation();
+
+  const handleSubmit = () => {
     if (!word.trim() || !vocalModal.meaning.trim()) {
       Toast.show({
         type: "ToastError",
@@ -51,41 +47,34 @@ export default function AddVocaContainer({
       return;
     }
 
-    try {
-      const response = await authFetch("/word/words/", {
-        method: "POST",
-        body: JSON.stringify({
-          wordbook: targetBookcase.id,
-          text: word.trim(),
-          meanings: [
-            {
-              part: vocalModal.partOfSpeech,
-              definition: vocalModal.meaning.trim(),
-              example: vocalModal.description.trim(),
-            },
-          ],
-        }),
-        headers: { "Content-Type": "application/json" },
-      });
-      await ensureOk(response);
-      Toast.show({
-        type: "ToastSuccess",
-        text1: "Success",
-        text2: "Vocabulary added successfully",
-      });
-      setWord("");
-      setVocalModal({
-        partOfSpeech: "n",
-        meaning: "",
-        description: "",
-      });
-    } catch (error) {
-      Toast.show({
-        type: "ToastError",
-        text1: "Error",
-        text2: error instanceof Error ? error.message : "Failed to add vocabulary",
-      });
-    }
+    // 처음 쓰는 사용자는 단어장이 없으므로 기본 단어장을 만들어 바로 추가할 수 있게 한다
+    const wordbookId =
+      targetBookcase?.id ??
+      createWordbook({ name: t("index.myVocaBookcase"), description: "" });
+
+    // 기기에 바로 저장된다 (로그인 상태면 잠시 뒤 클라우드에도 백업)
+    createWord(wordbookId, {
+      text: word.trim(),
+      meanings: [
+        {
+          part: vocalModal.partOfSpeech,
+          definition: vocalModal.meaning.trim(),
+          example: vocalModal.description.trim(),
+        },
+      ],
+    });
+    recordStudy();
+    Toast.show({
+      type: "ToastSuccess",
+      text1: "Success",
+      text2: "Vocabulary added successfully",
+    });
+    setWord("");
+    setVocalModal({
+      partOfSpeech: "n",
+      meaning: "",
+      description: "",
+    });
   };
 
   return (
@@ -103,7 +92,7 @@ export default function AddVocaContainer({
           onPress={() => setShowBookcaseModal(!showBookcaseModal)}
         >
           <Text style={styles.targetedBookcaseText}>
-            {targetBookcase?.name}
+            {targetBookcase?.name ?? t("index.myVocaBookcase")}
           </Text>
           {showBookcaseModal ? (
             <MaterialIcons name="expand-less" size={20} color="black" />
@@ -125,6 +114,7 @@ export default function AddVocaContainer({
           }
         />
         <TextInput
+          style={{ flex: 1 }}
           placeholder={addVocaTitle.meaningPlaceholder}
           value={vocalModal.meaning}
           onChangeText={(text) =>

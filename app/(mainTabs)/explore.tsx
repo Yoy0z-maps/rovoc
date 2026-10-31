@@ -1,6 +1,12 @@
-import { ScrollView, View, Modal, ActivityIndicator } from "react-native";
+import {
+  ScrollView,
+  View,
+  Modal,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 import BookcaseCard from "@/components/explore/BookcaseCard";
-import { Fragment, useCallback, useState } from "react";
+import { Fragment, useState } from "react";
 import ExploreHeader from "@/components/explore/ExploreHeader";
 import ExploreAddBookcaseModal from "@/components/explore/ExploreAddBookcaseModal";
 import SearchHistory from "@/components/explore/search/SearchHistory";
@@ -10,7 +16,7 @@ import { useBookcases } from "@/hooks/useBookcase";
 import ExploreFilterBottomSheet from "@/components/explore/ExploreFilterBottomSheet";
 import EditBookcaseModal from "@/components/explore/EditBookcaseModal";
 import { Wordbook } from "@/types/wordbooks";
-import { useFocusEffect } from "@react-navigation/native";
+import WrongNoteCard from "@/components/explore/WrongNoteCard";
 
 export default function ExploreScreen() {
   const [searchWord, setSearchWord] = useState("");
@@ -27,12 +33,17 @@ export default function ExploreScreen() {
   });
 
   const { bookcases, loading, refetch } = useBookcases(filterState);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch])
-  );
+  // 로그인 상태면 당겨서 새로고침할 때 클라우드와 동기화한다
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   function onEditPress(bookcase: Wordbook) {
     setSelectedBookcase(bookcase);
@@ -77,7 +88,11 @@ export default function ExploreScreen() {
         setShowAddBookcaseModal={setShowAddBookcaseModal}
         isInSearch={searchWord ? true : false}
       />
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {searchWord ? (
           <Fragment>
             <SearchHistory />
@@ -85,15 +100,13 @@ export default function ExploreScreen() {
           </Fragment>
         ) : (
           <Fragment>
+            <WrongNoteCard />
             {bookcases.length > 0 ? (
               <Fragment>
                 {bookcases.map((bookcase, index) => (
                   <BookcaseCard
                     key={bookcase.id}
-                    refetch={refetch}
-                    showEditBookcaseModal={showEditBookcaseModal}
                     bookcase={bookcase}
-                    triggerBookcases={refetch}
                     isLast={index === bookcases.length - 1}
                     onEditPress={onEditPress}
                   />
@@ -124,7 +137,6 @@ export default function ExploreScreen() {
         onRequestClose={() => setShowAddBookcaseModal(false)}
       >
         <ExploreAddBookcaseModal
-          triggerBookcases={refetch}
           setShowAddBookcaseModal={setShowAddBookcaseModal}
         />
       </Modal>
@@ -136,7 +148,6 @@ export default function ExploreScreen() {
       >
         <EditBookcaseModal
           bookcase={selectedBookcase!}
-          triggerBookcases={refetch}
           setShowEditBookcaseModal={setShowEditBookcaseModal}
         />
       </Modal>

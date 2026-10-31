@@ -1,4 +1,5 @@
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
+import { ApiError } from "@/lib/errors";
 import { RefreshTokenResponse } from "@/types/token";
 import { AuthResponse } from "@/types/user";
 import * as SecureStore from "expo-secure-store";
@@ -47,8 +48,11 @@ export async function refreshToken() {
     .catch(() => null)) as Partial<RefreshTokenResponse> | null;
 
   if (!response.ok || !data?.access) {
-    await deleteToken();
-    throw new Error("Unable to refresh the session.");
+    // 서버가 refresh 토큰을 거부했을 때만 세션을 지운다 (일시적인 서버 오류로 로그아웃되지 않도록)
+    if (response.status === 400 || response.status === 401) {
+      await deleteToken();
+    }
+    throw new ApiError("Unable to refresh the session.", response.status);
   }
 
   const updatedUser: AuthResponse = {

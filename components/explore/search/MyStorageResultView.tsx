@@ -7,11 +7,9 @@ import { Text, View, StyleSheet, Image } from "react-native";
 export default function MyStorageResultView({
   data,
   searchWord,
-  refetch,
 }: {
   data: Word[] | null;
   searchWord: string;
-  refetch: () => Promise<void> | void;
 }) {
   const [selectedVoca, setSelectedVoca] = useState<Word | null>(null);
   const [showVocaEditModal, setShowVocaEditModal] = useState(false);
@@ -42,12 +40,10 @@ export default function MyStorageResultView({
         <VocaItem
           key={item.id}
           word={item}
-          refetch={refetch}
           onEditPress={onEditPress}
         />
       ))}
       <VocaEditModal
-        refetch={refetch}
         bookcaseId=""
         voca={selectedVoca}
         showVocaEditModal={showVocaEditModal}

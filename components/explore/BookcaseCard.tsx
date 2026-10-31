@@ -7,17 +7,11 @@ import { useRouter } from "expo-router";
 import useAnimatedImportant from "@/hooks/useAnimatedImportant";
 
 export default function BookcaseCard({
-  refetch,
-  showEditBookcaseModal,
   bookcase,
-  triggerBookcases,
   isLast,
   onEditPress,
 }: {
-  refetch: () => void;
-  showEditBookcaseModal: boolean;
   bookcase: Wordbook;
-  triggerBookcases: () => void;
   isLast?: boolean;
   onEditPress: (bookcase: Wordbook) => void;
 }) {
@@ -82,7 +76,6 @@ export default function BookcaseCard({
           onEditPress={onEditPress}
           setShowOptions={setShowOptions}
           bookcase={bookcase}
-          triggerBookcases={triggerBookcases}
         />
       )}
     </View>

@@ -13,8 +13,11 @@ import Toast from "react-native-toast-message";
 import ToastSuccess from "@/components/toast/ToastSuccess";
 import ToastError from "@/components/toast/ToastError";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Platform } from "react-native";
-import initI18n from "./i18n/i18n";
+import { AppState, Platform } from "react-native";
+import initI18n from "@/i18n/i18n";
+import { syncIfStale } from "@/lib/sync";
+import { refreshStudyReminders } from "@/lib/reminder";
+import { useLibrary } from "@/store/library";
 
 import * as Notifications from "expo-notifications";
 
@@ -54,13 +57,14 @@ export default function RootLayout() {
     });
   }, []);
 
+  // 앱으로 돌아올 때: 동기화가 오래됐으면 동기화하고, 날짜가 바뀌었을 수 있으니 알림을 다시 예약한다
   useEffect(() => {
-    (async () => {
-      const { status } = await Notifications.requestPermissionsAsync();
-      if (status !== "granted") {
-        alert("알림 권한이 거부되었습니다!");
-      }
-    })();
+    const subscription = AppState.addEventListener("change", (appState) => {
+      if (appState !== "active" || !useLibrary.getState().hydrated) return;
+      syncIfStale();
+      void refreshStudyReminders();
+    });
+    return () => subscription.remove();
   }, []);
 
   const [loaded] = useFonts({
@@ -71,6 +75,7 @@ export default function RootLayout() {
     "Pretendard-Light": require("../assets/fonts/Pretendard-Light.otf"),
     "Pretendard-Medium": require("../assets/fonts/Pretendard-Medium.otf"),
     "Pretendard-Regular": require("../assets/fonts/Pretendard-Regular.otf"),
+    "Pretendard-SemiBold": require("../assets/fonts/Pretendard-SemiBold.otf"),
     "Pretendard-Thin": require("../assets/fonts/Pretendard-Thin.otf"),
     PressStart2P: require("../assets/fonts/PressStart2P.ttf"),
     NeoDunggeunmo: require("../assets/fonts/neodgm.ttf"),
@@ -107,6 +112,7 @@ export default function RootLayout() {
           <Stack.Screen name="sentence" options={{ headerShown: false }} />
           <Stack.Screen name="[bookcase]" options={{ headerShown: false }} />
           <Stack.Screen name="license" options={{ headerShown: false }} />
+          <Stack.Screen name="wrong-notes" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
         <Toast config={toastConfig} />

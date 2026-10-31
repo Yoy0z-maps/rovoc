@@ -13,17 +13,14 @@ import { Feather, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import useAnimatedImportant from "@/hooks/useAnimatedImportant";
 import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { useState } from "react";
-import { authFetch, ensureOk } from "@/lib/api";
-import Toast from "react-native-toast-message";
+import { deleteWord } from "@/store/library";
 
 export default function VocaItem({
   onEditPress,
   word,
-  refetch,
 }: {
   onEditPress: (voca: Word) => void;
   word: Word;
-  refetch: () => Promise<void> | void;
 }) {
   const { isImportant, scaleAnim, importantAnimation } = useAnimatedImportant({
     word,
@@ -33,26 +30,10 @@ export default function VocaItem({
     undefined
   );
 
-  const handleDelete = async () => {
-    try {
-      const response = await authFetch(`/word/words/${word.id}/`, {
-        method: "DELETE",
-      });
-      await ensureOk(response);
-      await refetch();
-    } catch (error) {
-      Toast.show({
-        type: "ToastError",
-        text1: "Unable to delete vocabulary",
-        text2: error instanceof Error ? error.message : undefined,
-      });
-    }
-  };
-
   const confirmDelete = () => {
     Alert.alert("Delete vocabulary", `Delete “${word.text}”?`, [
       { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: () => void handleDelete() },
+      { text: "Delete", style: "destructive", onPress: () => deleteWord(word.id) },
     ]);
   };
 

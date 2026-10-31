@@ -2,7 +2,8 @@ import NoticeHeader from "@/components/notice/NoticeHeader";
 import NoticeViewer from "@/components/notice/NoticeViewer";
 import { API_SERVER_ADDRESS } from "@/constants/API_SERVER_ADDRESS";
 import { useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Notice } from "@/types/notice";
 
 export default function NoticeScreen() {

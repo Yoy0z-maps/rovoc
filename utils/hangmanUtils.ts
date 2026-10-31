@@ -1,21 +1,22 @@
-import { Word } from "@/types/word";
+export const MAX_WRONG_GUESSES = 6;
 
-// 타입 가정: Voca = { id: string; name: string; meaning: ... }
+// 키보드로 맞힐 수 있는 글자(A-Z)만 가리고, 공백·하이픈 등은 처음부터 보여준다.
+const isGuessable = (character: string) => /[A-Z]/.test(character);
 
-let shuffledWords: Word[] = [];
-let currentIndex = 0;
-
-export function initGame(words: Word[]) {
-  shuffledWords = shuffleArray(words);
-  currentIndex = 0;
-  return shuffleArray;
+export function isHangmanPlayable(text?: string | null) {
+  return /[a-z]/i.test(text ?? "");
 }
 
-function shuffleArray<T>(arr: T[]): T[] {
-  const array = [...arr];
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
+export function maskWord(word: string, guessedLetters: readonly string[]) {
+  return Array.from(word, (character) =>
+    isGuessable(character) && !guessedLetters.includes(character)
+      ? "_"
+      : character
+  );
+}
+
+export function isWordSolved(word: string, guessedLetters: readonly string[]) {
+  return Array.from(word).every(
+    (character) => !isGuessable(character) || guessedLetters.includes(character)
+  );
 }

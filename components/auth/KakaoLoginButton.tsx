@@ -1,22 +1,23 @@
-import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { Text, StyleSheet, Pressable, Dimensions } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { login } from "@react-native-kakao/user";
 import { socialLogin } from "@/utils/user";
-import { AuthProvider } from "@/types/user";
+import { AuthProvider, AuthResponse } from "@/types/user";
 
 const { width } = Dimensions.get("window");
 
-export default function KakaoLoginButton() {
-  const router = useRouter();
+export default function KakaoLoginButton({
+  onLoggedIn,
+}: {
+  onLoggedIn: (auth: AuthResponse) => void;
+}) {
   const { t } = useTranslation();
 
   const handleKakaoLogin = async () => {
     try {
       const kakao_res = await login();
-      await socialLogin(AuthProvider.KAKAO, kakao_res);
-      router.replace("/(mainTabs)");
+      onLoggedIn(await socialLogin(AuthProvider.KAKAO, kakao_res));
     } catch (error) {
       console.error("Kakao login failed:", error);
     }

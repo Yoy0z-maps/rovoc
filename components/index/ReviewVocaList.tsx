@@ -1,34 +1,27 @@
-import { useState, useCallback } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import ReviewVocaItem from "./ReviewVocaItem";
-import { Word } from "@/types/word";
-import { useFocusEffect } from "@react-navigation/native";
+import { useDueWords } from "@/hooks/useLibrary";
+
+const REVIEW_LIMIT = 10;
 
 export default function ReviewVocaList({
   texts,
 }: {
-  texts: { noWords: string; show: string; hide: string };
-}) {
-  const [recentWords, setRecentWords] = useState<Word[]>([]);
-
-  const fetchRecentWords = async () => {
-    const words = await AsyncStorage.getItem("recentWords");
-    if (words) {
-      setRecentWords(JSON.parse(words));
-    }
+  texts: {
+    noWords: string;
+    show: string;
+    hide: string;
+    know: string;
+    dontKnow: string;
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchRecentWords();
-    }, [])
-  );
+}) {
+  // 복습할 때가 된 단어 (간격 반복). 답하면 다음 복습일이 정해져 목록에서 빠진다
+  const dueWords = useDueWords(REVIEW_LIMIT);
 
   return (
     <View style={styles.container}>
-      {recentWords.length > 0 ? (
-        recentWords.map((word) => (
+      {dueWords.length > 0 ? (
+        dueWords.map((word) => (
           <ReviewVocaItem key={word.id} word={word} texts={texts} />
         ))
       ) : (

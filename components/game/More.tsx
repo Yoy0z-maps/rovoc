@@ -11,7 +11,7 @@ export default function More() {
           source={require("@/assets/images/comingsoon.png")}
           style={styles.comingSoonImage}
         />
-        <Text style={styles.comingSoonText}>New Game will be added soon!</Text>
+        <Text style={styles.comingSoonText}>{t("game.comingSoon")}</Text>
       </View>
       <Image
         source={require("@/assets/images/rovoca-gray.png")}
