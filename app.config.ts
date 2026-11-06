@@ -3,7 +3,7 @@ import { ExpoConfig, ConfigContext } from "@expo/config";
 export default ({ config }: ConfigContext): ExpoConfig => ({
   name: "rovoc",
   slug: "rovoc",
-  version: "1.3.0",
+  version: "1.3.1",
   orientation: "portrait",
   icon: "./assets/images/rovoca-icon.jpg",
   scheme: "rovoca",
@@ -21,7 +21,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     supportsTablet: true,
     bundleIdentifier: "com.yoy0zmaps.rovoc",
     usesAppleSignIn: true,
-    buildNumber: "11",
+    buildNumber: "12",
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
     },
@@ -32,7 +32,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundColor: "#ffffff",
     },
     package: "com.yoy0zmaps.rovoc",
-    versionCode: 3,
+    versionCode: 6,
   },
   web: {
     bundler: "metro",
