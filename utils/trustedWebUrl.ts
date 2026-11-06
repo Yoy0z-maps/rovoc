@@ -24,5 +24,6 @@ export function getTrustedWebTitle(url: URL) {
   if (url.hostname.endsWith("buymeacoffee.com")) return "Donate";
   if (url.pathname.startsWith("/rovoca/privacy")) return "Privacy Policy";
   if (url.pathname.startsWith("/rovoca/terms")) return "Terms of Service";
+  if (url.pathname.startsWith("/apps/rovoca/feedback")) return "Feedback";
   return "Rovoca";
 }

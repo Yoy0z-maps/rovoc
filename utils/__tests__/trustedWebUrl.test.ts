@@ -17,5 +17,10 @@ describe("trusted web URLs", () => {
       "https://www.yoy0z-maps.com/rovoca/privacy"
     );
     expect(privacyUrl && getTrustedWebTitle(privacyUrl)).toBe("Privacy Policy");
+
+    const feedbackUrl = parseTrustedWebUrl(
+      "https://www.yoy0z-maps.com/apps/rovoca/feedback"
+    );
+    expect(feedbackUrl && getTrustedWebTitle(feedbackUrl)).toBe("Feedback");
   });
 });

@@ -29,6 +29,8 @@ import {
 } from "@/lib/reminder";
 import { useLibrary } from "@/store/library";
 
+const FEEDBACK_URL = "https://www.yoy0z-maps.com/apps/rovoca/feedback";
+
 export default function ProfileMenu() {
   const { t, i18n } = useTranslation();
   const version = Constants.expoConfig?.version ?? "1.2.0";
@@ -140,6 +142,11 @@ export default function ProfileMenu() {
           icon={<MaterialIcons name="policy" size={24} color="black" />}
           label={t("profile.menu.privacy")}
           onPress={() => openWebPage("https://yoy0z-maps.com/rovoca/privacy")}
+        />
+        <ProfileMenuTopItem
+          icon={<MaterialIcons name="feedback" size={24} color="black" />}
+          label={t("profile.menu.feedback")}
+          onPress={() => openWebPage(FEEDBACK_URL)}
         />
         <ProfileMenuTopItem
           icon={
