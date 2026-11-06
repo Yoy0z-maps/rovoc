@@ -52,6 +52,7 @@ const defaultData = (): LibraryData => ({
     reminderEnabled: true,
     reminderHour: 20,
     notificationPermissionAsked: false,
+    reviewPrompt: { positiveMoments: 0, lastPromptAt: null },
   },
   sync: { lastSyncedAt: null, account: null },
 });

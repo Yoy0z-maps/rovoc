@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { recordStudy } from "@/lib/activity";
 import { refreshStudyReminders } from "@/lib/reminder";
+import { recordPositiveMoment } from "@/lib/review";
+import { isPositiveGameResult } from "@/lib/reviewPrompt";
 import {
   addScore,
   hydrateLibrary,
@@ -49,6 +51,7 @@ const firstDefinition = (word: Word) =>
 export function useGameAnswers() {
   const [answers, setAnswers] = useState<GameAnswer[]>([]);
   const answerCount = useRef(0);
+  const correctCount = useRef(0);
   const finished = useRef(false);
 
   const record = useCallback(
@@ -59,6 +62,7 @@ export function useGameAnswers() {
       if (correct) hapticSuccess();
       else hapticError();
       answerCount.current += 1;
+      if (correct) correctCount.current += 1;
       setAnswers((prev) => [
         ...prev,
         { wordId: word.id, text: word.text, meaning, correct },
@@ -73,11 +77,16 @@ export function useGameAnswers() {
     finished.current = true;
     addScore(scoreChange);
     recordStudy();
+    // 잘 풀었을 때 가끔 앱 평가를 부탁한다
+    if (isPositiveGameResult(correctCount.current, answerCount.current)) {
+      recordPositiveMoment();
+    }
   }, []);
 
   const reset = useCallback(() => {
     finished.current = false;
     answerCount.current = 0;
+    correctCount.current = 0;
     setAnswers([]);
   }, []);
 

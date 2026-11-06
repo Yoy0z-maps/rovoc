@@ -40,10 +40,16 @@ export type Progress = {
   studyDates: string[]; // 학습한 날짜 (YYYY-MM-DD)
 };
 
+export type ReviewPromptState = {
+  positiveMoments: number; // 마지막 평가 요청 이후 좋은 결과로 끝낸 게임 수
+  lastPromptAt: string | null; // 마지막으로 평가를 요청했거나 직접 리뷰 페이지를 연 시각
+};
+
 export type Settings = {
   reminderEnabled: boolean;
   reminderHour: number;
   notificationPermissionAsked: boolean;
+  reviewPrompt: ReviewPromptState;
 };
 
 export type AccountInfo = {
