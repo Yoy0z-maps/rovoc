@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="rovoca_widget_card_name">单词卡片</string>
+  <string name="rovoca_widget_lock_name">单词卡片 · 锁屏</string>
+  <string name="rovoca_widget_description">从错题本或你选择的单词本中随机显示一个单词。</string>
+  <string name="rovoca_widget_wrong_note">错题本</string>
+  <string name="rovoca_widget_my_words">我的单词</string>
+  <string name="rovoca_widget_empty_title">添加第一个单词吧</string>
+  <string name="rovoca_widget_empty_wordbook_title">这个单词本还没有单词</string>
+  <string name="rovoca_widget_empty_message">在应用中保存的单词会显示在这里。</string>
+  <string name="rovoca_widget_configure_title">选择单词本</string>
+  <string name="rovoca_widget_configure_message">小组件会从你选择的单词本中随机显示一个单词。</string>
+  <string name="rovoca_widget_automatic">自动（错题本优先）</string>
+  <string name="rovoca_widget_automatic_description">显示错题本中的单词，错题本为空时显示所有已保存的单词。</string>
+  <string name="rovoca_widget_no_wordbooks">在应用中创建单词本后即可在这里选择。</string>
+  <string name="rovoca_widget_cancel">取消</string>
+  <plurals name="rovoca_widget_word_count">
+    <item quantity="other">%d 个单词</item>
+  </plurals>
+  <string name="rovoca_widget_sample_meaning">意外的幸运</string>
+</resources>

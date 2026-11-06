@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 홈 화면 단어 카드 (3칸 이상). 기본 글자는 위젯 선택 화면의 미리보기로도 쓰인다 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/widget_root"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@drawable/rovoca_widget_card_background_wrong">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingStart="16dp"
+    android:paddingTop="14dp"
+    android:paddingEnd="17.5dp"
+    android:paddingBottom="15.5dp">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      android:orientation="horizontal">
+
+      <ImageView
+        android:id="@+id/widget_source_icon"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/rovoca_widget_ic_wrong_note"
+        android:tint="@color/rovoca_widget_red" />
+
+      <TextView
+        android:id="@+id/widget_source"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/rovoca_widget_wrong_note"
+        android:textColor="@color/rovoca_widget_gray"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+      <TextView
+        android:id="@+id/widget_part"
+        style="@style/RovocaWidgetPartChip"
+        android:layout_marginStart="8dp"
+        android:text="@string/rovoca_widget_sample_part" />
+    </LinearLayout>
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1" />
+
+    <TextView
+      android:id="@+id/widget_word"
+      android:layout_width="match_parent"
+      android:layout_height="34dp"
+      android:autoSizeMaxTextSize="28sp"
+      android:autoSizeMinTextSize="16sp"
+      android:autoSizeTextType="uniform"
+      android:gravity="center_vertical"
+      android:maxLines="1"
+      android:text="@string/rovoca_widget_sample_word"
+      android:textColor="@color/rovoca_widget_ink"
+      android:textSize="26sp"
+      android:textStyle="bold" />
+
+    <TextView
+      android:id="@+id/widget_empty_message"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="2dp"
+      android:ellipsize="end"
+      android:maxLines="3"
+      android:textColor="@color/rovoca_widget_gray"
+      android:textSize="12sp"
+      android:visibility="gone" />
+
+    <LinearLayout
+      android:id="@+id/widget_meaning_box"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:background="@drawable/rovoca_widget_ink_box"
+      android:orientation="vertical"
+      android:paddingStart="12dp"
+      android:paddingTop="8dp"
+      android:paddingEnd="14dp"
+      android:paddingBottom="10dp">
+
+      <TextView
+        android:id="@+id/widget_meaning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/rovoca_widget_sample_meaning"
+        android:textColor="@color/rovoca_widget_ink"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+      <TextView
+        android:id="@+id/widget_example"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/rovoca_widget_sample_example"
+        android:textColor="@color/rovoca_widget_gray"
+        android:textSize="12sp"
+        android:textStyle="italic" />
+    </LinearLayout>
+  </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["RovocaWidgetModule"]
+  },
+  "android": {
+    "modules": ["com.yoy0zmaps.rovoc.widget.RovocaWidgetModule"]
+  }
+}

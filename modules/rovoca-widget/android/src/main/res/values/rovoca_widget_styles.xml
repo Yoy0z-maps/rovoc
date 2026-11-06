@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="RovocaWidgetPartChip">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:background">@drawable/rovoca_widget_part_chip</item>
+    <item name="android:ellipsize">end</item>
+    <item name="android:maxLines">1</item>
+    <item name="android:paddingStart">7dp</item>
+    <item name="android:paddingTop">2dp</item>
+    <item name="android:paddingEnd">7dp</item>
+    <item name="android:paddingBottom">2dp</item>
+    <item name="android:textColor">@color/rovoca_widget_blue</item>
+    <item name="android:textSize">11sp</item>
+    <item name="android:textStyle">bold</item>
+  </style>
+
+  <style name="RovocaWidgetConfigureTheme" parent="@android:style/Theme.Material.Light.Dialog.NoActionBar">
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:windowCloseOnTouchOutside">true</item>
+  </style>
+</resources>

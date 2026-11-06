@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 오답 노트 단어일 때: 앱의 오답 노트 카드와 같은 배경색 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <shape android:shape="rectangle">
+      <solid android:color="@color/rovoca_widget_ink" />
+      <corners android:radius="18dp" />
+    </shape>
+  </item>
+  <item
+    android:bottom="3.5dp"
+    android:left="2dp"
+    android:right="3.5dp"
+    android:top="2dp">
+    <shape android:shape="rectangle">
+      <solid android:color="@color/rovoca_widget_wrong_note_background" />
+      <corners android:radius="16dp" />
+    </shape>
+  </item>
+</layer-list>

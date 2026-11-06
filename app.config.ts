@@ -42,6 +42,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     "expo-router",
     "./plugins/withPodsDeploymentTarget",
+    "./plugins/withWordWidget",
     [
       "expo-splash-screen",
       {

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginTop="8dp"
+  android:background="@drawable/rovoca_widget_ink_box"
+  android:clickable="true"
+  android:focusable="true"
+  android:foreground="?android:attr/selectableItemBackground"
+  android:gravity="center_vertical"
+  android:orientation="horizontal"
+  android:paddingStart="14dp"
+  android:paddingTop="11dp"
+  android:paddingEnd="16dp"
+  android:paddingBottom="13dp">
+
+  <LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:orientation="vertical">
+
+    <TextView
+      android:id="@+id/option_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:maxLines="1"
+      android:textColor="@color/rovoca_widget_ink"
+      android:textSize="16sp"
+      android:textStyle="bold" />
+
+    <TextView
+      android:id="@+id/option_subtitle"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="2dp"
+      android:maxLines="2"
+      android:textColor="@color/rovoca_widget_gray"
+      android:textSize="12sp" />
+  </LinearLayout>
+
+  <ImageView
+    android:id="@+id/option_check"
+    android:layout_width="20dp"
+    android:layout_height="20dp"
+    android:layout_marginStart="8dp"
+    android:importantForAccessibility="no"
+    android:src="@drawable/rovoca_widget_ic_check"
+    android:tint="@color/rovoca_widget_blue" />
+</LinearLayout>

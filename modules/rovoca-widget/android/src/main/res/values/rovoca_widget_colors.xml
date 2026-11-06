@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 앱에서 쓰는 색과 같다 -->
+<resources>
+  <color name="rovoca_widget_ink">#111111</color>
+  <color name="rovoca_widget_gray">#767676</color>
+  <color name="rovoca_widget_blue">#2988F6</color>
+  <color name="rovoca_widget_blue_light">#1A2988F6</color>
+  <color name="rovoca_widget_red">#F05650</color>
+  <color name="rovoca_widget_wrong_note_background">#FFF5F4</color>
+</resources>

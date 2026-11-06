@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="rovoca_widget_card_name">단어 카드</string>
+  <string name="rovoca_widget_lock_name">단어 카드 · 잠금화면</string>
+  <string name="rovoca_widget_description">오답 노트나 직접 고른 단어장에서 단어를 하나씩 무작위로 보여줘요.</string>
+  <string name="rovoca_widget_wrong_note">오답 노트</string>
+  <string name="rovoca_widget_my_words">내 단어</string>
+  <string name="rovoca_widget_empty_title">단어를 추가해 보세요</string>
+  <string name="rovoca_widget_empty_wordbook_title">이 단어장에 아직 단어가 없어요</string>
+  <string name="rovoca_widget_empty_message">앱에서 저장한 단어가 여기에 나와요.</string>
+  <string name="rovoca_widget_configure_title">단어장 선택</string>
+  <string name="rovoca_widget_configure_message">고른 단어장에서 단어를 하나씩 무작위로 보여줘요.</string>
+  <string name="rovoca_widget_automatic">자동 (오답 노트 우선)</string>
+  <string name="rovoca_widget_automatic_description">오답 노트 단어를, 오답 노트가 비어 있으면 저장한 모든 단어를 보여줘요.</string>
+  <string name="rovoca_widget_no_wordbooks">앱에서 단어장을 만들면 여기서 고를 수 있어요.</string>
+  <string name="rovoca_widget_cancel">취소</string>
+  <plurals name="rovoca_widget_word_count">
+    <item quantity="other">단어 %d개</item>
+  </plurals>
+  <string name="rovoca_widget_sample_meaning">뜻밖의 행운</string>
+</resources>

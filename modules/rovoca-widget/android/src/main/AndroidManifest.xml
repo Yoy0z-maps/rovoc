@@ -1,0 +1,39 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <application>
+    <receiver
+      android:name="com.yoy0zmaps.rovoc.widget.WordWidgetProvider"
+      android:exported="false"
+      android:label="@string/rovoca_widget_card_name">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data
+        android:name="android.appwidget.provider"
+        android:resource="@xml/rovoca_widget_card_info" />
+    </receiver>
+
+    <receiver
+      android:name="com.yoy0zmaps.rovoc.widget.WordLockWidgetProvider"
+      android:exported="false"
+      android:label="@string/rovoca_widget_lock_name">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data
+        android:name="android.appwidget.provider"
+        android:resource="@xml/rovoca_widget_lock_info" />
+    </receiver>
+
+    <!-- 위젯을 추가하거나 다시 설정할 때 단어장을 고르는 화면 -->
+    <activity
+      android:name="com.yoy0zmaps.rovoc.widget.WordWidgetConfigureActivity"
+      android:excludeFromRecents="true"
+      android:exported="true"
+      android:taskAffinity=""
+      android:theme="@style/RovocaWidgetConfigureTheme">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>

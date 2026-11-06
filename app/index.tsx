@@ -8,6 +8,7 @@ import { hydrateLibrary, setLoggedIn, useLibrary } from "@/store/library";
 import { syncNow } from "@/lib/sync";
 import { registerPushToken } from "@/lib/session";
 import { refreshStudyReminders } from "@/lib/reminder";
+import { startWidgetSync } from "@/lib/widget";
 
 // 업데이트 후 처음 실행할 때 서버 데이터를 기다리는 최대 시간 (넘으면 백그라운드에서 계속 받는다)
 const FIRST_IMPORT_TIMEOUT_MS = 20000;
@@ -20,6 +21,7 @@ export default function Index() {
   const initialize = useCallback(async () => {
     await hydrateLibrary();
     void refreshStudyReminders();
+    startWidgetSync();
 
     // 로그인하지 않아도 바로 사용할 수 있다. 로그인 상태면 클라우드와 동기화한다
     const token = await getAccessToken();

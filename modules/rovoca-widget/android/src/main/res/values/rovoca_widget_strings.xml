@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="rovoca_widget_card_name">Word card</string>
+  <string name="rovoca_widget_lock_name">Word card · Lock screen</string>
+  <string name="rovoca_widget_description">Shows a random word from your wrong answers, or from a wordbook you choose.</string>
+  <string name="rovoca_widget_wrong_note">Wrong Answers</string>
+  <string name="rovoca_widget_my_words">My words</string>
+  <string name="rovoca_widget_empty_title">Add your first word</string>
+  <string name="rovoca_widget_empty_wordbook_title">No words in this wordbook yet</string>
+  <string name="rovoca_widget_empty_message">Words you save in the app will show up here.</string>
+  <string name="rovoca_widget_configure_title">Choose a wordbook</string>
+  <string name="rovoca_widget_configure_message">The widget shows a random word from the wordbook you choose.</string>
+  <string name="rovoca_widget_automatic">Automatic (wrong answers first)</string>
+  <string name="rovoca_widget_automatic_description">Shows your wrong answers, or all saved words if there are none.</string>
+  <string name="rovoca_widget_no_wordbooks">Create a wordbook in the app to choose it here.</string>
+  <string name="rovoca_widget_cancel">Cancel</string>
+  <plurals name="rovoca_widget_word_count">
+    <item quantity="one">%d word</item>
+    <item quantity="other">%d words</item>
+  </plurals>
+  <string name="rovoca_widget_sample_word" translatable="false">serendipity</string>
+  <string name="rovoca_widget_sample_part" translatable="false">noun</string>
+  <string name="rovoca_widget_sample_meaning">a happy accident</string>
+  <string name="rovoca_widget_sample_example" translatable="false">Finding this café was pure serendipity.</string>
+</resources>

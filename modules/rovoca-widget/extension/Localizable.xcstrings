@@ -1,0 +1,72 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "a happy accident" : {
+      "localizations" : {
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "뜻밖의 행운" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "意外的幸运" } }
+      }
+    },
+    "Add your first word" : {
+      "localizations" : {
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "단어를 추가해 보세요" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "添加第一个单词吧" } }
+      }
+    },
+    "Automatic (wrong answers first)" : {
+      "localizations" : {
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "자동 (오답 노트 우선)" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "自动（错题本优先）" } }
+      }
+    },
+    "Choose the wordbook to pick words from." : {
+      "localizations" : {
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "단어를 뽑을 단어장을 골라 주세요." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "选择要抽取单词的单词本。" } }
+      }
+    },
+    "My words" : {
+      "localizations" : {
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "내 단어" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "我的单词" } }
+      }
+    },
+    "No words in this wordbook yet" : {
+      "localizations" : {
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "이 단어장에 아직 단어가 없어요" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "这个单词本还没有单词" } }
+      }
+    },
+    "Shows a random word from your wrong answers, or from a wordbook you choose." : {
+      "localizations" : {
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "오답 노트나 직접 고른 단어장에서 단어를 하나씩 무작위로 보여줘요." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "从错题本或你选择的单词本中随机显示一个单词。" } }
+      }
+    },
+    "Word card" : {
+      "localizations" : {
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "단어 카드" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "单词卡片" } }
+      }
+    },
+    "Wordbook" : {
+      "localizations" : {
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "단어장" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "单词本" } }
+      }
+    },
+    "Words you save in the app will show up here." : {
+      "localizations" : {
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "앱에서 저장한 단어가 여기에 나와요." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "在应用中保存的单词会显示在这里。" } }
+      }
+    },
+    "Wrong Answers" : {
+      "localizations" : {
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "오답 노트" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "错题本" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

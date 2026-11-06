@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 추가할 때 단어장을 고르고(configure), 나중에 길게 눌러 다시 고를 수 있다(reconfigurable). 30분마다 새 단어 -->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+  android:configure="com.yoy0zmaps.rovoc.widget.WordWidgetConfigureActivity"
+  android:description="@string/rovoca_widget_description"
+  android:initialKeyguardLayout="@layout/rovoca_widget_lock"
+  android:initialLayout="@layout/rovoca_widget_card"
+  android:minWidth="110dp"
+  android:minHeight="110dp"
+  android:minResizeWidth="110dp"
+  android:minResizeHeight="110dp"
+  android:previewLayout="@layout/rovoca_widget_card"
+  android:resizeMode="horizontal|vertical"
+  android:targetCellWidth="3"
+  android:targetCellHeight="2"
+  android:updatePeriodMillis="1800000"
+  android:widgetCategory="home_screen|keyguard"
+  android:widgetFeatures="reconfigurable" />

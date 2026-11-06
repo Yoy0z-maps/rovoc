@@ -38,8 +38,11 @@ yarn-error.*
 
 app-example
 
-ios/
-android/
+# prebuild로 만드는 루트 네이티브 폴더만 무시한다 (modules/*/ios, android 소스는 커밋)
+/ios/
+/android/
+modules/*/android/build/
+modules/*/android/.gradle/
 
 client_secret_712812670881-ohclfkq8guj300an8iblntrvdc83q6ae.apps.googleusercontent.com.json
 CertificateSigningRequest.certSigningRequest
