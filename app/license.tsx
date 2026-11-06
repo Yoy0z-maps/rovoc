@@ -73,7 +73,8 @@ export default function OpenSourceLicenseScreen() {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.headerContainer}>
+      {/* 아래쪽 inset까지 넣으면 제목과 밑줄 사이가 벌어지므로 위쪽만 띄운다 */}
+      <SafeAreaView style={styles.headerContainer} edges={["top"]}>
         <View style={styles.spacingContainer}>
           <Pressable onPress={() => router.back()}>
             <AntDesign name="arrow-left" size={24} color="black" />

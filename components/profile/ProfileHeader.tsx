@@ -1,5 +1,4 @@
 import { Text, StyleSheet, View, Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 
@@ -7,8 +6,9 @@ export default function ProfileHeader() {
   const router = useRouter();
   // const isNotification = false;
 
+  // 프로필 화면이 이미 위쪽 inset을 적용하므로 헤더는 safe area를 다시 넣지 않는다
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.spacing}>
         <Pressable onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} color="#fff" />
@@ -22,7 +22,7 @@ export default function ProfileHeader() {
           <Ionicons name="notifications" size={22} color="#fff" />
         </Pressable>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

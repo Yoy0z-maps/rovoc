@@ -5,7 +5,8 @@ import { AntDesign } from "@expo/vector-icons";
 
 export default function WebViewHeader({ title }: { title: string }) {
   return (
-    <SafeAreaView style={styles.container}>
+    // 아래쪽 inset까지 넣으면 제목과 밑줄 사이가 홈 인디케이터 높이만큼 벌어지므로 위쪽만 띄운다
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.spacingContainer}>
         <Pressable onPress={() => router.back()}>
           <AntDesign name="arrow-left" size={24} color="black" />

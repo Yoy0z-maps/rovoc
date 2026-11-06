@@ -1,13 +1,13 @@
 import { Text, StyleSheet, View, Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 
 export default function ProfileHeader() {
   const router = useRouter();
 
+  // 공지 화면이 이미 위쪽 inset을 적용하므로 헤더는 safe area를 다시 넣지 않는다
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.spacing}>
         <View style={styles.leftContainer}>
           <Pressable onPress={() => router.back()}>
@@ -21,7 +21,7 @@ export default function ProfileHeader() {
           {/* 빈 공간을 유지하기 위한 빈 View */}
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

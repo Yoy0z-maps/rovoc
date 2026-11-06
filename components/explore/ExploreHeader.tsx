@@ -40,7 +40,8 @@ export default function ExploreHeader({
   }, [searchWord]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    // 아래쪽 inset까지 넣으면 검색창과 밑줄 사이가 홈 인디케이터 높이만큼 벌어지므로 위쪽만 띄운다
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.spacing}>
         <View style={styles.searchContainer}>
           <MaterialIcons
