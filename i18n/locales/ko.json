@@ -101,7 +101,8 @@
       "done": "탈퇴했어요. 이 기기의 단어는 그대로 남아 있어요."
     },
     "signedIn": "로그인됨",
-    "openSettings": "설정 열기"
+    "openSettings": "설정 열기",
+    "reviewUnavailable": "스토어를 열 수 없어요. 잠시 뒤 다시 시도해 주세요."
   },
   "[bookcase]": {
     "filter": {

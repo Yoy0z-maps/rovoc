@@ -20,9 +20,9 @@ import { router, useFocusEffect } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { changeLanguage } from "@/i18n/i18n";
 import Constants from "expo-constants";
-import * as StoreReview from "expo-store-review";
 import Toast from "react-native-toast-message";
 import { deleteAccount, logout } from "@/lib/session";
+import { openStoreReviewPage } from "@/lib/review";
 import {
   isNotificationPermissionGranted,
   setStudyReminderEnabled,
@@ -57,15 +57,9 @@ export default function ProfileMenu() {
     });
   };
 
-  const requestReview = async () => {
-    try {
-      if (await StoreReview.isAvailableAsync()) {
-        await StoreReview.requestReview();
-      } else {
-        Alert.alert("Review unavailable", "Store review is not available on this device.");
-      }
-    } catch {
-      Alert.alert("Review unavailable", "Please try again later.");
+  const writeReview = async () => {
+    if (!(await openStoreReviewPage())) {
+      Alert.alert(t("profile.menu.review"), t("profile.reviewUnavailable"));
     }
   };
 
@@ -173,7 +167,7 @@ export default function ProfileMenu() {
         <ProfileMenuBottomItem
           icon={<MaterialIcons name="rate-review" size={24} color="black" />}
           label={t("profile.menu.review")}
-          onPress={() => void requestReview()}
+          onPress={() => void writeReview()}
         />
         <ProfileMenuBottomItem
           icon={<Ionicons name="language-outline" size={24} color="black" />}

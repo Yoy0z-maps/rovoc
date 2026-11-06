@@ -101,7 +101,8 @@
       "done": "Your account was deleted. Words on this device are kept."
     },
     "signedIn": "Signed in",
-    "openSettings": "Open Settings"
+    "openSettings": "Open Settings",
+    "reviewUnavailable": "Couldn't open the store. Please try again later."
   },
   "[bookcase]": {
     "filter": {
