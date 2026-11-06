@@ -34,10 +34,10 @@ export default function NoticeViewer({ notice }: { notice: Notice[] | null }) {
   );
 }
 
+// ScrollView의 style에 justifyContent·alignItems가 있으면 개발 빌드에서 에러가 나므로 넣지 않는다
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start",
     backgroundColor: "#FFF",
     margin: 20,
     borderRadius: 12,
