@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>ROVOCA App Store Header 3840x1646</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .canvas { width: 3840px; height: 1646px; }
+    /* Apple 템플릿 안전 영역: x 1098–2742, y 493–1153 (1645 x 661) */
+    .lockup {
+      position: absolute; left: 1098px; top: 493px; width: 1645px; height: 661px;
+      display: flex; align-items: center; justify-content: center; gap: 90px; z-index: 10;
+    }
+    .lockup img { height: 400px; --shadow: 16px; }
+    .lockup .wordmark { font-size: 170px; --shadow: 16px; }
+  </style>
+</head>
+<body>
+  <div class="canvas" id="canvas">
+    <div class="lockup">
+      <img class="robot-white" src="img/robot.png" />
+      <div class="wordmark">ROVOCA</div>
+    </div>
+  </div>
+  <script src="ui.js"></script>
+  <script>
+    const canvas = document.getElementById("canvas");
+
+    // 안전 영역 밖에는 앱의 단어 카드와 게임 카드를 흩뿌린다 (잘려도 괜찮은 장식)
+    place(canvas, vocaCard(word("Abundant")), { x: 150, y: 240, scale: 2.4, rotate: -6, width: 340 });
+    place(canvas, gameCard("Quiz"), { x: 690, y: 1000, scale: 2.1, rotate: 8 });
+    place(canvas, vocaCard(word("Serendipity")), { x: 2960, y: 250, scale: 2.4, rotate: 6, width: 350 });
+    place(canvas, vocaCard(word("Concise")), { x: 2890, y: 1060, scale: 2.2, rotate: -5, width: 320 });
+
+    sparkle(canvas, { x: 1150, y: 300, size: 96 });
+    sparkle(canvas, { x: 2650, y: 1230, size: 72 });
+    sparkle(canvas, { x: 2190, y: 170, size: 52, opacity: 0.7 });
+    sparkle(canvas, { x: 1500, y: 1330, size: 48, opacity: 0.7 });
+    sparkle(canvas, { x: 330, y: 1250, size: 64, opacity: 0.85 });
+    sparkle(canvas, { x: 3600, y: 1380, size: 56, opacity: 0.85 });
+    sparkle(canvas, { x: 3700, y: 120, size: 44, opacity: 0.7 });
+
+    safeGuide(canvas, { x: 1098, y: 493, w: 1645, h: 661 });
+  </script>
+</body>
+</html>

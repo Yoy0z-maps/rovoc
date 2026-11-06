@@ -1,0 +1,141 @@
+/* App Store 헤더·검색결과 이미지 공통 스타일. 앱과 같은 폰트와 색을 쓴다 */
+@font-face { font-family: "Pretendard"; src: url("../../assets/fonts/Pretendard-Regular.otf"); font-weight: 400; }
+@font-face { font-family: "Pretendard"; src: url("../../assets/fonts/Pretendard-Medium.otf"); font-weight: 500; }
+@font-face { font-family: "Pretendard"; src: url("../../assets/fonts/Pretendard-SemiBold.otf"); font-weight: 600; }
+@font-face { font-family: "Pretendard"; src: url("../../assets/fonts/Pretendard-Bold.otf"); font-weight: 700; }
+@font-face { font-family: "Pretendard"; src: url("../../assets/fonts/Pretendard-ExtraBold.otf"); font-weight: 800; }
+@font-face { font-family: "Pretendard"; src: url("../../assets/fonts/Pretendard-Black.otf"); font-weight: 900; }
+@font-face { font-family: "PressStart2P"; src: url("../../assets/fonts/PressStart2P.ttf"); }
+
+:root {
+  --blue: #2988f6;
+  --ink: #111;
+  --gray: #767676;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--blue); overflow: hidden; }
+body { font-family: "Pretendard", sans-serif; -webkit-font-smoothing: antialiased; }
+
+.canvas {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--blue);
+  background-image:
+    radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 62%),
+    linear-gradient(rgba(255, 255, 255, 0.09) 3px, transparent 3px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.09) 3px, transparent 3px);
+  background-size: 100% 100%, 120px 120px, 120px 120px;
+  background-position: center, center, center;
+}
+
+/* 확인용: ?guide=1 이면 Apple 템플릿의 안전 영역을 표시한다 */
+.safe-guide {
+  position: absolute;
+  border: 6px dashed #00ff00;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.abs { position: absolute; }
+
+/* 브랜드: 흰 픽셀 로봇 + PressStart2P 워드마크, 앱 카드처럼 검은 그림자 */
+.robot-white { filter: brightness(0) invert(1) drop-shadow(var(--shadow, 12px) var(--shadow, 12px) 0 var(--ink)); }
+.wordmark {
+  font-family: "PressStart2P";
+  color: #fff;
+  line-height: 1;
+  text-shadow: var(--shadow, 12px) var(--shadow, 12px) 0 var(--ink);
+  white-space: nowrap;
+}
+
+/* 픽셀 반짝이 */
+.sparkle { position: absolute; image-rendering: pixelated; }
+
+/* 아래는 앱 화면을 1pt = 1px 로 그린 뒤 transform 으로 키운다 */
+.scaled { position: absolute; transform-origin: 0 0; }
+
+/* ---- 단어 카드 (components/bookcase/VocaItem.tsx) ---- */
+.voca {
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 8px;
+  border-style: solid;
+  border-color: var(--ink);
+  border-width: 1.5px 2.5px 2.5px 1.5px;
+  padding: 10px 16px;
+  font-family: -apple-system, "SF Pro Text", system-ui, sans-serif;
+}
+.voca + .voca { margin-top: 15px; }
+.voca-word { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.voca-meaning { display: flex; align-items: center; gap: 2px; font-size: 14px; color: var(--gray); }
+.voca-idx {
+  width: 12px; height: 12px; border-radius: 10px; border: 1px solid #999;
+  font: 700 8px/10px "Pretendard"; color: #999; text-align: center; flex: none;
+}
+.voca-example { margin-top: 2px; font-size: 13px; line-height: 16px; color: var(--gray); }
+.voca-star { position: absolute; top: 10px; right: 14px; width: 20px; height: 20px; }
+.voca-robot { position: absolute; width: 43.75px; height: 48.6px; right: 33px; bottom: -14.3px; opacity: 0.5; }
+
+/* ---- 게임 카드 (components/game/GameItems.tsx) ---- */
+.game-card {
+  width: 140px; height: 200px; border-radius: 12px;
+  border-style: solid; border-color: var(--ink); border-width: 2px 3.5px 3.5px 2px;
+  background: #f9f9f9;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  padding: 15px 0;
+}
+.game-card-title { font: 500 20px "Pretendard"; color: var(--ink); }
+.game-card img { width: 80px; height: 80px; object-fit: contain; }
+.game-card-button {
+  width: 100px; height: 30px; border-radius: 12px; background: var(--blue);
+  color: #fff; font: 14px/30px "PressStart2P"; text-align: center;
+}
+
+/* ---- 휴대폰 ---- */
+.phone {
+  width: 417px; height: 876px; padding: 12px;
+  border-radius: 66px; background: #1b1b1d;
+  box-shadow: 0 0 0 3px #3a3a3e inset, 16px 16px 0 rgba(17, 17, 17, 0.9);
+}
+.screen {
+  position: relative; width: 393px; height: 852px; overflow: hidden;
+  border-radius: 54px; background: #fff;
+  font-family: -apple-system, "SF Pro Text", system-ui, sans-serif; color: #000;
+}
+.island {
+  position: absolute; top: 11px; left: 50%; width: 124px; height: 36px;
+  margin-left: -62px; border-radius: 18px; background: #000; z-index: 5;
+}
+.statusbar {
+  height: 54px; display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 34px 0 52px; font-size: 17px; font-weight: 600;
+}
+.statusbar .icons { display: flex; align-items: center; gap: 7px; }
+.home-indicator {
+  position: absolute; bottom: 8px; left: 50%; width: 140px; height: 5px;
+  margin-left: -70px; border-radius: 3px; background: #000;
+}
+
+/* 단어장 화면 ([bookcase].tsx + BookcaseHeader.tsx) */
+.bookcase-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px 18px; border-bottom: 2px solid var(--ink);
+}
+.bookcase-header .title { flex: 1; text-align: center; font: 700 20px "Pretendard"; }
+.bookcase-list { padding: 30px 24px; }
+
+/* 퀴즈 화면 (app/quiz.tsx) */
+.quiz { padding: 36px 20px 24px; display: flex; flex-direction: column; align-items: center; }
+.quiz-title { font: 24px "PressStart2P"; margin-bottom: 20px; }
+.quiz-question { margin-top: 100px; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.quiz-word { font: 20px/30px "PressStart2P"; text-align: center; }
+.quiz-meaning { font: 600 20px/30px "Pretendard"; text-align: center; color: var(--ink); }
+.quiz-options { width: 100%; margin-top: 40px; }
+.quiz-option { padding: 15px; margin: 5px 0; background: #eee; border-radius: 8px; font-size: 14px; line-height: 17px; }
+.quiz-option.correct { background: rgba(150, 199, 158, 0.7); color: #fff; }
+.quiz-result { height: 80px; margin-top: 3px; display: flex; align-items: center; justify-content: center; gap: 16px; }
+.quiz-buttons { margin-top: 70px; width: 90%; display: flex; justify-content: space-between; font-size: 15px; }
+.quiz-buttons .quit { color: rgb(240, 86, 80); margin-top: 10px; }
+.quiz-buttons .next { color: rgb(74, 138, 244); margin-top: 10px; }

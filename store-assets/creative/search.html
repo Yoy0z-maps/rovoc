@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>ROVOCA App Store Search Result 3840x2560</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .canvas { width: 3840px; height: 2560px; }
+    /* Apple 템플릿 안전 영역: x 836–3002, y 765–1794 (2167 x 1030) */
+    .copy {
+      position: absolute; left: 836px; top: 765px; width: 950px; height: 1030px;
+      display: flex; flex-direction: column; justify-content: center; z-index: 10;
+    }
+    .brand { display: flex; align-items: center; gap: 30px; margin-bottom: 72px; --shadow: 7px; }
+    .brand img { height: 112px; }
+    .brand .wordmark { font-size: 64px; }
+    .headline {
+      display: inline-block; white-space: nowrap;
+      font-weight: 800; font-size: 212px; line-height: 1.16; letter-spacing: -0.02em;
+      color: #fff; text-shadow: 10px 10px 0 var(--ink);
+    }
+    html[lang="en"] .headline { letter-spacing: -0.03em; }
+  </style>
+</head>
+<body>
+  <div class="canvas" id="canvas">
+    <div class="copy">
+      <div class="brand">
+        <img class="robot-white" src="img/robot.png" />
+        <div class="wordmark">ROVOCA</div>
+      </div>
+      <div><div class="headline" id="headline"></div></div>
+    </div>
+  </div>
+  <script src="ui.js"></script>
+  <script>
+    const canvas = document.getElementById("canvas");
+
+    const headline = document.getElementById("headline");
+    headline.innerHTML = COPY.headline.join("<br />");
+
+    // 실제 앱 화면: 단어장(뒤)과 퀴즈(앞)
+    const PHONE_SCALE = 570 / 417;
+    place(canvas, phone(bookcaseScreen(["Abundant", "Concise", "Ephemeral", "Resilient", "Meticulous", "Serendipity"])), {
+      x: 1850, y: 600, scale: PHONE_SCALE, z: 4,
+    });
+    place(canvas, phone(quizScreen()), { x: 2432, y: 770, scale: PHONE_SCALE, z: 5 });
+
+    // 안전 영역 밖 장식 (잘려도 괜찮음)
+    place(canvas, vocaCard(word("Eloquent")), { x: 130, y: 170, scale: 2.2, rotate: -6, width: 340 });
+    place(canvas, gameCard("Quiz"), { x: 360, y: 1930, scale: 2.0, rotate: 8 });
+    place(canvas, vocaCard(word("Diligent")), { x: 3080, y: 230, scale: 2.0, rotate: 7, width: 340 });
+    place(canvas, vocaCard(word("Vivid")), { x: 3060, y: 2010, scale: 2.0, rotate: -5, width: 340 });
+
+    sparkle(canvas, { x: 560, y: 880, size: 88 });
+    sparkle(canvas, { x: 3230, y: 1240, size: 80 });
+    sparkle(canvas, { x: 1640, y: 330, size: 60, opacity: 0.8 });
+    sparkle(canvas, { x: 2180, y: 2230, size: 64, opacity: 0.8 });
+    sparkle(canvas, { x: 3560, y: 1700, size: 52, opacity: 0.7 });
+    sparkle(canvas, { x: 230, y: 1500, size: 48, opacity: 0.7 });
+
+    safeGuide(canvas, { x: 836, y: 765, w: 2167, h: 1030 });
+
+    // 문구가 안전 영역 너비를 넘지 않게 줄인다
+    document.fonts.ready.then(() => {
+      let size = 212;
+      while (headline.offsetWidth > 940 && size > 100) {
+        size -= 4;
+        headline.style.fontSize = `${size}px`;
+      }
+    });
+  </script>
+</body>
+</html>
